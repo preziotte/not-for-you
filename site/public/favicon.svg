@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32">
+  <defs><clipPath id="plate"><rect width="32" height="32" rx="7"/></clipPath></defs>
+  <g clip-path="url(#plate)"><g>
+    <rect width="32" height="32" rx="7" fill="#262838"/>
+    <rect x="9.4694" y="-8.4898" width="13.0612" height="13.0612" rx="4.0816" fill="#a2a8dc"/>
+    <rect x="9.4694" y="9.4694" width="13.0612" height="13.0612" rx="4.0816" fill="#a2a8dc"/>
+    <rect x="12.4082" y="12.4082" width="7.1837" height="7.1837" rx="1.1429" fill="#262838"/>
+    <rect x="9.4694" y="27.4286" width="13.0612" height="13.0612" rx="4.0816" fill="#a2a8dc"/>
+  </g></g>
+</svg>

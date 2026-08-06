@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Not for You</title>
+    <link rel="stylesheet" href="./style.css" />
+  </head>
+  <body>
+    <header>
+      <h1><a href="https://notforyou.app" target="_blank" rel="noreferrer">Not for You</a></h1>
+      <p>Remove the algorithm from social media.</p>
+    </header>
+    <ul id="platform-list"></ul>
+    <footer>
+      <!-- The icons are drawn here rather than swapped by main.ts: the label
+           is the only part of this button that changes, so it gets its own
+           span and the clock survives the re-render. -->
+      <button id="disable" type="button">
+        <svg viewBox="0 0 16 16" aria-hidden="true">
+          <circle cx="8" cy="8" r="5.9" />
+          <path d="M8 4.5V8l2.5 1.7" />
+        </svg>
+        <span id="disable-label"></span>
+      </button>
+      <!-- TODO: swap for the real Chrome Web Store listing URL, same as the
+           site's Add to Chrome button. -->
+      <div id="links">
+        <a
+          href="https://github.com/preziotte/not-for-you/issues/new"
+          target="_blank"
+          rel="noreferrer"
+        >
+          <svg viewBox="0 0 16 16" aria-hidden="true">
+            <ellipse cx="8" cy="9.8" rx="3.4" ry="4.2" />
+            <circle cx="8" cy="4.3" r="1.7" />
+            <path d="M6.9 2.9 6.1 1.6M9.1 2.9 9.9 1.6" />
+            <path
+              d="M4.6 7.7 1.6 6.1M4.6 10H1.4M4.6 12.3 1.6 13.9M11.4 7.7l3-1.6M11.4 10h3.2M11.4 12.3l3 1.6"
+            />
+          </svg>
+          Report a bug
+        </a>
+        <a
+          href="https://chromewebstore.google.com/detail/not-for-you/reviews"
+          target="_blank"
+          rel="noreferrer"
+        >
+          <svg viewBox="0 0 16 16" aria-hidden="true">
+            <path
+              d="M8 1.9 9.85 5.6l4.15.6-3 2.9.7 4.05L8 11.24 4.3 13.15 5 9.1l-3-2.9 4.15-.6z"
+            />
+          </svg>
+          Leave a rating
+        </a>
+      </div>
+    </footer>
+    <script type="module" src="./main.ts"></script>
+  </body>
+</html>

@@ -1,0 +1,39 @@
+name: Something broke
+description: A platform changed its markup and one of the options stopped working.
+labels: [breakage]
+body:
+  - type: dropdown
+    id: platform
+    attributes:
+      label: Platform
+      options:
+        - YouTube
+        - Instagram
+        - TikTok
+        - X / Twitter
+        - Reddit
+        - LinkedIn
+        - Threads
+        - Facebook
+    validations:
+      required: true
+  - type: input
+    id: option
+    attributes:
+      label: Which option
+      description: The checkbox in the popup that stopped doing its job.
+      placeholder: Hide promoted & suggested posts
+    validations:
+      required: true
+  - type: textarea
+    id: instead
+    attributes:
+      label: What you see instead
+      description: What the page shows now. A screenshot helps a lot.
+    validations:
+      required: true
+  - type: input
+    id: browser
+    attributes:
+      label: Browser and version
+      placeholder: Chrome 143

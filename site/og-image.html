@@ -1,0 +1,408 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Not for You: social card source</title>
+    <!--
+      Source for public/og.png, the 1200x630 image link previews use. Not
+      deployed: public/ is what ships, this sits beside it.
+
+      Regenerate after editing (light card, then dark):
+
+        cd site
+        "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome" \
+          --headless --disable-gpu --hide-scrollbars \
+          --window-size=1200,630 --screenshot=public/og.png og-image.html
+        "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome" \
+          --headless --disable-gpu --hide-scrollbars \
+          --window-size=1200,630 --screenshot=public/og-dark.png \
+          "file://$PWD/og-image.html#dark"
+
+      The dark one needs the file:// form: a bare path with a fragment gets
+      parsed as a hostname.
+
+      Then compress both; the quantisation is invisible under the grain and
+      takes each card from ~700 KB to under 100:
+
+        pngquant --quality=55-75 --speed 1 --force \
+          --output public/og.png public/og.png
+        pngquant --quality=55-75 --speed 1 --force \
+          --output public/og-dark.png public/og-dark.png
+        oxipng -o 4 --strip safe public/og.png public/og-dark.png
+
+      og:image points at the light card, since the file is baked once and
+      every preview surface shows the same bytes; the dark card is baked
+      alongside it for surfaces that can choose. The popup is the real markup
+      at 1.35x, cropped and faded at the bottom rather than scaled to fit:
+      the whole list shrunk to 630px would be a picture of unreadable grey
+      lines.
+    -->
+    <style>
+      :root {
+        /* The checkboxes mix from currentColor, and on a bare input that is
+           the UA's FieldText, which resolves via color-scheme: without these
+           declarations the dark card's boxes mix from black. */
+        color-scheme: light;
+        --fg: #1a1a1a;
+        --bg: #faf9f7;
+        --muted: #6b6b6b;
+        --surface: #ffffff;
+        --shadow: rgba(0, 0, 0, 0.13);
+        /* The homepage's glow palette, lifted a touch because the baked
+           card never gets the live page's grain shimmer. */
+        --glow-a: rgba(86, 120, 255, 0.44);
+        --glow-a2: rgba(126, 88, 255, 0.31);
+        --glow-b: rgba(255, 168, 84, 0.24);
+        --glow-b2: rgba(255, 128, 122, 0.16);
+        --grain: 0.075;
+      }
+      /* Dark tokens mirror the homepage's dark theme; the #dark fragment
+         flips this on for the second screenshot. */
+      :root[data-theme='dark'] {
+        color-scheme: dark;
+        --fg: #ececec;
+        --bg: #141414;
+        --muted: #9a9a9a;
+        --surface: #1e1e1e;
+        --shadow: rgba(0, 0, 0, 0.5);
+        --glow-a: rgba(104, 140, 255, 0.31);
+        --glow-a2: rgba(150, 112, 255, 0.21);
+        --glow-b: rgba(255, 146, 60, 0.18);
+        --glow-b2: rgba(255, 96, 96, 0.12);
+        --grain: 0.09;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        width: 1200px;
+        height: 630px;
+        overflow: hidden;
+        position: relative;
+        background: var(--bg);
+        color: var(--fg);
+        font-family: 'Iowan Old Style', Charter, 'Bitstream Charter',
+          'Sitka Text', Cambria, Georgia, 'Times New Roman', serif;
+      }
+      /* The page's two colour fields and grain, held still. */
+      .backdrop,
+      .backdrop::before,
+      .backdrop::after {
+        position: absolute;
+        inset: 0;
+      }
+      .backdrop {
+        z-index: 0;
+      }
+      .backdrop::before {
+        content: '';
+        background:
+          radial-gradient(72% 58% at 8% 14%, var(--glow-a), transparent 64%),
+          radial-gradient(48% 66% at 36% 0%, var(--glow-a2), transparent 66%),
+          radial-gradient(70% 56% at 92% 80%, var(--glow-b), transparent 64%),
+          radial-gradient(46% 64% at 62% 98%, var(--glow-b2), transparent 68%);
+      }
+      .backdrop::after {
+        content: '';
+        opacity: var(--grain);
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)'/%3E%3C/svg%3E"),
+          url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='320' height='320'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.3' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='320' height='320' filter='url(%23n)'/%3E%3C/svg%3E");
+        background-size:
+          160px 160px,
+          320px 320px;
+      }
+      .card {
+        position: relative;
+        z-index: 1;
+        height: 100%;
+        display: grid;
+        grid-template-columns: 1fr auto;
+        align-items: center;
+        gap: 72px;
+        padding: 0 76px;
+      }
+      h1 {
+        margin: 0 0 20px;
+        font-size: 82px;
+        font-weight: normal;
+        letter-spacing: -0.025em;
+        line-height: 1;
+      }
+      .tagline {
+        margin: 0 0 28px;
+        font-size: 29px;
+        line-height: 1.45;
+        max-width: 15em;
+      }
+      .domain {
+        margin: 0;
+        font-family: system-ui, sans-serif;
+        font-size: 17px;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: var(--muted);
+      }
+      /* Bottom-cropped: the popup is taller than the frame by design. */
+      .frame {
+        width: 389px;
+        height: 630px;
+        overflow: hidden;
+        -webkit-mask-image: linear-gradient(
+          to bottom,
+          #000 74%,
+          transparent 97%
+        );
+        mask-image: linear-gradient(to bottom, #000 74%, transparent 97%);
+      }
+      .scale {
+        transform: scale(1.35);
+        transform-origin: top left;
+        padding-top: 40px;
+      }
+
+      /* ---- Popup replica: kept in sync with public/index.html by hand. ---- */
+      .popup {
+        font-family: system-ui, sans-serif;
+        background: var(--surface);
+        color: var(--fg);
+        width: 288px;
+        text-align: left;
+        display: flex;
+        flex-direction: column;
+        border-radius: 10px;
+        box-shadow:
+          0 1px 2px var(--shadow),
+          0 12px 32px var(--shadow);
+      }
+      .popup header {
+        flex: none;
+        padding: 14px 16px 3px;
+        border-bottom: 1px solid color-mix(in srgb, currentColor 12%, transparent);
+      }
+      .popup header h2 {
+        margin: 0;
+        font-family: 'Iowan Old Style', Charter, 'Bitstream Charter',
+          'Sitka Text', Cambria, Georgia, 'Times New Roman', serif;
+        line-height: 1.12;
+        font-size: 17px;
+        font-weight: normal;
+        letter-spacing: -0.01em;
+      }
+      .popup header p {
+        margin: 3px 0 13px;
+        font-size: 12px;
+        opacity: 0.6;
+      }
+      .popup ul {
+        list-style: none;
+        margin: 0;
+        padding: 15px 16px;
+      }
+      .popup li + li {
+        margin-top: 16px;
+      }
+      .popup .site {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 12.5px;
+        font-weight: 600;
+        letter-spacing: -0.005em;
+        margin-bottom: 4px;
+      }
+      .popup .site img {
+        border-radius: 3px;
+      }
+      .popup .option {
+        display: flex;
+        align-items: flex-start;
+        gap: 9px;
+        margin-left: -6px;
+        padding: 4px 6px;
+        border-radius: 6px;
+        font-size: 12px;
+        line-height: 1.35;
+        letter-spacing: -0.006em;
+        opacity: 0.88;
+      }
+      .popup .option span {
+        flex: 1;
+      }
+      .popup .option:has(input:disabled) {
+        opacity: 0.45;
+      }
+      .popup input[type='checkbox'] {
+        appearance: none;
+        width: 13px;
+        height: 13px;
+        margin: 1.5px 0 0 1.5px;
+        flex: none;
+        display: grid;
+        place-content: center;
+        background: transparent;
+        border: 1.5px solid color-mix(in srgb, currentColor 28%, transparent);
+        border-radius: 4px;
+      }
+      .popup input[type='checkbox']::before {
+        content: '';
+        width: 7.5px;
+        height: 7.5px;
+        clip-path: polygon(14% 44%, 0 65%, 40% 100%, 100% 16%, 82% 2%, 38% 60%);
+        background: var(--surface);
+        transform: scale(0);
+      }
+      .popup input[type='checkbox']:checked {
+        background: color-mix(in srgb, currentColor 58%, transparent);
+        border-color: transparent;
+      }
+      .popup input[type='checkbox']:checked::before {
+        transform: scale(1);
+      }
+      .popup input[type='checkbox']:disabled {
+        border-style: dashed;
+      }
+    </style>
+    <script>
+      // Theme switch for the second screenshot; see the comment up top.
+      if (location.hash === '#dark') {
+        document.documentElement.dataset.theme = 'dark';
+      }
+    </script>
+  </head>
+  <body>
+    <div class="backdrop"></div>
+    <div class="card">
+      <div>
+        <h1>Not for You</h1>
+        <p class="tagline">
+          A browser extension that removes the algorithm from every major social
+          platform.
+        </p>
+        <p class="domain">notforyou.app</p>
+      </div>
+      <div class="frame">
+        <div class="scale">
+          <div class="popup">
+            <header>
+              <h2>Not for You</h2>
+              <p>Remove the algorithm from social media.</p>
+            </header>
+            <ul>
+              <li>
+                <div class="site">
+                  <img
+                    src="public/sites/youtube.png"
+                    alt=""
+                    width="16"
+                    height="16"
+                  />
+                  <span>YouTube</span>
+                </div>
+                <label class="option"
+                  ><input type="checkbox" checked /><span
+                    >Show Subscriptions, not the Home feed</span
+                  ></label
+                >
+                <label class="option"
+                  ><input type="checkbox" checked /><span
+                    >Turn off autoplay</span
+                  ></label
+                >
+                <label class="option"
+                  ><input type="checkbox" checked /><span
+                    >Hide Shorts row</span
+                  ></label
+                >
+                <label class="option"
+                  ><input type="checkbox" checked /><span
+                    >Hide what to watch next</span
+                  ></label
+                >
+              </li>
+              <li>
+                <div class="site">
+                  <img
+                    src="public/sites/instagram.png"
+                    alt=""
+                    width="16"
+                    height="16"
+                  />
+                  <span>Instagram</span>
+                </div>
+                <label class="option"
+                  ><input type="checkbox" checked /><span
+                    >Show Following, not the Home feed</span
+                  ></label
+                >
+                <label class="option"
+                  ><input type="checkbox" checked /><span
+                    >Hide suggestions sidebar</span
+                  ></label
+                >
+              </li>
+              <li>
+                <div class="site">
+                  <img
+                    src="public/sites/twitter.png"
+                    alt=""
+                    width="16"
+                    height="16"
+                  />
+                  <span>X / Twitter</span>
+                </div>
+                <label class="option"
+                  ><input type="checkbox" checked /><span
+                    >Show Following, not the &ldquo;For You&rdquo; feed</span
+                  ></label
+                >
+                <label class="option"
+                  ><input type="checkbox" checked /><span
+                    >Hide trends &amp; suggestions</span
+                  ></label
+                >
+              </li>
+              <li>
+                <div class="site">
+                  <img
+                    src="public/sites/tiktok.png"
+                    alt=""
+                    width="16"
+                    height="16"
+                  />
+                  <span>TikTok</span>
+                </div>
+                <label class="option"
+                  ><input type="checkbox" checked /><span
+                    >Show Following, not the &ldquo;For You&rdquo; feed</span
+                  ></label
+                >
+                <label class="option"
+                  ><input type="checkbox" checked /><span
+                    >Hide header bar</span
+                  ></label
+                >
+              </li>
+              <li>
+                <div class="site">
+                  <img
+                    src="public/sites/reddit.png"
+                    alt=""
+                    width="16"
+                    height="16"
+                  />
+                  <span>Reddit</span>
+                </div>
+                <label class="option"
+                  ><input type="checkbox" checked /><span
+                    >Show New, not the &ldquo;Best&rdquo; sort</span
+                  ></label
+                >
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,273 @@
+:root {
+  color-scheme: light dark;
+  font-family: system-ui, sans-serif;
+
+  /* Chrome renders the Canvas system color as near-black in dark mode,
+     which reads as a hole rather than a surface. A lifted grey sits better
+     against the browser chrome, and the favicons look less stark on it. */
+  --surface: light-dark(#ffffff, #1e1e1e);
+}
+
+/* No border-radius here: the popup window is drawn by the browser and is
+   square on Chrome/macOS. Rounding the page just leaves the browser's own
+   backdrop showing in the corners. */
+body {
+  background: var(--surface);
+}
+
+body {
+  margin: 0;
+  /* Sized to the longest option label; see lib/platforms.ts. */
+  width: 288px;
+  /* Nothing here is worth copying, and stray selection while clicking
+     labels looks broken. */
+  user-select: none;
+  -webkit-user-select: none;
+
+  /* The full list runs past 700px, and browsers cap popups at 600. Without
+     this the global disable button sits below the fold, which is exactly
+     where it should never be. Header and footer stay put; only the list
+     scrolls. */
+  display: flex;
+  flex-direction: column;
+  max-height: 552px;
+}
+
+header h1 {
+  margin: 0;
+  /* The same local-serif stack as the site, so the popup and the page share
+     one identity. */
+  font-family: 'Iowan Old Style', Charter, 'Bitstream Charter', 'Sitka Text',
+    Cambria, Georgia, 'Times New Roman', serif;
+  /* Georgia's normal line box, so the swap does not change the popup's
+     height. */
+  line-height: 1.12;
+  font-size: 17px;
+  font-weight: normal;
+  letter-spacing: -0.01em;
+}
+
+/* A quiet link: the title should read as a title, and only reveal it goes
+   to the homepage when pointed at. */
+header h1 a {
+  color: inherit;
+  text-decoration: none;
+}
+
+header h1 a:hover {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-thickness: 1px;
+}
+
+header p {
+  margin: 3px 0 13px;
+  font-size: 12px;
+  opacity: 0.6;
+}
+
+header {
+  flex: none;
+  padding: 14px 16px 3px;
+  border-bottom: 1px solid color-mix(in srgb, currentColor 12%, transparent);
+}
+
+#platform-list {
+  list-style: none;
+  margin: 0;
+  /* min-height:0 lets this shrink below its content so it, not the body,
+     is what scrolls. */
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 15px 16px;
+  scrollbar-width: thin;
+  scrollbar-color: color-mix(in srgb, currentColor 22%, transparent) transparent;
+}
+
+footer {
+  flex: none;
+  padding: 11px 16px 12px;
+  border-top: 1px solid color-mix(in srgb, currentColor 12%, transparent);
+}
+
+#platform-list li + li {
+  margin-top: 16px;
+}
+
+.site {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12.5px;
+  font-weight: 600;
+  letter-spacing: -0.005em;
+  margin-bottom: 4px;
+}
+
+.site img {
+  border-radius: 3px;
+}
+
+.option {
+  display: flex;
+  align-items: flex-start;
+  /* Gap tuned so labels stay column-aligned with the platform names. */
+  gap: 9px;
+  /* Cancel the left padding so the checkbox sits exactly under the
+     favicon; the hover pill still gets its 6px inset. */
+  margin-left: -6px;
+  padding: 4px 6px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 12px;
+  line-height: 1.35;
+  letter-spacing: -0.006em;
+  opacity: 0.88;
+}
+
+.option span {
+  flex: 1;
+}
+
+.option:hover {
+  background: color-mix(in srgb, currentColor 8%, transparent);
+}
+
+.option:has(input:disabled) {
+  cursor: default;
+  opacity: 0.45;
+}
+
+.option input[type='checkbox'] {
+  appearance: none;
+  width: 13px;
+  height: 13px;
+  /* The 13px box is centered under the 16px favicon; top margin keeps it
+     on the first line of wrapped labels. */
+  margin: 1.5px 0 0 1.5px;
+  flex: none;
+  display: grid;
+  place-content: center;
+  background: transparent;
+  border: 1.5px solid color-mix(in srgb, currentColor 28%, transparent);
+  border-radius: 4px;
+  cursor: pointer;
+  transition:
+    background-color 0.12s ease,
+    border-color 0.12s ease;
+}
+
+.option input[type='checkbox']::before {
+  content: '';
+  width: 7.5px;
+  height: 7.5px;
+  clip-path: polygon(14% 44%, 0 65%, 40% 100%, 100% 16%, 82% 2%, 38% 60%);
+  /* Punched out of the surface, so it has to track it. */
+  background: var(--surface);
+  transform: scale(0);
+  transition: transform 0.12s ease;
+}
+
+.option input[type='checkbox']:hover:not(:disabled):not(:checked) {
+  border-color: color-mix(in srgb, currentColor 60%, transparent);
+}
+
+/* Nearly every option ships on, so a full-strength fill would put a column
+   of solid checkmarks above the platform names in the visual hierarchy. */
+.option input[type='checkbox']:checked {
+  background: color-mix(in srgb, currentColor 58%, transparent);
+  border-color: transparent;
+}
+
+.option input[type='checkbox']:checked::before {
+  transform: scale(1);
+}
+
+.option input[type='checkbox']:focus-visible {
+  outline: 2px solid color-mix(in srgb, currentColor 50%, transparent);
+  outline-offset: 2px;
+}
+
+.option input[type='checkbox']:disabled {
+  cursor: default;
+  border-style: dashed;
+}
+
+#disable {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  width: 100%;
+  padding: 8px;
+  font: inherit;
+  font-size: 11.5px;
+  color: inherit;
+  opacity: 0.75;
+  background: none;
+  border: 1px solid color-mix(in srgb, currentColor 16%, transparent);
+  border-radius: 7px;
+  cursor: pointer;
+  transition:
+    background-color 0.12s ease,
+    opacity 0.12s ease;
+}
+
+#disable:hover {
+  background: color-mix(in srgb, currentColor 8%, transparent);
+  opacity: 1;
+}
+
+#disable.active {
+  border-style: dashed;
+  opacity: 0.85;
+}
+
+/* Two equal halves rather than auto widths, so the pair reads as one row of
+   the footer instead of two labels of different sizes. Lighter than #disable
+   on purpose: that button is what the popup is for, these are errands. */
+#links {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+#links a {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 7px;
+  font-size: 11px;
+  text-align: center;
+  text-decoration: none;
+  color: inherit;
+  opacity: 0.55;
+  border: 1px solid color-mix(in srgb, currentColor 12%, transparent);
+  border-radius: 7px;
+  transition:
+    background-color 0.12s ease,
+    opacity 0.12s ease;
+}
+
+#links a:hover {
+  background: color-mix(in srgb, currentColor 8%, transparent);
+  opacity: 0.9;
+}
+
+/* One rule for all three marks: line drawings in the text colour, so they
+   inherit whatever opacity their button is at instead of needing their own.
+   flex: none keeps them from being squeezed when a label wraps. */
+footer svg {
+  flex: none;
+  width: 13px;
+  height: 13px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.35;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}

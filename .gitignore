@@ -1,0 +1,12 @@
+node_modules/
+.wxt/
+.output/
+site/.build/
+.DS_Store
+
+# terraform (site/)
+.terraform/
+.terraform.lock.hcl
+terraform.tfstate
+terraform.tfstate.backup
+*.tfplan

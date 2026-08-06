@@ -1,0 +1,2349 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Remove Algorithmic Feeds From Social Media | Not for You</title>
+    <meta
+      name="description"
+      content="A Chrome extension that removes algorithmic feeds from YouTube, Instagram, X, TikTok, Reddit, LinkedIn and Threads. Only the people you follow, in order."
+    />
+    <link rel="canonical" href="https://notforyou.app/" />
+    <!-- The SVG is the one that gets used, and it carries both themes itself
+         through a media query, so there is no light and dark pair to keep in
+         sync here. The PNGs are the fallback for anything that will not take
+         an SVG icon, and the touch icon is square because iOS rounds it. -->
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="icon" href="/favicon-32.png" sizes="32x32" />
+    <link rel="icon" href="/favicon-16.png" sizes="16x16" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <!-- Matches the two --bg values, so mobile browser chrome follows the page
+         instead of sitting on top of it in white. -->
+    <meta
+      name="theme-color"
+      content="#faf9f7"
+      media="(prefers-color-scheme: light)"
+    />
+    <meta
+      name="theme-color"
+      content="#141414"
+      media="(prefers-color-scheme: dark)"
+    />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://notforyou.app/" />
+    <meta property="og:site_name" content="Not for You" />
+    <meta property="og:title" content="Not for You" />
+    <meta
+      property="og:description"
+      content="A browser extension that removes the algorithm from every major social platform. Just the people you actually followed, in the order they posted."
+    />
+    <meta property="og:image" content="https://notforyou.app/og.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta
+      property="og:image:alt"
+      content="The Not for You extension popup, listing every supported social platform with its algorithmic feed switched off."
+    />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Not for You" />
+    <meta
+      name="twitter:description"
+      content="A browser extension that removes the algorithm from every major social platform. Just the people you actually followed, in the order they posted."
+    />
+    <meta name="twitter:image" content="https://notforyou.app/og.png" />
+
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "SoftwareApplication",
+        "name": "Not for You",
+        "url": "https://notforyou.app/",
+        "applicationCategory": "BrowserApplication",
+        "operatingSystem": "Chrome, Edge, Brave, Opera, Arc",
+        "description": "A browser extension that removes algorithmic feeds from YouTube, Instagram, X, TikTok, Reddit, LinkedIn and Threads, leaving only the accounts you follow, in chronological order.",
+        "isAccessibleForFree": true,
+        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+        "author": { "@type": "Person", "name": "Mathew Preziotte" }
+      }
+    </script>
+    <script>
+      // Runs before first paint so a stored choice never flashes the system
+      // theme first. No stored choice means no attribute, which leaves the
+      // prefers-color-scheme rules in charge.
+      try {
+        var stored = localStorage.getItem('theme');
+        if (stored) document.documentElement.dataset.theme = stored;
+      } catch (e) {}
+    </script>
+    <style>
+      /* Light is the base. Dark arrives either from the system preference
+         (when the visitor has not chosen) or from an explicit choice, so the
+         same values appear in both blocks below. --sun/--moon ride along so
+         the toggle's icon resolves the same way the theme does, with no JS. */
+      :root {
+        color-scheme: light;
+        --fg: #1a1a1a;
+        --bg: #faf9f7;
+        --muted: #6b6b6b;
+        /* The intro prose: a step brighter than --muted so the main argument
+           reads as body text rather than fine print, and a matching strong
+           tone so the emphasised phrases still sit above it. */
+        --body: #4a4a4a;
+        --body-strong: #1a1a1a;
+        /* The popup's own surface, so the mock reads as a separate object
+           sitting on the page rather than part of it. */
+        --surface: #ffffff;
+        --shadow: rgba(0, 0, 0, 0.13);
+        --sun: none;
+        --moon: block;
+        --card-hi: rgba(255, 255, 255, 0.7);
+        --card-lo: rgba(255, 255, 255, 0.2);
+        --card-line: rgba(255, 255, 255, 0.6);
+        --glow-a: rgba(86, 120, 255, 0.4);
+        --glow-a2: rgba(126, 88, 255, 0.28);
+        --glow-b: rgba(255, 168, 84, 0.22);
+        --glow-b2: rgba(255, 128, 122, 0.15);
+        --grain: 0.075;
+        /* The CTA's glass. Same two hues the rail sits in (--glow-a and
+           --glow-a2), but stated rather than blended: the pill is small and
+           has to hold a label, so it cannot afford to go transparent whenever
+           the fields drift off it the way the rail can. */
+        /* Stronger here than the card's own --card-hi/--card-lo, and stronger
+           than the dark theme's equivalents. On a near-white page a pale
+           tint has almost nothing to be paler than, and the pill stops
+           reading as a control at all; the dark theme gets that separation
+           for free. */
+        --cta-tint: rgba(76, 108, 250, 0.34);
+        --cta-tint2: rgba(122, 84, 250, 0.28);
+        --cta-hi: rgba(255, 255, 255, 0.52);
+        --cta-lo: rgba(255, 255, 255, 0.1);
+        --cta-line: rgba(76, 108, 250, 0.5);
+        --cta-sheen: rgba(255, 255, 255, 0.72);
+        /* Near enough to --fg to read as the same black, but carrying a trace
+           of the rail's indigo, so the headline agrees with the pill by hue
+           rather than by effect. A gradient fill was tried here and pulled
+           the eye to itself: it is the only place on the page where colour is
+           stated on an object instead of picked up from the fields behind it,
+           and it looked like a treatment applied to the type rather than like
+           the type belonging to the page. */
+        --h1-fill: #1c1f33;
+        --h1-shadow: rgba(26, 30, 60, 0.13);
+        /* The measure every block of copy is held to. It grows with the
+           window instead of sitting at one width, because at 32rem a wide
+           display leaves the copy column half empty next to a card that stops
+           well short of it. The ceiling is where the line gets long enough to
+           be hard to track back from; below the floor the column itself is
+           what limits the line, so the clamp stops mattering. */
+        --measure: clamp(32rem, 16vw + 21rem, 38rem);
+      }
+      @media (prefers-color-scheme: dark) {
+        :root:not([data-theme='light']) {
+          color-scheme: dark;
+          --fg: #ececec;
+          --bg: #141414;
+          --muted: #9a9a9a;
+          --body: #c6c6c6;
+          --body-strong: #ffffff;
+          --surface: #1e1e1e;
+          --shadow: rgba(0, 0, 0, 0.5);
+          --sun: block;
+          --moon: none;
+          --card-hi: rgba(255, 255, 255, 0.27);
+          --card-lo: rgba(255, 255, 255, 0.06);
+          --card-line: rgba(255, 255, 255, 0.16);
+          --glow-a: rgba(104, 140, 255, 0.28);
+          --glow-a2: rgba(150, 112, 255, 0.19);
+          --glow-b: rgba(255, 146, 60, 0.16);
+          --glow-b2: rgba(255, 96, 96, 0.11);
+          --grain: 0.09;
+          --cta-tint: rgba(104, 140, 255, 0.24);
+          --cta-tint2: rgba(150, 112, 255, 0.18);
+          --cta-hi: rgba(255, 255, 255, 0.2);
+          --cta-lo: rgba(255, 255, 255, 0.05);
+          --cta-line: rgba(150, 180, 255, 0.32);
+          --cta-sheen: rgba(255, 255, 255, 0.24);
+          --h1-fill: #eef0f8;
+          --h1-shadow: rgba(0, 0, 0, 0.4);
+        }
+      }
+      :root[data-theme='dark'] {
+        color-scheme: dark;
+        --fg: #ececec;
+        --bg: #141414;
+        --muted: #9a9a9a;
+        --body: #c6c6c6;
+        --body-strong: #ffffff;
+        --surface: #1e1e1e;
+        --shadow: rgba(0, 0, 0, 0.5);
+        --sun: block;
+        --moon: none;
+        --card-hi: rgba(255, 255, 255, 0.27);
+        --card-lo: rgba(255, 255, 255, 0.06);
+        --card-line: rgba(255, 255, 255, 0.16);
+        --glow-a: rgba(104, 140, 255, 0.28);
+        --glow-a2: rgba(150, 112, 255, 0.19);
+        --glow-b: rgba(255, 146, 60, 0.16);
+        --glow-b2: rgba(255, 96, 96, 0.11);
+        --grain: 0.09;
+        --cta-tint: rgba(104, 140, 255, 0.24);
+        --cta-tint2: rgba(150, 112, 255, 0.18);
+        --cta-hi: rgba(255, 255, 255, 0.2);
+        --cta-lo: rgba(255, 255, 255, 0.05);
+        --cta-line: rgba(150, 180, 255, 0.32);
+        --cta-sheen: rgba(255, 255, 255, 0.24);
+        --h1-fill: #eef0f8;
+        --h1-shadow: rgba(0, 0, 0, 0.4);
+      }
+      .theme-toggle {
+        /* Absolute, not fixed: the switch belongs to the top of the page,
+           not to the viewport, and scrolls away with the hero. */
+        position: absolute;
+        top: 16px;
+        right: 16px;
+        display: grid;
+        place-items: center;
+        width: 32px;
+        height: 32px;
+        padding: 0;
+        color: var(--muted);
+        background: none;
+        border: 0;
+        border-radius: 8px;
+        cursor: pointer;
+        opacity: 0.7;
+        transition:
+          opacity 0.12s ease,
+          background-color 0.12s ease;
+      }
+      .theme-toggle:hover {
+        opacity: 1;
+        background: color-mix(in srgb, currentColor 12%, transparent);
+      }
+      .theme-toggle .sun {
+        display: var(--sun);
+      }
+      .theme-toggle .moon {
+        display: var(--moon);
+      }
+      * {
+        box-sizing: border-box;
+      }
+      /* The page colour lives on html so the canvas is painted before
+         .backdrop, which sits at z-index -1. On body it would cover the
+         backdrop entirely. */
+      html {
+        background: var(--bg);
+      }
+      body {
+        margin: 0;
+        /* Locally installed serifs only, best face first per platform: Iowan
+           and Charter ship with macOS, Sitka and Cambria with Windows, and
+           Georgia catches everyone else. No webfont, in keeping with the
+           no-third-party-assets rule. */
+        font-family: 'Iowan Old Style', Charter, 'Bitstream Charter',
+          'Sitka Text', Cambria, Georgia, 'Times New Roman', serif;
+        color: var(--fg);
+        /* Containing block for .backdrop, so it spans the whole document
+           rather than just the viewport. */
+        position: relative;
+        /* Right padding is a constant, not a percentage, because it is what
+           the pointer's arrow aims through. Chrome puts the extensions button
+           a fixed distance in from the right edge of the window whatever the
+           window's width, so the popup mock has to sit a fixed distance in
+           too. Anything that scales (4vw, or the slack from a centred
+           max-width) lines up at exactly one window width and drifts at every
+           other. Tuned so the arrowhead lands on the puzzle-piece icon. */
+        padding: 7vh var(--toolbar-inset) 8vh 4vw;
+        --toolbar-inset: 8.5rem;
+      }
+      /* Below the collapse the mock is nowhere near the toolbar, the arrow is
+         hidden, and the reserved gutter is just a lopsided margin. */
+      @media (max-width: 62rem) {
+        body {
+          --toolbar-inset: 4vw;
+        }
+      }
+
+      /* ---- Background ---------------------------------------------------
+         Two soft colour fields that drift, plus a grain layer. Both are
+         absolutely positioned inside the document rather than fixed to the
+         viewport, so they scroll with the page: the grain sits on the paper
+         instead of floating over it.
+
+         Only `transform` is animated, so the layer is rasterised once and
+         then moved by the compositor: no repaint, no layout, no main-thread
+         work per frame. Animating background-position or the gradient stops
+         instead would re-rasterise the layer every frame, which is the usual
+         reason effects like this cost real battery.
+
+         The rotation is what makes it read as organic. Both fields ride one
+         layer, so they cannot move independently, but rotating that layer
+         sends each along a different arc for the price of a single transform.
+         -------------------------------------------------------------------- */
+      .backdrop {
+        position: absolute;
+        inset: 0;
+        z-index: -1;
+        pointer-events: none;
+        /* The drift layer is deliberately larger than this box. Clipping it
+           here stops that overhang from extending the document's scroll
+           height, which is what would happen if it spilled out. */
+        overflow: clip;
+      }
+      .backdrop::before,
+      .backdrop::after,
+      .drift {
+        content: '';
+        position: absolute;
+      }
+      /* Each field is a cluster of overlapping ellipses of the same hue rather
+         than one gradient. A single radial-gradient always reads as a sphere,
+         because its falloff is perfectly concentric; three of them at
+         different sizes and offsets union into an edge that never resolves
+         into a circle.
+
+         The two clusters also sit on separate layers drifting at different
+         speeds and directions, so their overlap keeps changing and the shapes
+         appear to slowly deform. Two transforms, still no repaint. */
+      .backdrop::before {
+        /* Oversized so the drift never pulls an edge into view. */
+        inset: -14% -30%;
+        background:
+          radial-gradient(72% 56% at 10% 16%, var(--glow-a), transparent 64%),
+          radial-gradient(48% 64% at 40% 2%, var(--glow-a2), transparent 66%),
+          radial-gradient(54% 42% at -4% 46%, var(--glow-a), transparent 70%);
+        animation: drift-a 64s ease-in-out infinite alternate;
+      }
+      .drift {
+        inset: -14% -30%;
+        background:
+          radial-gradient(70% 54% at 90% 74%, var(--glow-b), transparent 64%),
+          radial-gradient(46% 62% at 60% 96%, var(--glow-b2), transparent 68%),
+          radial-gradient(52% 44% at 104% 48%, var(--glow-b), transparent 70%);
+        animation: drift-b 83s ease-in-out infinite alternate;
+      }
+      /* Two noise tiles at different scales: fine film grain over a coarser
+         mottle. The second one is what stops it reading as a regular screen
+         pattern and starts reading as paper. Static, so both are rendered
+         once at load and then cost nothing per frame. */
+      .backdrop::after {
+        inset: 0;
+        opacity: var(--grain);
+        background-image:
+          url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)'/%3E%3C/svg%3E"),
+          url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='320' height='320'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.3' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='320' height='320' filter='url(%23n)'/%3E%3C/svg%3E");
+        background-size:
+          160px 160px,
+          320px 320px;
+      }
+      /* macOS rubber-band overscroll reveals the canvas, which is painted
+         with html's flat --bg. Because .backdrop is anchored to the document
+         it scrolls away with the content, so without this the bounce exposes
+         a hard seam between the tinted page and the untinted canvas. Fading
+         the backdrop back to --bg at both document edges means the edge pixel
+         row already matches what the bounce paints, so there is no seam to
+         see however hard you pull. Reads as a soft vignette otherwise. */
+      body::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        z-index: -1;
+        pointer-events: none;
+        /* Long, and eased by the half-strength midpoints: a plain two-stop
+           fade over this distance reads as a visible band, because the eye
+           picks up the constant rate of change. */
+        background: linear-gradient(
+          to bottom,
+          var(--bg) 0,
+          color-mix(in srgb, var(--bg) 45%, transparent) 7%,
+          transparent 19%,
+          transparent 81%,
+          color-mix(in srgb, var(--bg) 45%, transparent) 93%,
+          var(--bg) 100%
+        );
+      }
+      @keyframes drift-a {
+        from {
+          transform: translate3d(-3%, -2%, 0) rotate(-5deg) scale(1.05);
+        }
+        to {
+          transform: translate3d(3%, 2%, 0) rotate(4deg) scale(1.15);
+        }
+      }
+      /* Opposed direction and a deliberately unrelated duration, so the two
+         clusters never fall back into sync. */
+      @keyframes drift-b {
+        from {
+          transform: translate3d(3%, 2%, 0) rotate(5deg) scale(1.13);
+        }
+        to {
+          transform: translate3d(-2%, -2%, 0) rotate(-4deg) scale(1.04);
+        }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        .backdrop::before,
+        .drift {
+          animation: none;
+        }
+        .cta {
+          transition: none;
+        }
+        .cta:hover {
+          transform: none;
+        }
+      }
+      /* ---- Layout -------------------------------------------------------
+         Two columns: the argument on the left, the product on the right.
+         The copy is split into `hero` and `rest` so the demo can sit between
+         them when the columns collapse, rather than being pushed below the
+         whole page. On wide screens the demo spans both rows and sticks, so
+         the popup stays in view while the FAQ scrolls past it.
+         -------------------------------------------------------------------- */
+      /* The copy column takes whatever is left after the popup and a gap that
+         scales with the window. Line length is held in check by max-widths on
+         the text itself rather than on the column, so a wide window widens
+         the card and the gutter instead of the measure. */
+      /* The width is deliberately generous. It is what carries the demo column
+         out to the right of the window, near where the extensions button
+         actually sits, which is the thing the pointer's arrow is aiming at.
+         Narrowing this to close the gutter walks the popup inland and leaves
+         the arrow pointing at empty browser chrome. */
+      main {
+        max-width: 76rem;
+        /* Anchored right, not centred. Centring hands half of every extra
+           pixel of window width to the right gutter, which walks the popup
+           away from the toolbar as the window widens. With the left margin
+           taking all of the slack instead, the demo column's right edge stays
+           put at --toolbar-inset and only the copy moves. Below 76rem of
+           room the grid just narrows; the right edge still does not move. */
+        margin: 0 0 0 auto;
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto;
+        grid-template-areas:
+          'hero demo'
+          'rest demo';
+        column-gap: clamp(3rem, 7vw, 8rem);
+        align-items: start;
+      }
+      /* ---- Hero card ----------------------------------------------------
+         A rounded panel under the pitch, painted with mix-blend-mode:
+         overlay so it does not sit on the background as an opaque sheet: it
+         intensifies whatever the drifting colour fields put behind it,
+         brightening the pale areas and deepening the saturated ones. The
+         panel moves as the fields drift underneath.
+
+         Only the pseudo-element blends. Text inside the card is a sibling
+         above it and stays unblended, which is the whole reason for the
+         pseudo: overlay applied to the .hero box itself would drag the
+         headline into the blend and wreck its contrast.
+
+         .hero must NOT get isolation, z-index, transform, filter, or
+         anything else that creates a stacking context. Blending only reaches
+         backdrops within the same stacking context, so isolating .hero would
+         leave the panel blending against nothing but transparent black.
+
+         The negative left margin pulls the panel out by exactly its own
+         padding, so the headline's left edge still lines up with the prose
+         below it rather than being indented by the card. Left only: pulling
+         the right edge out too would eat into the gap between the columns
+         and make them read as closer together than they are. */
+      .hero {
+        grid-area: hero;
+        --hero-pad: clamp(1.4rem, 2.6vw, 2.2rem);
+        /* The feed rail's stripe, and the tile drawn inside it. The stripe is
+           wider than the tile so the column has air on both sides rather than
+           being pinned against the card's edge. */
+        --rail-band: 3.75rem;
+        --rail-tile: 1.875rem;
+        position: relative;
+        margin-left: calc(-1 * var(--hero-pad));
+        padding: var(--hero-pad);
+        /* The stripe occupies the card's left edge, so the copy starts inboard
+           of it. This is the one thing the rail costs: the headline no longer
+           lines up with the prose below the card, because pulling the card
+           further left to compensate would need more gutter than the window
+           has at narrow widths. */
+        padding-left: calc(var(--hero-pad) + var(--rail-band));
+        /* The card hugs the same measure the prose below it uses, so its right
+           edge lands just past where the tagline wraps. Left to fill the
+           column it ends up half empty, which reads as a mistake rather than
+           as space. */
+        max-width: calc(
+          var(--measure) + 2 * var(--hero-pad) + var(--rail-band)
+        );
+      }
+      .hero::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        z-index: -1;
+        border: 1px solid var(--card-line);
+        border-radius: 20px;
+        /* Bright at the top-left corner, thinning toward the bottom-right, as
+           if lit from where the headline sits. Under overlay this is a
+           gradient in contrast rather than in colour: the strong end pushes
+           the fields behind it further apart, the weak end lets them through
+           almost untouched, so the panel picks up whatever hue is passing
+           under it instead of imposing one. */
+        background: linear-gradient(
+          152deg,
+          var(--card-hi) 0%,
+          var(--card-lo) 72%
+        );
+        mix-blend-mode: overlay;
+      }
+      /* The shadow needs its own layer: on ::before it would be blended along
+         with the panel, and overlay turns a soft black into an unpredictable
+         smear rather than a shadow. Same z-index as ::before, so it paints
+         above the backdrop; being an outer shadow it never overlaps the panel
+         itself. Shadow language matches the popup's. */
+      .hero::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        z-index: -1;
+        border-radius: 20px;
+        box-shadow:
+          0 1px 2px var(--shadow),
+          0 16px 40px var(--shadow);
+      }
+      /* ---- Feed rail ----------------------------------------------------
+         A column of the logo's own tiles running the full height of the card,
+         flush with its left edge and clipped by its corner radius, so the
+         feed reads as continuing past the frame rather than starting and
+         stopping inside it. The icon is the same drawing cropped to three
+         tiles, which is why the favicon looks like a fragment of this.
+
+         Tiles alternate phase rather than travelling: each is a quarter of a
+         cycle from its neighbour's opposite, so the column is always about
+         half emptied and never resolves into a single sweep that has to reset.
+         Every third tile blooms into a heart instead of emptying, which is the
+         claim in miniature: the inserted posts clear out, the accounts you
+         chose stay.
+
+         Absolutely positioned, and deliberately without z-index, transform or
+         isolation. .hero's blended ::before is at z-index -1, so the rail
+         paints above it without either of them creating a stacking context
+         that would break the overlay blend. The 1px insets keep it off the
+         card's own border, and the radius is the card's 20px less that inset.
+         -------------------------------------------------------------------- */
+      .rail {
+        position: absolute;
+        left: 1px;
+        top: 1px;
+        bottom: 1px;
+        /* The stripe spans the whole inset the copy is pushed in by, not just
+           its own band, so centring the column inside it leaves equal space on
+           the card's edge and on the text's. Widening the stripe moves nothing
+           else: the copy's position is set by .hero's padding-left, which this
+           only has to agree with. */
+        width: calc(var(--hero-pad) + var(--rail-band));
+        border-radius: 19px 0 0 19px;
+        overflow: hidden;
+        /* A single cell both layers are placed into, so they stack rather than
+           sitting side by side, and centring is the same declaration for both.
+           Grid rather than absolute positioning keeps the stripe's height
+           driven by nothing: it is already stretched top to bottom. */
+        display: grid;
+        grid-template-areas: 'stack';
+        place-items: center;
+        pointer-events: none;
+      }
+      /* Taller than any card it will sit in, and centred, so it is cut off at
+         both ends whatever the copy does to the card's height. Centring alone
+         happens to land a tile edge near the top of the card, which reads as a
+         column that starts there rather than one that carries on past it. The
+         nudge lifts the column until the first tile is sliced by the card's
+         top edge, so it reads as a feed running through the card rather than a
+         list of eight tiles sitting inside it.
+
+         How much tile is left at each end is set by the card's height, which
+         the copy decides: the gap between tiles is nearly as tall as a tile,
+         so there is only a narrow band of offsets where neither end falls in a
+         gap, and cutting deeper into the top tile forces a clean break at the
+         bottom. This value sits near the middle of that band, so both ends
+         land part-way through a tile. If the hero copy changes enough to move
+         the card's height, it is worth re-checking. */
+      .rail svg {
+        grid-area: stack;
+        transform: translateY(calc(var(--rail-tile) * -0.38));
+        width: var(--rail-tile);
+        height: calc(var(--rail-tile) * 27.6);
+        color: var(--fg);
+        /* Blended for the same reason the card's panel is: the tiles stop
+           being an opaque object sitting on the page and instead intensify
+           whatever the drifting colour fields put behind them, so the column
+           shifts hue as they move under it. It blends against the card and
+           the backdrop rather than against nothing, because neither .hero nor
+           .rail creates a stacking context: only this element does, and an
+           element blends with what is painted beneath it in its parent's.
+
+           Overlay, the same mode the card's own panel uses, applied to both
+           layers. Because they are separate elements rather than one group,
+           the second blends against the first's result and the effect
+           compounds: overlay keys off the backdrop, so a single pass on a card
+           this dark can only reach twice the card's own luminance and the
+           column comes out faint. Two passes clear that ceiling while keeping
+           the hue it picks up from the fields drifting underneath, which is
+           what hard-light and luminosity both lose by resolving to a flat
+           screen. */
+        mix-blend-mode: overlay;
+      }
+      /* Scoped to .tile, not to `use`. The second layer is itself a <use>, and
+         a bare element selector would style and animate that whole layer as a
+         single shape, stroking an outline around the entire column. */
+      .rail .tile,
+      .rail .bloom {
+        fill: currentColor;
+        stroke: currentColor;
+        stroke-width: 0;
+        stroke-linejoin: round;
+      }
+      /* Filled and inset, growing a stroke outward to empty itself: the same
+         mechanic as the icon, so a tile ends up the size of its neighbours
+         only once it is hollow. Stroke is in the tile's own scaled units,
+         which is 1.8 on an 8-unit tile once the 0.775 scale is applied. */
+      /* The per-tile delay rides in the shorthand rather than in its own
+         declaration. `animation` resets every longhand it does not mention,
+         so an animation-delay declared before it is silently dropped and the
+         whole column ends up running in lockstep, which looks like a list of
+         identical squares rather than a feed. Second time value is the delay.
+
+         The per-tile offset is pulled back by a whole cycle so every delay is
+         negative. A positive delay holds a tile at its unanimated state until
+         it starts, so the column loads as eight identical filled squares and
+         only becomes a feed a few seconds later. Negative delays start each
+         tile that far into its cycle instead, which means the first painted
+         frame is the one the column would otherwise reach at 6.8s: already
+         mid-drain, already staggered. Phase relationships are unchanged. */
+      .rail .tile {
+        animation: rail-drain 6.8s ease-in-out calc(var(--d, 0s) - 6.8s)
+          infinite;
+      }
+      .rail .bloom {
+        animation: rail-bloom 6.8s ease-in-out calc(var(--d, 0s) - 6.8s)
+          infinite;
+      }
+      @keyframes rail-drain {
+        0%,
+        38.24% {
+          fill: currentColor;
+          stroke-width: 0;
+        }
+        50%,
+        88.24% {
+          fill: transparent;
+          stroke-width: 0.2903;
+        }
+        100% {
+          fill: currentColor;
+          stroke-width: 0;
+        }
+      }
+      @keyframes rail-bloom {
+        0%,
+        38.24% {
+          d: path(
+            'M0.5 1C0.22 1 0 0.95 0 0.7C0 0.57 0 0.43 0 0.3C0 0.05 0.22 0 0.5 0C0.78 0 1 0.05 1 0.3C1 0.43 1 0.57 1 0.7C1 0.95 0.78 1 0.5 1Z'
+          );
+        }
+        50%,
+        88.24% {
+          d: path(
+            'M0.5 1C0.15 0.678 0 0.456 0 0.289C0 0.1 0.13 0 0.27 0C0.36 0 0.45 0.056 0.5 0.156C0.55 0.056 0.64 0 0.73 0C0.87 0 1 0.1 1 0.289C1 0.456 0.85 0.678 0.5 1Z'
+          );
+        }
+        100% {
+          d: path(
+            'M0.5 1C0.22 1 0 0.95 0 0.7C0 0.57 0 0.43 0 0.3C0 0.05 0.22 0 0.5 0C0.78 0 1 0.05 1 0.3C1 0.43 1 0.57 1 0.7C1 0.95 0.78 1 0.5 1Z'
+          );
+        }
+      }
+      /* Without motion the rail still has to say something, so it rests in the
+         state the animation spends most of its time in: alternating full and
+         emptied. The hearts cannot appear here, since they only exist as a
+         morph, and a column of squares half emptied is the honest still frame
+         of what the extension does. Firefox took longer than the others to
+         support animating `d`, and anything that cannot falls back to exactly
+         the same picture. */
+      @media (prefers-reduced-motion: reduce) {
+        .rail .tile,
+        .rail .bloom {
+          animation: none;
+        }
+        /* Scoped inside the group: at svg level the <defs> and the group
+           itself are the children being counted, not the tiles. */
+        #nfy-rail :nth-child(even) {
+          fill: transparent;
+          stroke-width: 0.2903;
+        }
+      }
+      /* Where `d` cannot be animated the hearts simply never happen, so those
+         tiles join the others and drain instead. Freezing them solid would
+         leave seven permanently full tiles among thirteen working ones, which
+         reads as broken rather than as a plainer version of the same idea. */
+      @supports not (d: path('M0 0')) {
+        .rail .bloom {
+          animation-name: rail-drain;
+        }
+      }
+      @media (max-width: 62rem) {
+        .hero {
+          margin-left: 0;
+          /* Below the collapse the card is the full width of a narrow window
+             and every rem of it belongs to the copy. */
+          padding-left: var(--hero-pad);
+          max-width: calc(var(--measure) + 2 * var(--hero-pad));
+        }
+        .rail {
+          display: none;
+        }
+      }
+      .rest {
+        grid-area: rest;
+        /* The gap below the hero card. It lives here rather than on the CTA
+           inside the card, where it would print as empty panel. */
+        margin-top: 5rem;
+      }
+      .demo {
+        grid-area: demo;
+        /* Containing block for .pointer. Without it the arrow resolves
+           against body and flies to the corner of the page whenever this
+           column is not sticky. */
+        position: relative;
+        /* How far the whole cluster rides above the hero card's top edge. The
+           arrow is drawn leaving the page for the toolbar, so it should read
+           as hanging from up there; level with the card it sits too low.
+           Spent twice: .pointer offsets itself by it, and the padding below
+           gives it back so the popup rises by the same amount.
+
+           Deliberately not a negative margin on this column. Sticky resolves
+           `top` against the margin box, so a negative margin here drags the
+           arrow off the top of the viewport the moment the column sticks. */
+        --demo-lift: 3rem;
+        /* Room above for the pointer to the toolbar: the arrow plus its
+           caption plus the gap that keeps the caption off the popup. */
+        padding-top: calc(9.75rem - var(--demo-lift));
+      }
+      /* Sticky only when the popup fits, as the no-script fallback. It is
+         taller than a laptop viewport, and a sticky element taller than the
+         viewport pins its top and parks its bottom permanently offscreen:
+         the last platform and the footer button would never be reachable.
+         Below this height it scrolls with the page instead, which at least
+         shows all of it. The script at the foot of the page upgrades both
+         cases: on short windows it pins whichever edge the reader is
+         scrolling toward, so the popup holds its bottom in view on the way
+         down and brings its top back on the way up. */
+      @media (min-height: 58rem) {
+        .demo {
+          position: sticky;
+          /* The arrow hangs --demo-lift above this box, so the offset has to
+             clear it or the stuck column crops the arrowhead against the top
+             of the window. The floor is what does that; 4vh wins on tall
+             displays, where there is room to be more generous. */
+          top: max(4vh, calc(var(--demo-lift) + 0.5rem));
+        }
+      }
+      @media (max-width: 62rem) {
+        main {
+          max-width: 34rem;
+          margin: 0 auto;
+          grid-template-columns: minmax(0, 1fr);
+          grid-template-areas:
+            'hero'
+            'demo'
+            'rest';
+        }
+        .demo {
+          position: static;
+          /* No pointer to clear here, but the popup still needs air between
+             itself and the hero card it now sits directly beneath. */
+          padding: 3rem 0 1rem;
+          /* Column, not row: the caption is a sibling of the mock here, not
+             an absolutely positioned overlay. */
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+        }
+      }
+      h1 {
+        font-size: clamp(2.4rem, 8vw, 3.6rem);
+        font-weight: normal;
+        /* Pinned to Georgia's normal line box: Iowan's own is ~1.36 and
+           would grow the card, moving where the icon strip gets cropped. */
+        line-height: 1.14;
+        /* Negative top margin because the card's padding is equal on all four
+           sides but does not look it. A line box is tall enough for ascenders
+           and descenders the word may not contain, and "Not for You" has no
+           ascender above its caps: the space between the card's top edge and
+           the top of the N measures 44px against 38px below the last line, on
+           equal 35px padding. The eye reads the ink, not the box.
+
+           The correction is the difference, in em so it tracks the clamp
+           instead of being right at one window width. It goes here rather
+           than on the card's padding-top, where em would resolve against the
+           card's own font-size and stop following the headline. */
+        margin: -0.11em 0 0.6rem;
+        letter-spacing: -0.02em;
+        color: var(--h1-fill);
+        /* Short offset, tight blur, and low enough alpha to be felt rather
+           than seen: at this size a serif with any real shadow under it stops
+           looking printed and starts looking embossed. Same direction and
+           distance as the pill's contact shadow, so the two objects agree
+           about where the light is. */
+        text-shadow: 0 1px 1px var(--h1-shadow);
+      }
+      p.tagline {
+        font-size: 1.15rem;
+        line-height: 1.6;
+        /* Close enough that the name, the promise and the button read as one
+           object. The wider space belongs below the CTA, separating the
+           cluster from what follows, not inside it. */
+        margin: 0 0 1.5rem;
+        max-width: var(--measure);
+        /* The sentence recedes so the three phrases that carry the pitch sit
+           at full strength. Colour, not opacity: opacity on the parent would
+           fade the <b>s along with everything else. */
+        color: var(--muted);
+      }
+      p.tagline b {
+        color: var(--fg);
+        font-weight: inherit;
+      }
+      p.detail {
+        font-size: 1rem;
+        line-height: 1.75;
+        margin: 0 0 1.4rem;
+        max-width: var(--measure);
+        /* Same layering as the tagline, but at body strength rather than
+           muted: this is the main argument, so it sits visibly above the FAQ
+           fine print while its emphasised phrases still carry the skim. */
+        color: var(--body);
+      }
+      p.detail b {
+        color: var(--body-strong);
+        font-weight: inherit;
+      }
+      .rule {
+        width: 2rem;
+        height: 1px;
+        background: currentColor;
+        opacity: 0.18;
+        border: 0;
+        margin: 2.5rem 0;
+      }
+
+      /* ---- Pointer to the toolbar ---------------------------------------
+         The one thing a screenshot of a popup cannot say: where the popup
+         comes from. The arrow leaves the top of the mock and heads for the
+         extensions area of the browser chrome, which is up and to the right
+         of this column on any desktop window. Hidden when the columns
+         collapse, because on a narrow window the mock is no longer anywhere
+         near the toolbar and the arrow would be pointing at nothing. */
+      .pointer {
+        position: absolute;
+        /* Rides above the column's own top edge. The padding-top on .demo is
+           reduced by the same amount, so the popup comes up with it. */
+        top: calc(-1 * var(--demo-lift));
+        right: 0;
+        /* Exactly the popup's width, so the caption centres on the popup. */
+        width: 18rem;
+        color: var(--muted);
+        pointer-events: none;
+      }
+      .pointer svg {
+        display: block;
+        margin-left: auto;
+        opacity: 0.55;
+      }
+      .pointer span {
+        display: block;
+        margin-top: 0.3rem;
+        text-align: center;
+        /* A pixel over the round figure: Iowan runs small at caption sizes. */
+        font-size: calc(0.9rem + 1px);
+        font-style: italic;
+      }
+      .pointer .standalone {
+        display: none;
+      }
+      /* Collapsed: the arrow goes, because the mock is no longer anywhere
+         near the toolbar and it would be pointing at nothing, but the caption
+         stays. Without it the popup arrives with no introduction and reads as
+         a live control rather than a picture of one. It sits in the normal
+         flow now, directly above the mock. */
+      @media (max-width: 62rem) {
+        .pointer {
+          position: static;
+          width: auto;
+          margin-bottom: 1rem;
+        }
+        .pointer svg,
+        .pointer .at-toolbar {
+          display: none;
+        }
+        .pointer .standalone {
+          display: block;
+          margin-top: 0;
+        }
+      }
+
+      /* ---- FAQ ----------------------------------------------------------
+         Real headings so the questions show up in the document outline, but
+         dressed down to sit in the prose like the definition list they
+         replaced. */
+      .faq {
+        margin: 0;
+        max-width: var(--measure);
+      }
+      .faq h2 {
+        font-size: 1rem;
+        font-weight: normal;
+        margin: 0 0 0.35rem;
+      }
+      .faq p {
+        margin: 0 0 1.6rem;
+        font-size: 0.95rem;
+        line-height: 1.7;
+        color: var(--muted);
+      }
+      .faq p:last-of-type {
+        margin-bottom: 0;
+      }
+      .faq a {
+        color: inherit;
+      }
+      /* The platform list, as a row of quiet pills. Borders drawn from
+         currentColor so they follow the theme; names stay as muted as the
+         answers around them and the icons carry the recognition at full
+         colour. Inline-flex keeps each icon-and-name pair atomic, so a wrap
+         never strands a logo at the end of a line. */
+      /* The pills are taller than a line of text, so this answer alone gets
+         a little more air under its question. */
+      .faq p.brands {
+        margin-top: 0.8rem;
+      }
+      .faq .brand {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.4em;
+        /* Same face as the CTA pill: these are little controls too, and the
+           sans keeps them from reading as more prose. */
+        font-family: system-ui, sans-serif;
+        font-size: 0.85rem;
+        font-weight: 500;
+        letter-spacing: -0.01em;
+        padding: 0.25em 0.8em 0.25em 0.55em;
+        margin: 0 0.15em 0.45em 0;
+        border: 1px solid color-mix(in srgb, currentColor, transparent 80%);
+        border-radius: 999px;
+        background: color-mix(in srgb, currentColor, transparent 95%);
+        white-space: nowrap;
+      }
+      .faq .brand img {
+        width: 1em;
+        height: 1em;
+        /* Same rounding the popup replica gives these marks. */
+        border-radius: 3px;
+      }
+      /* An invitation, not an inventory item: dashed where the real
+         platforms are solid, and no fill until pointed at. */
+      .faq .brand.suggest {
+        border-style: dashed;
+        background: none;
+        text-decoration: none;
+      }
+      .faq .brand.suggest:hover {
+        background: color-mix(in srgb, currentColor, transparent 95%);
+      }
+      /* .cta draws its own, sized to the pill. */
+      a:not(.cta):focus-visible,
+      .theme-toggle:focus-visible {
+        outline: 2px solid currentColor;
+        outline-offset: 3px;
+        border-radius: 3px;
+      }
+      /* ---- Install CTA --------------------------------------------------
+         Sans-serif and glassy, against a page that is otherwise serif and
+         weightless. It is the only thing here that looks like a control, so
+         it reads as the one thing to do without needing to be large.
+
+         Built from the same parts as the hero card, at a smaller scale: a
+         152deg white gradient bright at the top-left, a hairline edge, a
+         shadow on its own axis. What it adds is the rail's blue, so the pill
+         and the column of tiles read as the same material rather than as a
+         solid object sitting next to an animated one.
+
+         Deliberately not mix-blend-mode: overlay, which is how the card and
+         the rail pick up their colour. Both are large and empty enough to let
+         the drifting fields decide what they look like; a pill carrying a
+         label cannot, because when the fields drift off it the blend leaves
+         nothing behind and the button dissolves. So the tint is stated in the
+         background and the live colour comes from backdrop-filter instead,
+         which samples what is actually behind the pill without handing over
+         the contrast the label needs.
+         -------------------------------------------------------------------- */
+      .cta-block {
+        margin: 0;
+      }
+      .cta-block.cta-end {
+        margin: 2.6rem 0 0;
+      }
+      /* The other browsers sit in the note under the pill rather than beside
+         it. To the right of the button is where the eye goes next, and a
+         visitor reading "Add to Chrome" is on Chrome: answering "and my
+         browser?" in that seat spends the best position after the button on
+         the question fewest people are asking. Demoted here it joins the
+         other thing worth knowing but not worth deciding on, and the two
+         annotations stop straddling the pill in a lopsided L. */
+      .also {
+        display: inline-flex;
+        align-items: center;
+        vertical-align: baseline;
+        gap: 0.5em;
+      }
+      /* The separator lives inside this group rather than between the two, so
+         the whole clause moves as one piece when the note wraps. Left outside
+         it, the divider stays behind at the end of the first line, pointing at
+         nothing. */
+      .also .note-sep {
+        margin: 0 0.05em 0 0.3em;
+      }
+      /* Below this the note is too wide for one line, and a divider that has
+         travelled down with the clause opens the second line with a dot that
+         divides it from nothing. The line break is the division at that
+         point, so the mark it replaces goes. The note was measured to wrap at
+         a card 400px wide, which is a 435px window once the 4vw gutters are
+         off it. Rounded up rather than down: a few pixels early costs a
+         slightly wide gap on one line, a few pixels late puts the dot back at
+         the head of the second. */
+      @media (max-width: 27.5rem) {
+        .note-sep {
+          display: none;
+        }
+      }
+      /* Smaller than the mark inside the pill, and unlit. The Chrome mark has
+         the glass and the label around it doing the work of saying this is
+         the button; these four have to stay quieter than that on their own,
+         or the eye lands on them instead of on the thing to click. Matched in
+         size to the GitHub mark on the same line so the note carries one mark
+         size rather than two.
+
+         Half desaturated, because size alone was not enough: Brave's orange
+         and Arc's gradient are the most saturated colour in the hero after
+         the Chrome mark inside the pill, and full-strength they pull the eye
+         down off the button to a line that is only reassurance. Half rather
+         than all of the way, since a logo drained of its colour stops being
+         recognisable at 15px and the whole point of using marks instead of
+         the words "Edge, Brave, Opera and Arc" is that they are recognised at
+         a
+         glance. They come back to full colour on hover, where the tooltips
+         name them and the reader is deliberately looking. */
+      .browser-mark {
+        display: block;
+        flex: none;
+        opacity: 0.92;
+        filter: grayscale(0.5);
+        transition:
+          filter 0.14s ease,
+          opacity 0.14s ease;
+      }
+      .also:hover .browser-mark {
+        opacity: 1;
+        filter: grayscale(0);
+      }
+      /* The marks are their own group, so they keep a tighter gap than the
+         one separating them from the words that introduce them. */
+      .browser-mark + .browser-mark {
+        margin-left: -0.15em;
+      }
+      /* Divides the two halves of the note without a rule or a bullet list.
+         Held away from the text on both sides and dimmer than it, so it reads
+         as a pause rather than as a character in either sentence. */
+      .note-sep {
+        margin: 0 0.55em;
+        opacity: 0.45;
+      }
+      .cta {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.6em;
+        font-family: system-ui, sans-serif;
+        font-size: 0.98rem;
+        font-weight: 500;
+        letter-spacing: -0.01em;
+        color: var(--fg);
+        text-decoration: none;
+        padding: 0.8em 1.6em 0.8em 1.3em;
+        border: 1px solid var(--cta-line);
+        border-radius: 999px;
+        /* Three layers, painted front to back. The white gradient is the
+           sheet of glass and matches the card's angle; the two tints under it
+           are the rail's blue and violet, offset from each other so the pill
+           has the same hue drift across it that the fields have across the
+           page. */
+        background:
+          linear-gradient(152deg, var(--cta-hi) 0%, var(--cta-lo) 72%),
+          linear-gradient(152deg, var(--cta-tint) 0%, var(--cta-tint2) 100%);
+        /* Saturate as well as blur: a plain blur of a pale backdrop reads as
+           frosted plastic, and pushing the sampled colour is what makes it
+           read as glass with something behind it. Degrades to the stated
+           tints alone where it is unsupported, which is the same picture
+           minus the sampling. */
+        backdrop-filter: blur(14px) saturate(1.7);
+        -webkit-backdrop-filter: blur(14px) saturate(1.7);
+        /* The inset highlight is the lit top edge of the glass. Below it, the
+           same two-part neutral shadow the card and the popup mock use: a
+           tight contact shadow and a soft cast. Tinting the cast to match the
+           glass made the pill glow rather than sit on the page, which is one
+           effect too many next to a backdrop that is already moving.
+
+           The cast is offset by much less than its blur, so it sits close
+           under the pill rather than trailing below it. A pill this small
+           lifted as far as the card is reads as floating; the card can carry
+           that offset because it is large enough for the shadow to still look
+           attached. */
+        box-shadow:
+          inset 0 1px 0 var(--cta-sheen),
+          0 1px 2px var(--shadow),
+          0 3px 16px var(--shadow);
+        transition:
+          transform 0.14s ease,
+          box-shadow 0.14s ease,
+          border-color 0.14s ease;
+      }
+      .cta:hover {
+        transform: translateY(-1px);
+        border-color: color-mix(in srgb, var(--cta-line), var(--fg) 14%);
+        box-shadow:
+          inset 0 1px 0 var(--cta-sheen),
+          0 1px 2px var(--shadow),
+          0 6px 22px var(--shadow);
+      }
+      .cta:active {
+        transform: translateY(0);
+      }
+      .cta:focus-visible {
+        outline: 2px solid var(--fg);
+        outline-offset: 3px;
+      }
+      /* Held out of the flow rather than display:none, which in some browsers
+         stops the symbols resolving for <use>. */
+      .sprite {
+        position: absolute;
+        width: 0;
+        height: 0;
+        overflow: hidden;
+      }
+      /* Answers both questions that follow the button, in the order they get
+         asked: what does it cost, and will it run where I am. Wraps to two
+         lines on narrow windows, which is why the separator is inline text
+         rather than a border or a fixed gap. */
+      .cta-note {
+        font-family: system-ui, sans-serif;
+        font-size: 0.8rem;
+        line-height: 1.5;
+        color: var(--muted);
+        margin: 1rem 0 0;
+      }
+      /* Inline-flex so the mark sits on the text's own centre rather than on
+         its baseline, where a 15px glyph next to 0.8rem type hangs low. The
+         underline is left to the hover state: a rule under this line, a step
+         below the button, is one more thing competing with it at rest.
+
+         The link sits mid-sentence, so it is baseline-aligned against the
+         words before it rather than left to sit on its own box's bottom
+         edge, which would drop it below the line it belongs to. */
+      .source-link {
+        display: inline-flex;
+        align-items: center;
+        vertical-align: baseline;
+        gap: 0.45em;
+        color: inherit;
+        text-decoration: none;
+      }
+      .source-link:hover {
+        color: var(--fg);
+      }
+      /* No fill of its own, so it darkens with the text on hover instead of
+         staying put and detaching from it. */
+      .source-mark {
+        flex: none;
+        fill: currentColor;
+        opacity: 0.8;
+      }
+      footer {
+        margin-top: 3rem;
+        font-size: 0.85rem;
+        /* Roomier than body text on purpose: on narrow screens the row wraps
+           into two or three lines of links, and the extra leading keeps them
+           readable and comfortably tappable. */
+        line-height: 1.9;
+        color: var(--muted);
+      }
+      footer a {
+        color: inherit;
+      }
+      footer .sep {
+        margin: 0 0.6em;
+        opacity: 0.5;
+      }
+      /* Opens the row but stays a touch quieter than the links: it is a
+         notice, not something anyone came here to click. Kept unbroken so a
+         wrap never splits the year off from the name. */
+      footer .copyright {
+        white-space: nowrap;
+        opacity: 0.75;
+      }
+
+      /* ---- Popup replica ----------------------------------------------
+         A copy of the extension's real popup rather than a screenshot, so it
+         stays crisp, follows the page theme, and can be poked at. The
+         checkboxes toggle and nothing else happens: a picture you can touch,
+         not a settings panel. Kept in sync with
+         entrypoints/popup/style.css by hand.
+         ----------------------------------------------------------------- */
+      .popup {
+        font-family: system-ui, sans-serif;
+        background: var(--surface);
+        color: var(--fg);
+        width: 288px;
+        text-align: left;
+        user-select: none;
+        -webkit-user-select: none;
+        display: flex;
+        flex-direction: column;
+        /* The real popup scrolls past 552px. Here the full list is the point,
+           so it runs at natural height. */
+        border-radius: 10px;
+        box-shadow:
+          0 1px 2px var(--shadow),
+          0 12px 32px var(--shadow);
+      }
+      .popup header {
+        flex: none;
+        padding: 14px 16px 3px;
+        border-bottom: 1px solid
+          color-mix(in srgb, currentColor 12%, transparent);
+      }
+      .popup header h2 {
+        margin: 0;
+        font-family: 'Iowan Old Style', Charter, 'Bitstream Charter',
+          'Sitka Text', Cambria, Georgia, 'Times New Roman', serif;
+        /* Georgia's normal line box, so the swap does not change the
+           popup's height. */
+        line-height: 1.12;
+        font-size: 17px;
+        font-weight: normal;
+        letter-spacing: -0.01em;
+      }
+      /* Same quiet link as the extension's own title, which goes to this
+         page; here it points home too, which is a scroll to the top. */
+      .popup header h2 a {
+        color: inherit;
+        text-decoration: none;
+      }
+      .popup header h2 a:hover {
+        text-decoration: underline;
+        text-underline-offset: 3px;
+        text-decoration-thickness: 1px;
+      }
+      .popup header p {
+        margin: 3px 0 13px;
+        font-size: 12px;
+        opacity: 0.6;
+      }
+      .popup ul {
+        list-style: none;
+        margin: 0;
+        padding: 15px 16px;
+      }
+      .popup li + li {
+        margin-top: 16px;
+      }
+      .popup footer {
+        flex: none;
+        margin: 0;
+        padding: 11px 16px 12px;
+        border-top: 1px solid color-mix(in srgb, currentColor 12%, transparent);
+        font-size: inherit;
+        color: inherit;
+      }
+      /* Real anchors, pointed where the extension's own footer points:
+         the mock behaves like the thing it is a picture of. */
+      .popup .links {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
+        margin-top: 8px;
+      }
+      .popup .links a {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        padding: 7px;
+        font-size: 11px;
+        text-align: center;
+        text-decoration: none;
+        color: inherit;
+        opacity: 0.55;
+        border: 1px solid color-mix(in srgb, currentColor 12%, transparent);
+        border-radius: 7px;
+        transition:
+          background-color 0.12s ease,
+          opacity 0.12s ease;
+      }
+      .popup .links a:hover {
+        background: color-mix(in srgb, currentColor 8%, transparent);
+        opacity: 0.9;
+      }
+      /* One rule for all three marks, matching the extension's own footer. */
+      .popup footer svg {
+        flex: none;
+        width: 13px;
+        height: 13px;
+        fill: none;
+        stroke: currentColor;
+        stroke-width: 1.35;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+      }
+      .popup .site {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 12.5px;
+        font-weight: 600;
+        letter-spacing: -0.005em;
+        margin-bottom: 4px;
+      }
+      .popup .site img {
+        border-radius: 3px;
+      }
+      .popup .option {
+        display: flex;
+        align-items: flex-start;
+        gap: 9px;
+        margin-left: -6px;
+        padding: 4px 6px;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 12px;
+        line-height: 1.35;
+        letter-spacing: -0.006em;
+        opacity: 0.88;
+      }
+      .popup .option span {
+        flex: 1;
+      }
+      .popup .option:hover {
+        background: color-mix(in srgb, currentColor 8%, transparent);
+      }
+      .popup .option:has(input:disabled) {
+        cursor: default;
+        opacity: 0.45;
+      }
+      .popup input[type='checkbox'] {
+        appearance: none;
+        width: 13px;
+        height: 13px;
+        margin: 1.5px 0 0 1.5px;
+        flex: none;
+        display: grid;
+        place-content: center;
+        background: transparent;
+        border: 1.5px solid color-mix(in srgb, currentColor 28%, transparent);
+        border-radius: 4px;
+        cursor: pointer;
+        transition:
+          background-color 0.12s ease,
+          border-color 0.12s ease;
+      }
+      .popup input[type='checkbox']::before {
+        content: '';
+        width: 7.5px;
+        height: 7.5px;
+        clip-path: polygon(14% 44%, 0 65%, 40% 100%, 100% 16%, 82% 2%, 38% 60%);
+        background: var(--surface);
+        transform: scale(0);
+        transition: transform 0.12s ease;
+      }
+      .popup input[type='checkbox']:hover:not(:disabled):not(:checked) {
+        border-color: color-mix(in srgb, currentColor 60%, transparent);
+      }
+      .popup input[type='checkbox']:checked {
+        background: color-mix(in srgb, currentColor 58%, transparent);
+        border-color: transparent;
+      }
+      .popup input[type='checkbox']:checked::before {
+        transform: scale(1);
+      }
+      .popup input[type='checkbox']:focus-visible {
+        outline: 2px solid color-mix(in srgb, currentColor 50%, transparent);
+        outline-offset: 2px;
+      }
+      .popup input[type='checkbox']:disabled {
+        cursor: default;
+        border-style: dashed;
+      }
+      .popup .disable {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 9px;
+        width: 100%;
+        padding: 8px;
+        font: inherit;
+        font-size: 11.5px;
+        color: inherit;
+        opacity: 0.75;
+        background: none;
+        border: 1px solid color-mix(in srgb, currentColor 16%, transparent);
+        border-radius: 7px;
+        cursor: pointer;
+        transition:
+          background-color 0.12s ease,
+          opacity 0.12s ease;
+      }
+      .popup .disable:hover {
+        background: color-mix(in srgb, currentColor 8%, transparent);
+        opacity: 1;
+      }
+      .popup .disable.active {
+        border-style: dashed;
+        opacity: 0.85;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="backdrop"><div class="drift"></div></div>
+    <!-- The label is replaced with a directional one once the script knows the
+         active theme; this is the fallback if that never runs. -->
+    <button class="theme-toggle" type="button" aria-label="Switch theme">
+      <svg
+        class="sun"
+        width="16"
+        height="16"
+        viewBox="0 0 16 16"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="1.4"
+        stroke-linecap="round"
+        aria-hidden="true"
+      >
+        <circle cx="8" cy="8" r="3.1" />
+        <path
+          d="M8 1.2v1.5M8 13.3v1.5M1.2 8h1.5M13.3 8h1.5M3.2 3.2l1.1 1.1M11.7 11.7l1.1 1.1M12.8 3.2l-1.1 1.1M4.3 11.7l-1.1 1.1"
+        />
+      </svg>
+      <svg
+        class="moon"
+        width="16"
+        height="16"
+        viewBox="0 0 16 16"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="1.4"
+        stroke-linejoin="round"
+        aria-hidden="true"
+      >
+        <path d="M13.6 9.8A5.9 5.9 0 0 1 6.2 2.4a5.9 5.9 0 1 0 7.4 7.4Z" />
+      </svg>
+    </button>
+    <!-- The other Chromium browsers' marks, sitting beside the install
+         button. Held here as symbols rather than inline at the button so the
+         two call-to-action blocks can share one copy, and so the wall of path
+         data is out of the way of the copy.
+
+         These are the official drawings, pasted in rather than linked: the
+         page still fetches nothing from anywhere else. Chrome's is drawn by
+         hand further down because its geometry is simple enough to state;
+         these four are not, and an approximation of a logo reads as a
+         mistake. Gradient ids are prefixed because they share a document
+         with everything else on the page.
+
+         Brave ships its mark as a lockup with the wordmark beside it; only
+         the shield is kept. Arc's file carries a white keyline copy of the
+         artwork underneath, dropped here because the marks sit on a card
+         rather than on photography. -->
+    <svg class="sprite" aria-hidden="true">
+      <defs>
+        <radialGradient id="edge-b" cx="161.8" cy="68.9" r="95.4" gradientTransform="matrix(1 0 0 -.95 0 248.8)" gradientUnits="userSpaceOnUse"><stop offset=".7" stop-opacity="0"/><stop offset=".9" stop-opacity=".5"/><stop offset="1"/></radialGradient><radialGradient id="edge-d" cx="-340.3" cy="63" r="143.2" gradientTransform="matrix(.15 -.99 -.8 -.12 176.6 -125.4)" gradientUnits="userSpaceOnUse"><stop offset=".8" stop-opacity="0"/><stop offset=".9" stop-opacity=".5"/><stop offset="1"/></radialGradient><radialGradient id="edge-e" cx="113.4" cy="570.2" r="202.4" gradientTransform="matrix(-.04 1 2.13 .08 -1179.5 -106.7)" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#35c1f1"/><stop offset=".1" stop-color="#34c1ed"/><stop offset=".2" stop-color="#2fc2df"/><stop offset=".3" stop-color="#2bc3d2"/><stop offset=".7" stop-color="#36c752"/></radialGradient><radialGradient id="edge-f" cx="376.5" cy="568" r="97.3" gradientTransform="matrix(.28 .96 .78 -.23 -303.8 -148.5)" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#66eb6e"/><stop offset="1" stop-color="#66eb6e" stop-opacity="0"/></radialGradient><linearGradient id="edge-a" x1="63.3" y1="84" x2="241.7" y2="84" gradientTransform="matrix(1 0 0 -1 0 266)" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#0c59a4"/><stop offset="1" stop-color="#114a8b"/></linearGradient><linearGradient id="edge-c" x1="157.3" y1="161.4" x2="46" y2="40.1" gradientTransform="matrix(1 0 0 -1 0 266)" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#1b9de2"/><stop offset=".2" stop-color="#1595df"/><stop offset=".7" stop-color="#0680d7"/><stop offset="1" stop-color="#0078d4"/></linearGradient>
+        <linearGradient id="brave-a" x1=".419" x2="34.5" y1="40.199" y2="40.199" gradientUnits="userSpaceOnUse"><stop stop-color="#FF5601"/><stop offset=".5" stop-color="#FF4000"/><stop offset="1" stop-color="#FF1F01"/></linearGradient>
+        <linearGradient id="opera-a" gradientTransform="matrix(0 -54.944 -54.944 0 23.62 79.474)" gradientUnits="userSpaceOnUse" x2="1"><stop offset="0" stop-color="#ff1b2d"/><stop offset=".3" stop-color="#ff1b2d"/><stop offset=".614" stop-color="#ff1b2d"/><stop offset="1" stop-color="#a70014"/></linearGradient>
+        <linearGradient id="opera-b" gradientTransform="matrix(0 -48.595 -48.595 0 37.854 76.235)" gradientUnits="userSpaceOnUse" x2="1"><stop offset="0" stop-color="#9c0000"/><stop offset=".7" stop-color="#ff4b4b"/><stop offset="1" stop-color="#ff4b4b"/></linearGradient>
+      </defs>
+      <symbol id="mark-edge" viewBox="0 0 256 256">
+          <path d="M235.7 195.5a93.7 93.7 0 0 1-10.6 4.7 101.9 101.9 0 0 1-35.9 6.4c-47.3 0-88.5-32.5-88.5-74.3a31.5 31.5 0 0 1 16.4-27.3c-42.8 1.8-53.8 46.4-53.8 72.5 0 74 68.1 81.4 82.8 81.4 7.9 0 19.8-2.3 27-4.6l1.3-.4a128.3 128.3 0 0 0 66.6-52.8 4 4 0 0 0-5.3-5.6Z" transform="translate(-4.6 -5)" style="fill:url(#edge-a)"/>
+          <path d="M235.7 195.5a93.7 93.7 0 0 1-10.6 4.7 101.9 101.9 0 0 1-35.9 6.4c-47.3 0-88.5-32.5-88.5-74.3a31.5 31.5 0 0 1 16.4-27.3c-42.8 1.8-53.8 46.4-53.8 72.5 0 74 68.1 81.4 82.8 81.4 7.9 0 19.8-2.3 27-4.6l1.3-.4a128.3 128.3 0 0 0 66.6-52.8 4 4 0 0 0-5.3-5.6Z" transform="translate(-4.6 -5)" style="isolation:isolate;opacity:.35;fill:url(#edge-b)"/>
+          <path d="M110.3 246.3A79.2 79.2 0 0 1 87.6 225a80.7 80.7 0 0 1 29.5-120c3.2-1.5 8.5-4.1 15.6-4a32.4 32.4 0 0 1 25.7 13 31.9 31.9 0 0 1 6.3 18.7c0-.2 24.5-79.6-80-79.6-43.9 0-80 41.6-80 78.2a130.2 130.2 0 0 0 12.1 56 128 128 0 0 0 156.4 67 75.5 75.5 0 0 1-62.8-8Z" transform="translate(-4.6 -5)" style="fill:url(#edge-c)"/>
+          <path d="M110.3 246.3A79.2 79.2 0 0 1 87.6 225a80.7 80.7 0 0 1 29.5-120c3.2-1.5 8.5-4.1 15.6-4a32.4 32.4 0 0 1 25.7 13 31.9 31.9 0 0 1 6.3 18.7c0-.2 24.5-79.6-80-79.6-43.9 0-80 41.6-80 78.2a130.2 130.2 0 0 0 12.1 56 128 128 0 0 0 156.4 67 75.5 75.5 0 0 1-62.8-8Z" transform="translate(-4.6 -5)" style="opacity:.41;fill:url(#edge-d);isolation:isolate"/>
+          <path d="M157 153.8c-.9 1-3.4 2.5-3.4 5.6 0 2.6 1.7 5.2 4.8 7.3 14.3 10 41.4 8.6 41.5 8.6a59.6 59.6 0 0 0 30.3-8.3 61.4 61.4 0 0 0 30.4-52.9c.3-22.4-8-37.3-11.3-43.9C228 28.8 182.3 5 132.6 5a128 128 0 0 0-128 126.2c.5-36.5 36.8-66 80-66 3.5 0 23.5.3 42 10a72.6 72.6 0 0 1 30.9 29.3c6.1 10.6 7.2 24.1 7.2 29.5s-2.7 13.3-7.8 19.9Z" transform="translate(-4.6 -5)" style="fill:url(#edge-e)"/>
+          <path d="M157 153.8c-.9 1-3.4 2.5-3.4 5.6 0 2.6 1.7 5.2 4.8 7.3 14.3 10 41.4 8.6 41.5 8.6a59.6 59.6 0 0 0 30.3-8.3 61.4 61.4 0 0 0 30.4-52.9c.3-22.4-8-37.3-11.3-43.9C228 28.8 182.3 5 132.6 5a128 128 0 0 0-128 126.2c.5-36.5 36.8-66 80-66 3.5 0 23.5.3 42 10a72.6 72.6 0 0 1 30.9 29.3c6.1 10.6 7.2 24.1 7.2 29.5s-2.7 13.3-7.8 19.9Z" transform="translate(-4.6 -5)" style="fill:url(#edge-f)"/>
+      </symbol>
+      <symbol id="mark-brave" viewBox="0 0 35 40">
+          <path fill="url(#brave-a)" fill-rule="evenodd" d="m33.308 9.576.937-2.298S33.052 6 31.603 4.554s-4.515-.595-4.515-.595L23.594 0H11.325L7.832 3.959s-3.067-.851-4.516.595A124 124 0 0 0 .675 7.278l.937 2.298L.42 12.98s3.509 13.273 3.92 14.894c.81 3.191 1.363 4.425 3.663 6.042s6.476 4.426 7.157 4.851c.682.426 1.534 1.15 2.3 1.15.768 0 1.62-.724 2.301-1.15.682-.425 4.857-3.234 7.157-4.85 2.3-1.618 2.855-2.852 3.664-6.043.411-1.621 3.92-14.894 3.92-14.894z" clip-rule="evenodd"/>
+          <path fill="#fff" d="M21.805 7.193c.511 0 4.303-.724 4.303-.724s4.493 5.426 4.493 6.586c0 .958-.386 1.334-.841 1.775q-.145.138-.292.293l-3.37 3.573q-.05.054-.11.113c-.336.337-.83.835-.482 1.66l.072.17c.383.894.856 1.999.254 3.118-.64 1.191-1.737 1.986-2.44 1.854s-2.354-.993-2.96-1.386c-.608-.394-2.532-1.979-2.532-2.585 0-.506 1.384-1.348 2.056-1.756.134-.082.24-.146.3-.187.07-.047.186-.119.329-.207.613-.381 1.721-1.069 1.75-1.374.034-.376.02-.486-.474-1.415a20 20 0 0 0-.356-.627c-.47-.81-.998-1.716-.881-2.365.132-.733 1.281-1.153 2.255-1.51l.355-.13 1.014-.38c.973-.364 2.053-.769 2.23-.85.248-.114.184-.223-.563-.293l-.363-.038c-.924-.098-2.63-.279-3.459-.048l-.538.147c-.931.252-2.073.56-2.182.739l-.056.083c-.105.149-.173.246-.057.879.034.188.105.56.193 1.018.258 1.342.659 3.436.71 3.906q.01.1.022.19c.064.525.107.875-.503 1.014l-.16.037c-.688.157-1.697.389-2.062.389s-1.375-.232-2.064-.39l-.158-.036c-.61-.14-.568-.489-.503-1.013l.022-.19c.05-.472.453-2.57.71-3.913.088-.456.159-.824.193-1.012.116-.633.047-.73-.057-.88q-.027-.036-.056-.083c-.11-.178-1.251-.486-2.183-.738l-.538-.147c-.829-.23-2.534-.05-3.458.048l-.363.038c-.747.07-.811.179-.564.292.178.082 1.258.486 2.23.85l1.015.38.355.132c.973.356 2.123.776 2.255 1.509.117.649-.41 1.555-.882 2.364-.127.22-.25.43-.355.628-.495.93-.508 1.04-.474 1.415.028.305 1.136.992 1.75 1.373.142.09.259.161.328.208.061.041.166.105.3.186.672.41 2.056 1.25 2.056 1.757 0 .606-1.924 2.191-2.53 2.585-.608.393-2.259 1.255-2.961 1.386-.703.132-1.8-.663-2.44-1.854-.603-1.12-.13-2.224.253-3.119l.072-.168c.35-.826-.146-1.324-.482-1.661q-.06-.06-.11-.113l-3.369-3.573a9 9 0 0 0-.292-.292c-.455-.442-.841-.818-.841-1.776 0-1.16 4.493-6.586 4.493-6.586s3.791.724 4.303.724c.407 0 1.195-.271 2.016-.554l.625-.212c1.022-.34 1.704-.343 1.704-.343s.681.002 1.704.343q.31.104.624.212c.822.283 1.61.554 2.017.554"/>
+          <path fill="#fff" d="M21.154 26.384c.802.412 1.37.705 1.585.84.278.173.109.501-.144.68-.254.179-3.659 2.812-3.989 3.103l-.134.12c-.318.287-.724.652-1.012.652s-.695-.366-1.013-.652l-.133-.12c-.33-.29-3.736-2.924-3.989-3.103s-.423-.507-.145-.68c.215-.135.784-.428 1.587-.841l.762-.393c1.2-.62 2.697-1.149 2.93-1.149s1.73.528 2.931 1.149z"/>
+      </symbol>
+      <!-- Cropped to the artwork's own bounds. Arc's file carries a wide
+           margin the other two do not, and left uncropped the mark comes out
+           a fifth smaller than its neighbours in the same box. -->
+      <symbol id="mark-arc" viewBox="6.97 6.09 67.36 56.41">
+          <path d="m28.8 51.97 6.35-13.36c-4.85-1.03-9.73-4.03-12.49-7.68l-6.64 13.96c3.69 3.13 8.12 5.59 12.78 7.08" fill="#1a007f" fill-rule="evenodd" clip-rule="evenodd"></path>
+          <path d="M55.3 30.53c-3.19 3.91-7.62 6.81-12.36 7.94l6.33 13.32c4.62-1.56 8.94-4.08 12.67-7.31L55.3 30.53z" fill="#4e000a" fill-rule="evenodd" clip-rule="evenodd"></path>
+          <path d="m16.02 44.89-3.32 6.98c-1.69 3.55-.42 7.92 3.06 9.77 3.69 1.96 8.23.43 10.01-3.3l3.03-6.37a37.885 37.885 0 0 1-12.78-7.08" fill="#1a007f" fill-rule="evenodd" clip-rule="evenodd"></path>
+          <path d="M68.48 15.29a7.29 7.29 0 0 0-8.58 5.72c-.7 3.5-2.34 6.76-4.6 9.53l6.63 13.96c6.12-5.31 10.64-12.54 12.26-20.63.79-3.96-1.77-7.8-5.71-8.58" fill="#ff9396" fill-rule="evenodd" clip-rule="evenodd"></path>
+          <path d="M42.94 38.47c-1.42.34-2.87.52-4.32.52-1.13 0-2.3-.13-3.47-.38-4.85-1.03-9.73-4.03-12.49-7.68-.69-.91-1.25-1.86-1.64-2.83-1.51-3.73-5.76-5.53-9.49-4.03C7.8 25.58 6 29.83 7.5 33.56c1.71 4.24 4.73 8.13 8.52 11.33a37.84 37.84 0 0 0 12.77 7.08c3.21 1.03 6.54 1.6 9.82 1.6 3.64 0 7.23-.63 10.65-1.78l-6.32-13.32z" fill="#002dc8" fill-rule="evenodd" clip-rule="evenodd"></path>
+          <path d="m65.43 51.84-3.5-7.36-6.63-13.95-.01.01s0-.01.01-.01l-9.64-20.28a7.292 7.292 0 0 0-6.58-4.16c-2.81 0-5.37 1.62-6.58 4.16l-9.83 20.68c2.76 3.65 7.64 6.65 12.49 7.68l3.18-6.68c.3-.63 1.2-.63 1.5 0l3.11 6.54h.02-.02l6.33 13.32 3.11 6.54a7.28 7.28 0 0 0 6.59 4.16c.65 0 1.3-.09 1.94-.27 4.39-1.21 6.47-6.26 4.51-10.38" fill="#ff536a" fill-rule="evenodd" clip-rule="evenodd"></path>
+      </symbol>
+      <!-- Opera draws its O flipped through a transform on the group; the
+           gradients are plotted in that flipped space, so the wrapper has to
+           come along or the shading lands upside down. -->
+      <symbol id="mark-opera" viewBox="0 0 75.591 75.591">
+          <g transform="matrix(1.3333 0 0 -1.3333 0 107.2)">
+            <path d="m28.346 80.398c-15.655 0-28.346-12.691-28.346-28.346 0-15.202 11.968-27.609 26.996-28.313.44848-.02115.89766-.03314 1.3504-.03314 7.2574 0 13.876 2.7289 18.891 7.2137-3.3227-2.2036-7.2074-3.4715-11.359-3.4715-6.7504 0-12.796 3.3488-16.862 8.6297-3.1344 3.6999-5.1645 9.1691-5.3028 15.307v1.3349c.13821 6.1377 2.1683 11.608 5.302 15.307 4.0666 5.2809 10.112 8.6297 16.862 8.6297 4.1526 0 8.038-1.2679 11.361-3.4729-4.9904 4.4643-11.569 7.1876-18.786 7.2144-.03596 0-.07122.0014-.10718.0014z" fill="url(#opera-a)"/>
+            <path d="m19.016 68.025c2.6013 3.0709 5.9607 4.9227 9.631 4.9227 8.2524 0 14.941-9.356 14.941-20.897s-6.6891-20.897-14.941-20.897c-3.6703 0-7.0297 1.851-9.6303 4.922 4.0659-5.2809 10.111-8.6297 16.862-8.6297 4.1519 0 8.0366 1.2679 11.359 3.4715 5.802 5.1906 9.4554 12.735 9.4554 21.133 0 8.397-3.6527 15.941-9.4533 21.131-3.3234 2.205-7.2088 3.4729-11.361 3.4729-6.7504 0-12.796-3.3488-16.862-8.6297" fill="url(#opera-b)"/>
+          </g>
+      </symbol>
+      <!-- The one mark here with no fill of its own, so it takes the colour
+           of the line it sits on. Deliberate: the three above are brands
+           answering "will it run", this one is a link into the repo and
+           belongs to the sentence, not to the row of logos. -->
+      <symbol id="mark-github" viewBox="0 0 16 16">
+        <path d="M6.766 11.328c-2.063-.25-3.516-1.734-3.516-3.656 0-.781.281-1.625.75-2.188-.203-.515-.172-1.609.063-2.062.625-.078 1.468.25 1.968.703.594-.187 1.219-.281 1.985-.281.765 0 1.39.094 1.953.265.484-.437 1.344-.765 1.969-.687.218.422.25 1.515.046 2.047.5.593.766 1.39.766 2.203 0 1.922-1.453 3.375-3.547 3.64.531.344.89 1.094.89 1.954v1.625c0 .468.391.734.86.547C13.781 14.359 16 11.53 16 8.03 16 3.61 12.406 0 7.984 0 3.563 0 0 3.61 0 8.031a7.88 7.88 0 0 0 5.172 7.422c.422.156.828-.125.828-.547v-1.25c-.219.094-.5.156-.75.156-1.031 0-1.64-.562-2.078-1.609-.172-.422-.36-.672-.719-.719-.187-.015-.25-.093-.25-.187 0-.188.313-.328.625-.328.453 0 .844.281 1.25.86.313.452.64.655 1.031.655s.641-.14 1-.5c.266-.265.47-.5.657-.656" />
+      </symbol>
+    </svg>
+    <main>
+      <div class="hero">
+        <!-- Decorative. The page says the same thing in words directly
+             underneath, so it is hidden from assistive tech entirely. Tiles
+             that stay squares are <use> instances of one definition; only the
+             ones that morph into hearts need their own path, since `d` cannot
+             be animated per-instance through <use>. -->
+        <div class="rail" aria-hidden="true">
+          <svg viewBox="0 0 1 27.6" fill="none">
+            <defs>
+              <!-- Blending is capped by whatever is behind it, so one overlay
+                   pass on a card this dark leaves the column faint. The fix is
+                   to draw it twice and let the second pass blend against the
+                   first's result. The second layer is a <use> of this group
+                   rather than a copy of it, so there is still one set of tiles
+                   to edit and the two layers cannot drift out of step. -->
+              <path
+                id="nfy-tile"
+                d="M0.5 1C0.22 1 0 0.95 0 0.7C0 0.57 0 0.43 0 0.3C0 0.05 0.22 0 0.5 0C0.78 0 1 0.05 1 0.3C1 0.43 1 0.57 1 0.7C1 0.95 0.78 1 0.5 1Z"
+              />
+            </defs>
+            <g id="nfy-rail">
+            <!-- The top tile is the one the card's edge slices, so it never
+                 blooms: a heart cut in half reads as a broken shape rather
+                 than a heart. The pattern picks up from the fourth tile. -->
+            <use class="tile" href="#nfy-tile" style="--d:0s" transform="translate(0.1125 0.1125) scale(0.775)" />
+            <use class="tile" href="#nfy-tile" style="--d:3.5s" transform="translate(0.1125 1.5125) scale(0.775)" />
+            <use class="tile" href="#nfy-tile" style="--d:0.2s" transform="translate(0.1125 2.9125) scale(0.775)" />
+            <path class="bloom" d="M0.5 1C0.22 1 0 0.95 0 0.7C0 0.57 0 0.43 0 0.3C0 0.05 0.22 0 0.5 0C0.78 0 1 0.05 1 0.3C1 0.43 1 0.57 1 0.7C1 0.95 0.78 1 0.5 1Z" style="--d:3.7s" transform="translate(0.1125 4.3125) scale(0.775)" />
+            <use class="tile" href="#nfy-tile" style="--d:0.4s" transform="translate(0.1125 5.7125) scale(0.775)" />
+            <use class="tile" href="#nfy-tile" style="--d:3.9s" transform="translate(0.1125 7.1125) scale(0.775)" />
+            <path class="bloom" d="M0.5 1C0.22 1 0 0.95 0 0.7C0 0.57 0 0.43 0 0.3C0 0.05 0.22 0 0.5 0C0.78 0 1 0.05 1 0.3C1 0.43 1 0.57 1 0.7C1 0.95 0.78 1 0.5 1Z" style="--d:0.6s" transform="translate(0.1125 8.5125) scale(0.775)" />
+            <use class="tile" href="#nfy-tile" style="--d:4.1s" transform="translate(0.1125 9.9125) scale(0.775)" />
+            <use class="tile" href="#nfy-tile" style="--d:0.8s" transform="translate(0.1125 11.3125) scale(0.775)" />
+            <path class="bloom" d="M0.5 1C0.22 1 0 0.95 0 0.7C0 0.57 0 0.43 0 0.3C0 0.05 0.22 0 0.5 0C0.78 0 1 0.05 1 0.3C1 0.43 1 0.57 1 0.7C1 0.95 0.78 1 0.5 1Z" style="--d:4.3s" transform="translate(0.1125 12.7125) scale(0.775)" />
+            <use class="tile" href="#nfy-tile" style="--d:1s" transform="translate(0.1125 14.1125) scale(0.775)" />
+            <use class="tile" href="#nfy-tile" style="--d:4.5s" transform="translate(0.1125 15.5125) scale(0.775)" />
+            <path class="bloom" d="M0.5 1C0.22 1 0 0.95 0 0.7C0 0.57 0 0.43 0 0.3C0 0.05 0.22 0 0.5 0C0.78 0 1 0.05 1 0.3C1 0.43 1 0.57 1 0.7C1 0.95 0.78 1 0.5 1Z" style="--d:1.2s" transform="translate(0.1125 16.9125) scale(0.775)" />
+            <use class="tile" href="#nfy-tile" style="--d:4.7s" transform="translate(0.1125 18.3125) scale(0.775)" />
+            <use class="tile" href="#nfy-tile" style="--d:1.4s" transform="translate(0.1125 19.7125) scale(0.775)" />
+            <path class="bloom" d="M0.5 1C0.22 1 0 0.95 0 0.7C0 0.57 0 0.43 0 0.3C0 0.05 0.22 0 0.5 0C0.78 0 1 0.05 1 0.3C1 0.43 1 0.57 1 0.7C1 0.95 0.78 1 0.5 1Z" style="--d:4.9s" transform="translate(0.1125 21.1125) scale(0.775)" />
+            <use class="tile" href="#nfy-tile" style="--d:1.6s" transform="translate(0.1125 22.5125) scale(0.775)" />
+            <use class="tile" href="#nfy-tile" style="--d:5.1s" transform="translate(0.1125 23.9125) scale(0.775)" />
+            <path class="bloom" d="M0.5 1C0.22 1 0 0.95 0 0.7C0 0.57 0 0.43 0 0.3C0 0.05 0.22 0 0.5 0C0.78 0 1 0.05 1 0.3C1 0.43 1 0.57 1 0.7C1 0.95 0.78 1 0.5 1Z" style="--d:1.8s" transform="translate(0.1125 25.3125) scale(0.775)" />
+            <use class="tile" href="#nfy-tile" style="--d:5.3s" transform="translate(0.1125 26.7125) scale(0.775)" />
+            </g>
+          </svg>
+          <svg viewBox="0 0 1 27.6" fill="none">
+            <!-- The top tile is the one the card's edge slices, so it never
+                 blooms: a heart cut in half reads as a broken shape rather
+                 than a heart. The pattern picks up from the fourth tile. -->
+            <use class="tile" href="#nfy-tile" style="--d:0s" transform="translate(0.1125 0.1125) scale(0.775)" />
+            <use class="tile" href="#nfy-tile" style="--d:3.5s" transform="translate(0.1125 1.5125) scale(0.775)" />
+            <use class="tile" href="#nfy-tile" style="--d:0.2s" transform="translate(0.1125 2.9125) scale(0.775)" />
+            <path class="bloom" d="M0.5 1C0.22 1 0 0.95 0 0.7C0 0.57 0 0.43 0 0.3C0 0.05 0.22 0 0.5 0C0.78 0 1 0.05 1 0.3C1 0.43 1 0.57 1 0.7C1 0.95 0.78 1 0.5 1Z" style="--d:3.7s" transform="translate(0.1125 4.3125) scale(0.775)" />
+            <use class="tile" href="#nfy-tile" style="--d:0.4s" transform="translate(0.1125 5.7125) scale(0.775)" />
+            <use class="tile" href="#nfy-tile" style="--d:3.9s" transform="translate(0.1125 7.1125) scale(0.775)" />
+            <path class="bloom" d="M0.5 1C0.22 1 0 0.95 0 0.7C0 0.57 0 0.43 0 0.3C0 0.05 0.22 0 0.5 0C0.78 0 1 0.05 1 0.3C1 0.43 1 0.57 1 0.7C1 0.95 0.78 1 0.5 1Z" style="--d:0.6s" transform="translate(0.1125 8.5125) scale(0.775)" />
+            <use class="tile" href="#nfy-tile" style="--d:4.1s" transform="translate(0.1125 9.9125) scale(0.775)" />
+            <use class="tile" href="#nfy-tile" style="--d:0.8s" transform="translate(0.1125 11.3125) scale(0.775)" />
+            <path class="bloom" d="M0.5 1C0.22 1 0 0.95 0 0.7C0 0.57 0 0.43 0 0.3C0 0.05 0.22 0 0.5 0C0.78 0 1 0.05 1 0.3C1 0.43 1 0.57 1 0.7C1 0.95 0.78 1 0.5 1Z" style="--d:4.3s" transform="translate(0.1125 12.7125) scale(0.775)" />
+            <use class="tile" href="#nfy-tile" style="--d:1s" transform="translate(0.1125 14.1125) scale(0.775)" />
+            <use class="tile" href="#nfy-tile" style="--d:4.5s" transform="translate(0.1125 15.5125) scale(0.775)" />
+            <path class="bloom" d="M0.5 1C0.22 1 0 0.95 0 0.7C0 0.57 0 0.43 0 0.3C0 0.05 0.22 0 0.5 0C0.78 0 1 0.05 1 0.3C1 0.43 1 0.57 1 0.7C1 0.95 0.78 1 0.5 1Z" style="--d:1.2s" transform="translate(0.1125 16.9125) scale(0.775)" />
+            <use class="tile" href="#nfy-tile" style="--d:4.7s" transform="translate(0.1125 18.3125) scale(0.775)" />
+            <use class="tile" href="#nfy-tile" style="--d:1.4s" transform="translate(0.1125 19.7125) scale(0.775)" />
+            <path class="bloom" d="M0.5 1C0.22 1 0 0.95 0 0.7C0 0.57 0 0.43 0 0.3C0 0.05 0.22 0 0.5 0C0.78 0 1 0.05 1 0.3C1 0.43 1 0.57 1 0.7C1 0.95 0.78 1 0.5 1Z" style="--d:4.9s" transform="translate(0.1125 21.1125) scale(0.775)" />
+            <use class="tile" href="#nfy-tile" style="--d:1.6s" transform="translate(0.1125 22.5125) scale(0.775)" />
+            <use class="tile" href="#nfy-tile" style="--d:5.1s" transform="translate(0.1125 23.9125) scale(0.775)" />
+            <path class="bloom" d="M0.5 1C0.22 1 0 0.95 0 0.7C0 0.57 0 0.43 0 0.3C0 0.05 0.22 0 0.5 0C0.78 0 1 0.05 1 0.3C1 0.43 1 0.57 1 0.7C1 0.95 0.78 1 0.5 1Z" style="--d:1.8s" transform="translate(0.1125 25.3125) scale(0.775)" />
+            <use class="tile" href="#nfy-tile" style="--d:5.3s" transform="translate(0.1125 26.7125) scale(0.775)" />
+          </svg>
+        </div>
+        <h1>Not for You</h1>
+        <p class="tagline">
+          A browser extension that <b>removes the algorithm</b> from every major
+          social platform. Turn the <b>&ldquo;For You&rdquo;</b> feed back into
+          <b><em>your</em> feed</b>.
+        </p>
+
+        <div class="cta-block">
+          <!-- TODO: swap for the real Chrome Web Store listing URL. -->
+          <a
+            class="cta"
+            href="https://chromewebstore.google.com/detail/not-for-you"
+          >
+            <!-- Chrome's mark, drawn rather than fetched: the page loads no
+                 third-party assets. Geometry is the real one, three 120deg
+                 sectors whose seams are tangent to the centre circle. -->
+            <svg
+              class="chrome-mark"
+              width="18"
+              height="18"
+              viewBox="0 0 48 48"
+              aria-hidden="true"
+            >
+              <path
+                fill="#ea4335"
+                d="M4.4 14A22 22 0 0 1 42.46 12.03L32.66 29A10 10 0 0 0 24 14Z"
+              />
+              <path
+                fill="#34a853"
+                d="M25.14 45.97A22 22 0 0 1 4.4 14L24 14A10 10 0 0 0 15.34 29Z"
+              />
+              <path
+                fill="#fbbc04"
+                d="M42.46 12.03A22 22 0 0 1 25.14 45.97L15.34 29A10 10 0 0 0 32.66 29Z"
+              />
+              <circle cx="24" cy="24" r="10" fill="#fff" />
+              <circle cx="24" cy="24" r="8.4" fill="#4285f4" />
+            </svg>
+            Add to Chrome</a
+          >
+          <!-- Only the half of the first sentence the repo answers is the
+               link, with the mark inside it: "free" is a fact about the
+               listing and has nothing on GitHub to point at. The mark trails
+               the words rather than leading them so the link still starts on a
+               word, and so it marks where the link ends. -->
+          <p class="cta-note">
+            Free and
+            <a
+              class="source-link"
+              href="https://github.com/preziotte/not-for-you"
+              target="_blank"
+              rel="noreferrer"
+              >open source<svg
+                class="source-mark"
+                width="15"
+                height="15"
+                aria-hidden="true"
+              >
+                <use href="#mark-github" width="15" height="15" /></svg
+            ></a>
+            <!-- One image as far as assistive tech is concerned, labelled with
+                 the whole sentence: the lead-in is visible text but the marks
+                 are not words, and announcing three logos individually would
+                 be three announcements for one fact. The divider is inside the
+                 group for wrapping, and is not spoken either way. -->
+            <span
+              class="also"
+              role="img"
+              aria-label="also works in Edge, Brave, Opera and Arc"
+            >
+              <span class="note-sep">&middot;</span>
+              also works in
+              <!-- Named on hover with SVG's own <title>, which the browser
+                   shows as a tooltip. On the instance rather than on the
+                   symbol: a title inside a symbol does not reliably follow
+                   the <use> that pulls it in. The names do not double up for
+                   assistive tech, which takes the label off the group above
+                   and ignores what is inside it. -->
+              <svg class="browser-mark" width="15" height="15">
+                <title>Microsoft Edge</title>
+                <use href="#mark-edge" width="15" height="15" />
+              </svg>
+              <svg class="browser-mark" width="15" height="15">
+                <title>Brave</title>
+                <use href="#mark-brave" width="15" height="15" />
+              </svg>
+              <svg class="browser-mark" width="15" height="15">
+                <title>Opera</title>
+                <use href="#mark-opera" width="15" height="15" />
+              </svg>
+              <svg class="browser-mark" width="15" height="15">
+                <title>Arc</title>
+                <use href="#mark-arc" width="15" height="15" />
+              </svg>
+            </span>
+          </p>
+        </div>
+      </div>
+
+      <div class="demo">
+        <!-- Points up and right, at the extensions area of the browser's own
+             toolbar. Decorative: the FAQ carries the same information in
+             text. -->
+        <div class="pointer" aria-hidden="true">
+          <!-- The toolbar button sits far above the page, so the curve leaves
+               almost vertically rather than at 45deg: an arrow that points
+               up-and-across reads as pointing at whatever is beside it. -->
+          <svg
+            width="200"
+            height="112"
+            viewBox="0 0 200 112"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.6"
+            stroke-linecap="round"
+          >
+            <path d="M10 104C72 100 152 94 170 14" />
+            <path d="M170 14l-10.8 11.8M170 14l4.8 15.3" />
+          </svg>
+          <!-- Two captions, one per layout: the wide one is the arrow's
+               label and only makes sense while the arrow is pointing at the
+               toolbar. The narrow one has to stand on its own, so it says
+               what the thing below it is instead of where it comes from. -->
+          <span class="at-toolbar"
+            >It lives up here &amp; looks like this:</span
+          >
+          <span class="standalone">A preview of the extension's menu:</span>
+        </div>
+        <!-- aria-hidden: this is a picture of the product and every control
+             in it is inert. Screen readers get the prose below instead. -->
+        <div class="popup" aria-hidden="true">
+          <header>
+            <h2><a href="/">Not for You</a></h2>
+            <p>Remove the algorithm from social media.</p>
+          </header>
+          <ul>
+            <li>
+              <div class="site">
+                <img src="/sites/youtube.png" alt="" width="16" height="16" />
+                <span>YouTube</span>
+              </div>
+              <label class="option"
+                ><input type="checkbox" checked /><span
+                  >Show Subscriptions, not the Home feed</span
+                ></label
+              >
+              <label class="option"
+                ><input type="checkbox" checked /><span
+                  >Turn off autoplay</span
+                ></label
+              >
+              <label class="option"
+                ><input type="checkbox" checked /><span
+                  >Hide Shorts row</span
+                ></label
+              >
+              <label class="option"
+                ><input type="checkbox" checked /><span
+                  >Hide what to watch next</span
+                ></label
+              >
+            </li>
+            <li>
+              <div class="site">
+                <img src="/sites/instagram.png" alt="" width="16" height="16" />
+                <span>Instagram</span>
+              </div>
+              <label class="option"
+                ><input type="checkbox" checked /><span
+                  >Show Following, not the Home feed</span
+                ></label
+              >
+              <label class="option"
+                ><input type="checkbox" checked /><span
+                  >Hide suggestions sidebar</span
+                ></label
+              >
+            </li>
+            <li>
+              <div class="site">
+                <img src="/sites/twitter.png" alt="" width="16" height="16" />
+                <span>X / Twitter</span>
+              </div>
+              <label class="option"
+                ><input type="checkbox" checked /><span
+                  >Show Following, not the &ldquo;For You&rdquo; feed</span
+                ></label
+              >
+              <label class="option"
+                ><input type="checkbox" checked /><span
+                  >Hide trends &amp; suggestions</span
+                ></label
+              >
+            </li>
+            <li>
+              <div class="site">
+                <img src="/sites/tiktok.png" alt="" width="16" height="16" />
+                <span>TikTok</span>
+              </div>
+              <label class="option"
+                ><input type="checkbox" checked /><span
+                  >Show Following, not the &ldquo;For You&rdquo; feed</span
+                ></label
+              >
+              <label class="option"
+                ><input type="checkbox" checked /><span
+                  >Hide header bar</span
+                ></label
+              >
+            </li>
+            <li>
+              <div class="site">
+                <img src="/sites/facebook.png" alt="" width="16" height="16" />
+                <span>Facebook</span>
+              </div>
+              <label class="option"
+                ><input type="checkbox" checked /><span
+                  >Show the Feeds view, not Home</span
+                ></label
+              >
+              <label class="option"
+                ><input type="checkbox" checked /><span
+                  >Hide the Reels tab</span
+                ></label
+              >
+            </li>
+            <li>
+              <div class="site">
+                <img src="/sites/reddit.png" alt="" width="16" height="16" />
+                <span>Reddit</span>
+              </div>
+              <label class="option"
+                ><input type="checkbox" checked /><span
+                  >Hide promoted posts and ads</span
+                ></label
+              >
+              <label class="option"
+                ><input type="checkbox" checked /><span
+                  >Hide Reddit&rsquo;s recommendations</span
+                ></label
+              >
+              <label class="option"
+                ><input type="checkbox" /><span>Use old Reddit</span></label
+              >
+            </li>
+            <li>
+              <div class="site">
+                <img src="/sites/linkedin.png" alt="" width="16" height="16" />
+                <span>LinkedIn</span>
+              </div>
+              <label class="option"
+                ><input type="checkbox" checked /><span
+                  >Show Recent, not the Top sort</span
+                ></label
+              >
+              <label class="option"
+                ><input type="checkbox" checked /><span
+                  >Hide promoted &amp; suggested posts</span
+                ></label
+              >
+              <label class="option"
+                ><input type="checkbox" checked /><span
+                  >Hide news sidebar</span
+                ></label
+              >
+            </li>
+            <li>
+              <div class="site">
+                <img src="/sites/threads.png" alt="" width="16" height="16" />
+                <span>Threads</span>
+              </div>
+              <label class="option"
+                ><input type="checkbox" checked /><span
+                  >Show Following, not the &ldquo;For You&rdquo; feed</span
+                ></label
+              >
+            </li>
+          </ul>
+          <footer>
+            <!-- The label gets its own span, as in the real popup: the
+                 countdown script rewrites the label only, so the clock
+                 icon survives. -->
+            <button class="disable" type="button">
+              <svg viewBox="0 0 16 16" aria-hidden="true">
+                <circle cx="8" cy="8" r="5.9" />
+                <path d="M8 4.5V8l2.5 1.7" />
+              </svg>
+              <span class="disable-label">Disable for 5 minutes</span>
+            </button>
+            <div class="links">
+              <a
+                href="https://github.com/preziotte/not-for-you/issues/new"
+                target="_blank"
+                rel="noreferrer"
+              >
+                <svg viewBox="0 0 16 16" aria-hidden="true">
+                  <ellipse cx="8" cy="9.8" rx="3.4" ry="4.2" />
+                  <circle cx="8" cy="4.3" r="1.7" />
+                  <path d="M6.9 2.9 6.1 1.6M9.1 2.9 9.9 1.6" />
+                  <path
+                    d="M4.6 7.7 1.6 6.1M4.6 10H1.4M4.6 12.3 1.6 13.9M11.4 7.7l3-1.6M11.4 10h3.2M11.4 12.3l3 1.6"
+                  />
+                </svg>
+                Report a bug
+              </a>
+              <a
+                href="https://chromewebstore.google.com/detail/not-for-you/reviews"
+                target="_blank"
+                rel="noreferrer"
+              >
+                <svg viewBox="0 0 16 16" aria-hidden="true">
+                  <path
+                    d="M8 1.9 9.85 5.6l4.15.6-3 2.9.7 4.05L8 11.24 4.3 13.15 5 9.1l-3-2.9 4.15-.6z"
+                  />
+                </svg>
+                Leave a rating
+              </a>
+            </div>
+          </footer>
+        </div>
+      </div>
+
+      <div class="rest">
+        <!-- The argument, which the hero asserts and the FAQ assumes: the
+             feed is not badly sorted, it is full of things you never chose.
+             Emphasis is reserved for the two phrases that echo the name. -->
+        <p class="detail">
+          Scroll your feed and notice how much of it came from someone you
+          chose to follow. Most of it didn&rsquo;t. It was picked
+          <b>for you</b>, and it was picked because it keeps you scrolling.
+          Our feeds have become tabloids. Full of rage-bait, sensationalism,
+          paid sponsorships and other forms of easy dopamine. It&rsquo;s the
+          adult equivalent of jingling keys in front of a baby. Even worse, it
+          literally never ends.
+        </p>
+        <p class="detail">
+          <b>Not for You</b> removes everything you didn&rsquo;t
+          ask for: the suggested accounts, the promoted posts, the
+          &ldquo;people you may know.&rdquo; Instead, you only see what you
+          chose to follow, in the order it was posted. And you can
+          actually get to the end of it.
+        </p>
+        <p class="detail">
+          I&rsquo;ve been using it for a while and I feel like my brain is
+          eating healthier. I spend far less time on social media, still feel
+          caught up, and don&rsquo;t struggle with FOMO.
+        </p>
+
+        <hr class="rule" />
+
+        <section class="faq">
+          <h2>Which platforms does it work on?</h2>
+          <p class="brands">
+            <span class="brand"
+              ><img
+                src="/sites/youtube.png"
+                alt=""
+                width="16"
+                height="16"
+              />YouTube</span
+            >
+            <span class="brand"
+              ><img
+                src="/sites/instagram.png"
+                alt=""
+                width="16"
+                height="16"
+              />Instagram</span
+            >
+            <span class="brand"
+              ><img
+                src="/sites/twitter.png"
+                alt=""
+                width="16"
+                height="16"
+              />Twitter</span
+            >
+            <span class="brand"
+              ><img
+                src="/sites/tiktok.png"
+                alt=""
+                width="16"
+                height="16"
+              />TikTok</span
+            >
+            <span class="brand"
+              ><img
+                src="/sites/facebook.png"
+                alt=""
+                width="16"
+                height="16"
+              />Facebook</span
+            >
+            <span class="brand"
+              ><img
+                src="/sites/reddit.png"
+                alt=""
+                width="16"
+                height="16"
+              />Reddit</span
+            >
+            <span class="brand"
+              ><img
+                src="/sites/linkedin.png"
+                alt=""
+                width="16"
+                height="16"
+              />LinkedIn</span
+            >
+            <span class="brand"
+              ><img
+                src="/sites/threads.png"
+                alt=""
+                width="16"
+                height="16"
+              />Threads</span
+            >
+            <a
+              class="brand suggest"
+              href="https://github.com/preziotte/not-for-you/issues"
+              target="_blank"
+              rel="noreferrer"
+              >+ Suggest another</a
+            >
+          </p>
+
+          <h2>How does it work?</h2>
+          <p>
+            Every platform already has a chronological feed. The
+            extension sends you to it, then hides the promoted and suggested
+            content around it. Nothing is injected or rewritten.
+          </p>
+
+          <h2>Will I miss posts from people I follow?</h2>
+          <p>
+            The opposite. The &ldquo;For You&rdquo; feed shows a fraction of
+            what the people you follow actually post, and fills the gap with
+            whatever keeps you scrolling. Removing the suggested content lets
+            you be intentional about what you consume.
+          </p>
+
+          <h2>How is this different from a feed blocker?</h2>
+          <p>
+            Blockers treat the feed as the problem: they blank it, cover it
+            with a quote, or make you wait it out. That lasts until you
+            actually want to use the site. The premise here is that the feed
+            isn&rsquo;t the problem, the algorithm is.
+          </p>
+
+          <h2>What if I want the algorithm back?</h2>
+          <p>
+            You only opt into the changes you want: every switch in the menu
+            works per site, instantly. There is also a &ldquo;Disable for 5
+            minutes&rdquo; button for the times you want to fall down the
+            rabbit hole on purpose.
+          </p>
+
+          <h2>Will it break anything?</h2>
+          <p>
+            No. Search, profiles, messages and posting work exactly as before.
+            If a redesign does break something, I&rsquo;ll ship a fix. If you
+            spot it first, please
+            <a
+              href="https://github.com/preziotte/not-for-you/issues"
+              target="_blank"
+              rel="noreferrer"
+              >file an issue</a
+            >.
+          </p>
+
+          <h2>Does it send my data anywhere?</h2>
+          <p>
+            There is nowhere to send it. No accounts, no servers, no analytics,
+            and the extension makes no network requests of its own.
+            <a href="/privacy.html">More on privacy</a>.
+          </p>
+
+          <h2>Does it work on my phone?</h2>
+          <p>
+            No. It works in desktop browsers: Chrome, Edge, Brave, Opera, Arc,
+            anything built on Chromium. Mobile devices are closed platforms and
+            don&rsquo;t allow extensions.
+          </p>
+
+          <h2>Does it block ads?</h2>
+          <p>
+            Not really. It hides the promoted posts baked into the feeds it
+            cleans, but it&rsquo;s not an ad blocker.
+            <a
+              href="https://chromewebstore.google.com/detail/ublock-origin-lite/ddkjiahejlhfcafbddmgiahcphecmpfh"
+              target="_blank"
+              rel="noreferrer"
+              >uBlock Origin Lite</a
+            >
+            and
+            <a
+              href="https://chromewebstore.google.com/detail/adguard-adblocker/bgnkhhnnamicmpeenaelnjfhikgbkllg"
+              target="_blank"
+              rel="noreferrer"
+              >AdGuard</a
+            >
+            have that covered.
+          </p>
+        </section>
+
+        <!-- Repeated because the FAQ is where the last doubts get answered,
+             and by then the first button has scrolled away. -->
+        <div class="cta-block cta-end">
+          <a
+            class="cta"
+            href="https://chromewebstore.google.com/detail/not-for-you"
+          >
+            <!-- Chrome's mark, drawn rather than fetched: the page loads no
+                 third-party assets. Geometry is the real one, three 120deg
+                 sectors whose seams are tangent to the centre circle. -->
+            <svg
+              class="chrome-mark"
+              width="18"
+              height="18"
+              viewBox="0 0 48 48"
+              aria-hidden="true"
+            >
+              <path
+                fill="#ea4335"
+                d="M4.4 14A22 22 0 0 1 42.46 12.03L32.66 29A10 10 0 0 0 24 14Z"
+              />
+              <path
+                fill="#34a853"
+                d="M25.14 45.97A22 22 0 0 1 4.4 14L24 14A10 10 0 0 0 15.34 29Z"
+              />
+              <path
+                fill="#fbbc04"
+                d="M42.46 12.03A22 22 0 0 1 25.14 45.97L15.34 29A10 10 0 0 0 32.66 29Z"
+              />
+              <circle cx="24" cy="24" r="10" fill="#fff" />
+              <circle cx="24" cy="24" r="8.4" fill="#4285f4" />
+            </svg>
+            Add to Chrome</a
+          >
+        </div>
+
+        <footer>
+          <span class="copyright">&copy; 2026 Not for You</span>
+          <span class="sep">&middot;</span>
+          <a
+            href="https://github.com/preziotte/not-for-you"
+            target="_blank"
+            rel="noreferrer"
+            >Source on GitHub</a
+          >
+          <span class="sep">&middot;</span>
+          <a href="/privacy.html">Privacy</a>
+          <span class="sep">&middot;</span>
+          <a href="mailto:mat.preziotte@gmail.com?subject=Not%20for%20You"
+            >Contact</a
+          >
+          <span class="sep">&middot;</span>
+          <a href="https://preziotte.com/" target="_blank" rel="noreferrer"
+            >Made with &hearts;</a
+          >
+        </footer>
+      </div>
+    </main>
+    <script>
+      (function () {
+        var root = document.documentElement;
+        var button = document.querySelector('.theme-toggle');
+        var dark = matchMedia('(prefers-color-scheme: dark)');
+        // No stored choice means the theme is whatever the system says.
+        function active() {
+          return root.dataset.theme || (dark.matches ? 'dark' : 'light');
+        }
+        function label() {
+          button.setAttribute(
+            'aria-label',
+            active() === 'dark'
+              ? 'Switch to light theme'
+              : 'Switch to dark theme',
+          );
+        }
+        button.addEventListener('click', function () {
+          var next = active() === 'dark' ? 'light' : 'dark';
+          root.dataset.theme = next;
+          try {
+            localStorage.setItem('theme', next);
+          } catch (e) {}
+          label();
+        });
+        // Only fires while the visitor is still on the system default.
+        dark.addEventListener('change', label);
+        label();
+
+        // The popup replica is aria-hidden, but its controls are still real
+        // form elements and stay in the tab order: a keyboard visitor would
+        // tab through seventeen checkboxes their screen reader never announced.
+        // Removing them keeps the mouse toggling, which is the only reason
+        // they are real controls in the first place.
+        document
+          .querySelectorAll('.popup input, .popup button, .popup a')
+          .forEach(function (el) {
+            el.tabIndex = -1;
+          });
+      })();
+
+      // The disable button runs the real popup's five-minute countdown:
+      // click to start it, click again to re-enable early. Same label
+      // strings and same tick as the extension; only the storage and the
+      // alarm are missing, since there is nothing here to disable.
+      (function () {
+        var button = document.querySelector('.popup .disable');
+        var label = document.querySelector('.popup .disable-label');
+        if (!button || !label) return;
+        var until = 0;
+
+        function tick() {
+          var remaining = until - Date.now();
+          if (remaining > 0) {
+            var m = Math.floor(remaining / 60000);
+            var s = Math.floor((remaining % 60000) / 1000);
+            label.textContent =
+              'Disabled, ' +
+              m +
+              ':' +
+              String(s).padStart(2, '0') +
+              ' left. Tap to re-enable.';
+            button.classList.add('active');
+          } else {
+            label.textContent = 'Disable for 5 minutes';
+            button.classList.remove('active');
+          }
+        }
+
+        button.addEventListener('click', function () {
+          until = until > Date.now() ? 0 : Date.now() + 5 * 60000;
+          tick();
+        });
+        setInterval(tick, 1000);
+      })();
+
+      // Direction-aware stickiness for the demo column. Native sticky can
+      // hold one edge only, chosen in advance: hold the top and a popup
+      // taller than the window parks its tail permanently offscreen; hold
+      // the bottom and its head never comes back. Reading wants both,
+      // decided by travel: scrolling down, the popup scrolls until its
+      // bottom edge arrives at the fold and holds there; scrolling up, it
+      // rides back down with the page until its top edge returns and holds
+      // that instead. Direction is the one input CSS cannot see, so this
+      // script watches for reversals and, at each one, plants the column's
+      // resting position (margin-top) at its current spot and swaps which
+      // inset is armed. Between reversals it writes nothing: native sticky
+      // does the actual pinning, so steady scrolling costs no layout work.
+      (function () {
+        var demo = document.querySelector('.demo');
+        var container = document.querySelector('main');
+        if (!demo || !container) return;
+        var collapsed = matchMedia('(max-width: 62rem)');
+        var lastY = window.scrollY;
+        // Which edge the armed inset guards right now.
+        var edge = 'bottom';
+        // True when the whole popup fits below the top offset, where a
+        // plain top pin already keeps every part of it in view and none of
+        // the reversal work is needed.
+        var fits = false;
+
+        function rem(n) {
+          return (
+            n * parseFloat(getComputedStyle(document.documentElement).fontSize)
+          );
+        }
+        // The stylesheet's own top offset: clear of the arrow that hangs
+        // --demo-lift above the column, or 4vh when that is roomier.
+        function topInset() {
+          return Math.max(innerHeight * 0.04, rem(3.5));
+        }
+        // Negative once the popup is taller than the window: the top slides
+        // out of view so the bottom edge can sit a breath above the fold.
+        function breath() {
+          return rem(1.5) + 30;
+        }
+        function bottomInset() {
+          return innerHeight - demo.offsetHeight - breath();
+        }
+
+        function refresh() {
+          if (collapsed.matches) {
+            // Single column: the stylesheet lays the popup inline between
+            // the hero and the FAQ, and these inline styles must not
+            // override that.
+            demo.style.position = '';
+            demo.style.top = '';
+            demo.style.marginTop = '';
+            return;
+          }
+          demo.style.position = 'sticky';
+          demo.style.marginTop = '';
+          fits = demo.offsetHeight + topInset() + breath() <= innerHeight;
+          edge = fits ? 'top' : 'bottom';
+          demo.style.top = (fits ? topInset() : bottomInset()) + 'px';
+        }
+
+        addEventListener(
+          'scroll',
+          function () {
+            var y = Math.max(0, window.scrollY);
+            var dy = y - lastY;
+            lastY = y;
+            if (dy === 0 || fits || collapsed.matches) return;
+            var box = demo.getBoundingClientRect().top;
+            // Where grid would rest the column with no margin planted: the
+            // container's top edge.
+            var origin = container.getBoundingClientRect().top;
+            var margin = parseFloat(demo.style.marginTop) || 0;
+            if (dy < 0 && edge === 'bottom') {
+              if (box >= topInset() && origin <= topInset()) {
+                // The top edge has ridden back into reach: hold it there.
+                // Clearing the margin moves nothing, because with the
+                // container's own top already past the offset it is the
+                // sticky clamp deciding where the column sits.
+                edge = 'top';
+                demo.style.top = topInset() + 'px';
+                demo.style.marginTop = '';
+              } else if (origin + margin < box - 1) {
+                // First upward move since the bottom pinned: plant the
+                // resting position at the pinned spot, so the column lets
+                // go of the fold and rides down with the page.
+                demo.style.marginTop = box - origin + 'px';
+              }
+            } else if (dy > 0) {
+              if (edge === 'top') {
+                // First downward move since the top pinned: the same
+                // planting in the opposite direction, then the bottom
+                // inset is armed. The column rides up with the page from
+                // here and pins again when its bottom edge meets the fold.
+                edge = 'bottom';
+                demo.style.marginTop =
+                  box - origin > 1 ? box - origin + 'px' : '';
+                demo.style.top = bottomInset() + 'px';
+              } else if (margin && box <= bottomInset() + 1) {
+                // Pinned by the bottom again: the planted margin has done
+                // its ferrying and can go. Invisibly, because the sticky
+                // clamp is what holds the column here now.
+                demo.style.marginTop = '';
+              }
+            }
+          },
+          { passive: true },
+        );
+
+        addEventListener('resize', refresh);
+        // Fonts and the mock's imagery can change the column's height after
+        // first paint, and the insets are computed from that height.
+        addEventListener('load', refresh);
+        collapsed.addEventListener('change', refresh);
+        refresh();
+      })();
+    </script>
+  </body>
+</html>
