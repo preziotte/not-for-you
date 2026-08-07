@@ -37,6 +37,12 @@ export default defineConfig({
         gecko: {
           id: 'extension@notforyou.app',
           strict_min_version: '121.0',
+          // AMO rejects new extensions without a data collection
+          // declaration. "none" is the reserved value for collecting
+          // nothing, and cannot be combined with other permissions.
+          data_collection_permissions: {
+            required: ['none'],
+          },
         },
       },
     }),
