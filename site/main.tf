@@ -275,6 +275,15 @@ resource "aws_route53_record" "apex" {
   }
 }
 
+# Google Search Console domain verification
+resource "aws_route53_record" "google_site_verification" {
+  zone_id = aws_route53_zone.zone.zone_id
+  name    = var.domain_name
+  type    = "TXT"
+  ttl     = 300
+  records = ["google-site-verification=FzxOfajj0iaPWKdJMoeTo3ENL3AJYZBPN8EKr8olzBg"]
+}
+
 # Route 53 A record for www subdomain
 resource "aws_route53_record" "www" {
   zone_id = aws_route53_zone.zone.zone_id
