@@ -11,6 +11,9 @@
   "homepage": "https://notforyou.app",
   "bugs": "https://github.com/preziotte/not-for-you/issues",
   "type": "module",
+  "engines": {
+    "node": ">=22"
+  },
   "scripts": {
     "dev": "wxt",
     "dev:firefox": "wxt -b firefox",
