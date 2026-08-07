@@ -33,7 +33,8 @@ when you want the algorithm back.
 
 ## Install
 
-Not on the Chrome Web Store yet. To run it from source:
+Submitted to the Chrome Web Store and Firefox Add-ons, currently in review.
+Until the listings are live, run it from source:
 
 ```sh
 npm install
@@ -43,8 +44,9 @@ npm run build
 Then open `chrome://extensions`, turn on Developer mode, choose "Load unpacked"
 and pick `.output/chrome-mv3`.
 
-Works in Chrome, Edge, Brave, Opera, Arc and anything else built on Chromium. There is
-a Firefox target (`npm run build:firefox`) but it is not tested.
+Works in Chrome, Edge, Brave, Opera, Arc and anything else built on Chromium.
+For Firefox, build with `npm run build:firefox` and load `.output/firefox-mv3`
+as a temporary add-on from `about:debugging`.
 
 ## How it works
 
