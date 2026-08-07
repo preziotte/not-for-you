@@ -9,6 +9,29 @@
       content="A Chrome extension that removes algorithmic feeds from YouTube, Instagram, X, TikTok, Reddit, LinkedIn and Threads. Only the people you follow, in order."
     />
     <link rel="canonical" href="https://notforyou.app/" />
+    <!-- Google Analytics, permanently in consent-denied mode: the consent
+         default below is never updated, so gtag runs cookieless. No cookie
+         is ever set and nothing is stored on the visitor's machine, which
+         is what lets the privacy policy stay honest and the page skip a
+         consent banner. Counts are modeled by GA rather than exact. -->
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag() {
+        dataLayer.push(arguments);
+      }
+      gtag('consent', 'default', {
+        ad_storage: 'denied',
+        ad_user_data: 'denied',
+        ad_personalization: 'denied',
+        analytics_storage: 'denied',
+      });
+      gtag('js', new Date());
+      gtag('config', 'G-E4ERXX28BV');
+    </script>
+    <script
+      async
+      src="https://www.googletagmanager.com/gtag/js?id=G-E4ERXX28BV"
+    ></script>
     <!-- The SVG is the one that gets used, and it carries both themes itself
          through a media query, so there is no light and dark pair to keep in
          sync here. The PNGs are the fallback for anything that will not take

@@ -9,6 +9,26 @@
       content="Privacy policy for the Not for You browser extension. No accounts, no servers, no tracking. Your settings stay on your device."
     />
     <link rel="canonical" href="https://notforyou.app/privacy.html" />
+    <!-- Same cookieless Google Analytics setup as index.html; the consent
+         default is never updated, so no cookie is ever set. -->
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag() {
+        dataLayer.push(arguments);
+      }
+      gtag('consent', 'default', {
+        ad_storage: 'denied',
+        ad_user_data: 'denied',
+        ad_personalization: 'denied',
+        analytics_storage: 'denied',
+      });
+      gtag('js', new Date());
+      gtag('config', 'G-E4ERXX28BV');
+    </script>
+    <script
+      async
+      src="https://www.googletagmanager.com/gtag/js?id=G-E4ERXX28BV"
+    ></script>
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <link rel="icon" href="/favicon-32.png" sizes="32x32" />
     <link rel="icon" href="/favicon-16.png" sizes="16x16" />
@@ -434,8 +454,19 @@
 
       <hr class="rule" />
 
+      <p>
+        This website uses Google Analytics in a cookieless configuration to
+        count visits. It sets no cookies and stores nothing on your device,
+        and Google Analytics does not log or store IP addresses. What we see
+        is aggregate: roughly how many people visited, which pages, and where
+        they came from. The extension itself contains no analytics of any
+        kind, as described above.
+      </p>
+
+      <hr class="rule" />
+
       <p class="muted">
-        Last updated August 3, 2026.<br />
+        Last updated August 7, 2026.<br />
         Questions:
         <a href="mailto:mat.preziotte@gmail.com">mat.preziotte@gmail.com</a>
       </p>
