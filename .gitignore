@@ -10,3 +10,4 @@ site/.build/
 terraform.tfstate
 terraform.tfstate.backup
 *.tfplan
+tfplan
