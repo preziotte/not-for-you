@@ -1,6 +1,6 @@
 {
   "name": "not-for-you",
-  "description": "Removes algorithmic For You feeds from social media, leaving only the people you follow, in chronological order.",
+  "description": "Removes algorithmic and suggested content from social media sites.",
   "private": true,
   "license": "MIT",
   "version": "1.0.0",

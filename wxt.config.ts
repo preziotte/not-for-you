@@ -13,7 +13,7 @@ export default defineConfig({
   manifest: ({ browser }) => ({
     name: 'Not for You',
     description:
-      'Removes algorithmic For You feeds, leaving only the people you follow, in chronological order.',
+      'Removes algorithmic and suggested content from social media sites.',
     homepage_url: 'https://notforyou.app',
     permissions: ['storage', 'declarativeNetRequest', 'alarms'],
     // Coming-soon platforms are listed in the popup but have no content
