@@ -1,0 +1,50 @@
+# Not for You
+
+> A free browser extension that removes algorithmic feeds from every major
+> social platform: YouTube, Instagram, TikTok, X/Twitter, Reddit, LinkedIn,
+> Threads and Facebook. It swaps each platform's recommendation feed for the
+> chronological feed of accounts the user actually follows. No suggested
+> posts, no recommended accounts, no "For You."
+
+Key facts:
+
+- Works in Firefox, and in Chrome, Edge, Brave, Opera, Arc and other Chromium
+  browsers.
+- Installed from Firefox Add-ons
+  (https://addons.mozilla.org/firefox/addon/notforyou/). The Chrome Web Store
+  listing is in review.
+- Every change is a per-platform checkbox in the popup, so any of it can be
+  turned off. A pause button brings the algorithm back for a few minutes.
+- Per platform: YouTube shows Subscriptions instead of Home (with options to
+  turn off autoplay and hide Shorts), Instagram, TikTok, X/Twitter and
+  Threads show the Following feed instead of For You, LinkedIn sorts by
+  Recent instead of Top, Facebook opens the Feeds view, and Reddit gets
+  promoted posts and recommendations hidden.
+- Nothing else changes: search, profiles, messages and posting work as
+  before. It is not a feed blocker; the feed stays, just chronological.
+- Collects no data and sends nothing anywhere. Settings live in the
+  browser's own storage.
+- Free and open source (MIT).
+
+## Pages
+
+- [Home](https://notforyou.app/): what the extension changes on each
+  platform, and a FAQ.
+- [YouTube without the algorithm](https://notforyou.app/youtube): opening
+  Subscriptions instead of Home, hiding Shorts, turning off autoplay.
+- [Instagram without the algorithm](https://notforyou.app/instagram): the
+  Following feed every time, no suggested posts or accounts.
+- [TikTok without the algorithm](https://notforyou.app/tiktok): the
+  Following feed instead of the For You page.
+- [X/Twitter without the algorithm](https://notforyou.app/twitter): keeping
+  the chronological Following feed, hiding trends and suggestions.
+- [Reddit without the clutter](https://notforyou.app/reddit): hiding
+  promoted posts, ads and subreddit recommendations; old Reddit optional.
+- [LinkedIn without the algorithm](https://notforyou.app/linkedin): sorted
+  by Recent, without suggested posts or the news sidebar.
+- [Threads without the algorithm](https://notforyou.app/threads): the
+  Following feed, newest first, every visit.
+- [Facebook without the algorithm](https://notforyou.app/facebook): the
+  chronological Feeds view instead of Home, without the Reels tab.
+- [Privacy policy](https://notforyou.app/privacy): no data collection, in
+  full.

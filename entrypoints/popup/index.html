@@ -22,7 +22,9 @@
         </svg>
         <span id="disable-label"></span>
       </button>
-      <!-- TODO: swap for the real Chrome Web Store listing URL, same as the
+      <!-- The rating link points at the Chrome Web Store here and main.ts
+           swaps it for the Firefox listing in Firefox builds.
+           TODO: swap for the real Chrome Web Store listing URL, same as the
            site's Add to Chrome button. -->
       <div id="links">
         <a
@@ -41,6 +43,7 @@
           Report a bug
         </a>
         <a
+          id="rate"
           href="https://chromewebstore.google.com/detail/not-for-you/reviews"
           target="_blank"
           rel="noreferrer"

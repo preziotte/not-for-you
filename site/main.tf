@@ -155,6 +155,18 @@ resource "aws_acm_certificate_validation" "cert" {
   validation_record_fqdns = [for record in aws_route53_record.cert_validation : record.fqdn]
 }
 
+# Rewrites clean URLs (/privacy) to the .html objects S3 actually holds,
+# and redirects trailing slashes to the bare path. See url-rewrite.js.
+resource "aws_cloudfront_function" "url_rewrite" {
+  name    = "${replace(var.domain_name, ".", "-")}-url-rewrite"
+  # The aws provider is pinned to ~> 4.0, which predates cloudfront-js-2.0.
+  # The 1.0 runtime covers everything url-rewrite.js uses.
+  runtime = "cloudfront-js-1.0"
+  comment = "Clean URLs: map extensionless paths to .html"
+  publish = true
+  code    = file("${path.module}/url-rewrite.js")
+}
+
 # CloudFront distribution for main domain
 resource "aws_cloudfront_distribution" "main" {
   origin {
@@ -191,6 +203,11 @@ resource "aws_cloudfront_distribution" "main" {
       cookies {
         forward = "none"
       }
+    }
+
+    function_association {
+      event_type   = "viewer-request"
+      function_arn = aws_cloudfront_function.url_rewrite.arn
     }
   }
 

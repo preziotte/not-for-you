@@ -75,6 +75,14 @@ async function render() {
   }
 }
 
+// A rating belongs on the listing the copy came from, and the markup carries
+// the Chrome one. Build-time flag, so the branch is dropped from the Chrome
+// build entirely.
+if (import.meta.env.FIREFOX) {
+  const rate = document.getElementById('rate') as HTMLAnchorElement;
+  rate.href = 'https://addons.mozilla.org/firefox/addon/notforyou/reviews/';
+}
+
 const disableButton = document.getElementById('disable') as HTMLButtonElement;
 // The label only, not the button: the button also holds the clock icon,
 // which writing to its textContent would delete.

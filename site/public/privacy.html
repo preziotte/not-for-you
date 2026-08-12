@@ -8,7 +8,7 @@
       name="description"
       content="Privacy policy for the Not for You browser extension. No accounts, no servers, no tracking. Your settings stay on your device."
     />
-    <link rel="canonical" href="https://notforyou.app/privacy.html" />
+    <link rel="canonical" href="https://notforyou.app/privacy" />
     <!-- Same cookieless Google Analytics setup as index.html; the consent
          default is never updated, so no cookie is ever set. -->
     <script>
@@ -44,7 +44,7 @@
       media="(prefers-color-scheme: dark)"
     />
     <meta property="og:type" content="article" />
-    <meta property="og:url" content="https://notforyou.app/privacy.html" />
+    <meta property="og:url" content="https://notforyou.app/privacy" />
     <meta property="og:site_name" content="Not for You" />
     <meta property="og:title" content="Privacy Policy: Not for You" />
     <meta
@@ -301,13 +301,8 @@
         max-width: 32rem;
         margin: 0 auto;
       }
-      /* Title and back link share a row, aligned on the baseline so the small
-         link sits on the same line as the heading. */
       .title {
-        display: flex;
-        align-items: baseline;
-        justify-content: space-between;
-        gap: 1rem;
+        position: relative;
         margin: 0 0 1.5rem;
       }
       /* Scales like the home page's headline, from a smaller ceiling: this is
@@ -318,14 +313,38 @@
         letter-spacing: -0.02em;
         margin: 0;
       }
+      /* Home, as a round arrow hanging in the margin beside the headline,
+         centred on the h1's first line. Dressed like the theme toggle:
+         muted and quiet until pointed at. Same treatment as the platform
+         pages' template. */
       .back {
-        flex: none;
-        font-size: 0.9rem;
+        position: absolute;
+        top: 0.45rem;
+        left: -3.25rem;
+        display: grid;
+        place-items: center;
+        width: 2.25rem;
+        height: 2.25rem;
         color: var(--muted);
+        border: 1px solid color-mix(in srgb, currentColor, transparent 80%);
+        border-radius: 999px;
         text-decoration: none;
+        transition:
+          color 0.12s ease,
+          background-color 0.12s ease;
       }
       .back:hover {
-        text-decoration: underline;
+        color: var(--fg);
+        background: color-mix(in srgb, currentColor, transparent 92%);
+      }
+      /* Below this the column takes the whole viewport and there is no
+         margin to hang in, so the arrow sits above the headline instead. */
+      @media (max-width: 44rem) {
+        .back {
+          position: static;
+          display: inline-grid;
+          margin-bottom: 1rem;
+        }
       }
       /* The three sizes from the home page: the opening line at tagline size,
          the body at detail size, the closing note quieter than both. */
@@ -366,6 +385,13 @@
       }
       a {
         color: inherit;
+        /* The underline fades out on hover rather than vanishing: colour
+           can transition where the decoration itself cannot, and 0.12s is
+           the page's standard hover speed. */
+        transition: text-decoration-color 0.12s ease;
+      }
+      a:hover {
+        text-decoration-color: transparent;
       }
       a:focus-visible,
       .theme-toggle:focus-visible {
@@ -429,8 +455,22 @@
     </button>
     <main>
       <div class="title">
+        <a class="back" href="/" aria-label="Back to Not for You">
+          <svg
+            width="16"
+            height="16"
+            viewBox="0 0 16 16"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.4"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            aria-hidden="true"
+          >
+            <path d="M13 8H3M6.5 4.5 3 8l3.5 3.5" />
+          </svg>
+        </a>
         <h1>Privacy Policy</h1>
-        <a class="back" href="/">&larr; Back</a>
       </div>
       <p class="lead">
         Not for You does not collect, store, transmit, or sell any data.

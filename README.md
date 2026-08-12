@@ -33,8 +33,10 @@ when you want the algorithm back.
 
 ## Install
 
-Submitted to the Chrome Web Store and Firefox Add-ons, currently in review.
-Until the listings are live, run it from source:
+[Firefox Add-ons](https://addons.mozilla.org/firefox/addon/notforyou/)
+
+The Chrome Web Store listing is still in review. Until it is live, Chrome and
+the other Chromium browsers (Edge, Brave, Opera, Arc) run it from source:
 
 ```sh
 npm install
@@ -44,9 +46,8 @@ npm run build
 Then open `chrome://extensions`, turn on Developer mode, choose "Load unpacked"
 and pick `.output/chrome-mv3`.
 
-Works in Chrome, Edge, Brave, Opera, Arc and anything else built on Chromium.
-For Firefox, build with `npm run build:firefox` and load `.output/firefox-mv3`
-as a temporary add-on from `about:debugging`.
+For a Firefox build of your own, `npm run build:firefox` and load
+`.output/firefox-mv3` as a temporary add-on from `about:debugging`.
 
 ## How it works
 
@@ -91,9 +92,11 @@ their options, in the browser's own extension storage. Full policy:
 Built with [WXT](https://wxt.dev) and TypeScript, Manifest V3 on every browser.
 
 ```sh
-npm run dev        # load into Chrome with hot reload
-npm run compile    # typecheck
-npm run zip        # package for the store
+npm run dev         # load into Chrome with hot reload
+npm run dev:firefox # the same in Firefox
+npm run compile     # typecheck
+npm run zip         # package for the Chrome Web Store
+npm run zip:firefox # package for Firefox Add-ons
 ```
 
 | Path               | What lives there                                                    |
