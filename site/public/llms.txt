@@ -10,9 +10,10 @@ Key facts:
 
 - Works in Firefox, and in Chrome, Edge, Brave, Opera, Arc and other Chromium
   browsers.
-- Installed from Firefox Add-ons
-  (https://addons.mozilla.org/firefox/addon/notforyou/). The Chrome Web Store
-  listing is in review.
+- Installed from the Chrome Web Store
+  (https://chromewebstore.google.com/detail/not-for-you/pakdneaipkfgaahgbafblmdebfoadjca)
+  or Firefox Add-ons
+  (https://addons.mozilla.org/firefox/addon/notforyou/).
 - Every change is a per-platform checkbox in the popup, so any of it can be
   turned off. A pause button brings the algorithm back for a few minutes.
 - Per platform: YouTube shows Subscriptions instead of Home (with options to

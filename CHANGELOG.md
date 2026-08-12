@@ -2,9 +2,9 @@
 
 ## 1.0.0 (2026-08-07)
 
-Initial release. Live on
-[Firefox Add-ons](https://addons.mozilla.org/firefox/addon/notforyou/); the
-Chrome Web Store listing is in review.
+Initial release. Live on the
+[Chrome Web Store](https://chromewebstore.google.com/detail/not-for-you/pakdneaipkfgaahgbafblmdebfoadjca)
+and [Firefox Add-ons](https://addons.mozilla.org/firefox/addon/notforyou/).
 
 - YouTube: Subscriptions instead of Home, turn off autoplay, hide the Shorts
   row, hide "what to watch next"

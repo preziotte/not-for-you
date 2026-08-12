@@ -33,10 +33,12 @@ when you want the algorithm back.
 
 ## Install
 
+[Chrome Web Store](https://chromewebstore.google.com/detail/not-for-you/pakdneaipkfgaahgbafblmdebfoadjca)
+(Chrome, Edge, Brave, Opera, Arc and the other Chromium browsers)
+
 [Firefox Add-ons](https://addons.mozilla.org/firefox/addon/notforyou/)
 
-The Chrome Web Store listing is still in review. Until it is live, Chrome and
-the other Chromium browsers (Edge, Brave, Opera, Arc) run it from source:
+To run it from source instead:
 
 ```sh
 npm install
