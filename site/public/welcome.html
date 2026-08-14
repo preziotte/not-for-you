@@ -1,0 +1,706 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Welcome | Not for You</title>
+    <meta
+      name="description"
+      content="Not for You is installed and already working. What changed, how to pin it, and where to report anything that looks off."
+    />
+    <link rel="canonical" href="https://notforyou.app/welcome" />
+    <meta name="robots" content="noindex" />
+    <!-- Same cookieless Google Analytics setup as index.html; the consent
+         default is never updated, so no cookie is ever set. -->
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag() {
+        dataLayer.push(arguments);
+      }
+      gtag('consent', 'default', {
+        ad_storage: 'denied',
+        ad_user_data: 'denied',
+        ad_personalization: 'denied',
+        analytics_storage: 'denied',
+      });
+      gtag('js', new Date());
+      gtag('config', 'G-E4ERXX28BV');
+      // Production guard: only the real host loads the GA library, so
+      // localhost and any preview build send nothing to the property.
+      // (www redirects to the apex before any page loads, so the exact
+      // hostname is the only one these pages ever serve from.)
+      if (location.hostname === 'notforyou.app') {
+        var ga = document.createElement('script');
+        ga.async = true;
+        ga.src = 'https://www.googletagmanager.com/gtag/js?id=G-E4ERXX28BV';
+        document.head.appendChild(ga);
+      }
+    </script>
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="icon" href="/favicon-32.png" sizes="32x32" />
+    <link rel="icon" href="/favicon-16.png" sizes="16x16" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <meta
+      name="theme-color"
+      content="#faf9f7"
+      media="(prefers-color-scheme: light)"
+    />
+    <meta
+      name="theme-color"
+      content="#141414"
+      media="(prefers-color-scheme: dark)"
+    />
+    <meta property="og:type" content="article" />
+    <meta property="og:url" content="https://notforyou.app/welcome" />
+    <meta property="og:site_name" content="Not for You" />
+    <meta property="og:title" content="Welcome | Not for You" />
+    <meta
+      property="og:description"
+      content="Not for You is installed and already working. What changed, how to pin it, and where to report anything that looks off."
+    />
+    <meta property="og:image" content="https://notforyou.app/og.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta
+      property="og:image:alt"
+      content="The Not for You extension popup, listing every supported social platform with its algorithmic feed switched off."
+    />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Welcome | Not for You" />
+    <meta
+      name="twitter:description"
+      content="Not for You is installed and already working. What changed, how to pin it, and where to report anything that looks off."
+    />
+    <meta name="twitter:image" content="https://notforyou.app/og.png" />
+    <script>
+      // Runs before first paint so a stored choice never flashes the system
+      // theme first. No stored choice means no attribute, which leaves the
+      // prefers-color-scheme rules in charge.
+      try {
+        var stored = localStorage.getItem('theme');
+        if (stored) document.documentElement.dataset.theme = stored;
+      } catch (e) {}
+    </script>
+    <style>
+      /* Light is the base. Dark arrives either from the system preference
+         (when the visitor has not chosen) or from an explicit choice, so the
+         same values appear in both blocks below. --sun/--moon ride along so
+         the toggle's icon resolves the same way the theme does, with no JS. */
+      :root {
+        color-scheme: light;
+        --fg: #1a1a1a;
+        --bg: #faf9f7;
+        --muted: #6b6b6b;
+        --sun: none;
+        --moon: block;
+        --glow-a: rgba(86, 120, 255, 0.40);
+        --glow-a2: rgba(126, 88, 255, 0.28);
+        --glow-b: rgba(255, 168, 84, 0.22);
+        --glow-b2: rgba(255, 128, 122, 0.15);
+        --grain: 0.075;
+      }
+      @media (prefers-color-scheme: dark) {
+        :root:not([data-theme='light']) {
+          color-scheme: dark;
+          --fg: #ececec;
+          --bg: #141414;
+          --muted: #9a9a9a;
+          --sun: block;
+          --moon: none;
+          --glow-a: rgba(104, 140, 255, 0.28);
+          --glow-a2: rgba(150, 112, 255, 0.19);
+          --glow-b: rgba(255, 146, 60, 0.16);
+          --glow-b2: rgba(255, 96, 96, 0.11);
+          --grain: 0.09;
+        }
+      }
+      :root[data-theme='dark'] {
+        color-scheme: dark;
+        --fg: #ececec;
+        --bg: #141414;
+        --muted: #9a9a9a;
+        --sun: block;
+        --moon: none;
+        --glow-a: rgba(104, 140, 255, 0.28);
+        --glow-a2: rgba(150, 112, 255, 0.19);
+        --glow-b: rgba(255, 146, 60, 0.16);
+        --glow-b2: rgba(255, 96, 96, 0.11);
+        --grain: 0.09;
+      }
+      .theme-toggle {
+        /* Absolute, not fixed: matches the homepage, scrolling away with
+           the top of the page. */
+        position: absolute;
+        top: 16px;
+        right: 16px;
+        display: grid;
+        place-items: center;
+        width: 32px;
+        height: 32px;
+        padding: 0;
+        color: var(--muted);
+        background: none;
+        border: 0;
+        border-radius: 8px;
+        cursor: pointer;
+        opacity: 0.7;
+        transition:
+          opacity 0.12s ease,
+          background-color 0.12s ease;
+      }
+      .theme-toggle:hover {
+        opacity: 1;
+        background: color-mix(in srgb, currentColor 12%, transparent);
+      }
+      .theme-toggle .sun {
+        display: var(--sun);
+      }
+      .theme-toggle .moon {
+        display: var(--moon);
+      }
+      * {
+        box-sizing: border-box;
+      }
+      /* The page colour lives on html so the canvas is painted before
+         .backdrop, which sits at z-index -1. On body it would cover the
+         backdrop entirely. */
+      html {
+        background: var(--bg);
+      }
+      body {
+        margin: 0;
+        /* Same local-serif stack as the homepage. */
+        font-family: 'Iowan Old Style', Charter, 'Bitstream Charter',
+          'Sitka Text', Cambria, Georgia, 'Times New Roman', serif;
+        color: var(--fg);
+        /* Containing block for .backdrop, so it spans the whole document
+           rather than just the viewport. */
+        position: relative;
+        /* Same vertical rhythm as the home page. Horizontal is symmetric
+           here: this page is a single centred column, with no popup mock to
+           line up against the browser's toolbar. */
+        padding: 7vh 4vw 8vh;
+      }
+
+      /* ---- Background ---------------------------------------------------
+         Two soft colour fields that drift, plus a grain layer. Both are
+         absolutely positioned inside the document rather than fixed to the
+         viewport, so they scroll with the page: the grain sits on the paper
+         instead of floating over it.
+
+         Only `transform` is animated, so the layer is rasterised once and
+         then moved by the compositor: no repaint, no layout, no main-thread
+         work per frame. Animating background-position or the gradient stops
+         instead would re-rasterise the layer every frame, which is the usual
+         reason effects like this cost real battery.
+
+         The rotation is what makes it read as organic. Both fields ride one
+         layer, so they cannot move independently, but rotating that layer
+         sends each along a different arc for the price of a single transform.
+         -------------------------------------------------------------------- */
+      .backdrop {
+        position: absolute;
+        inset: 0;
+        z-index: -1;
+        pointer-events: none;
+        /* The drift layer is deliberately larger than this box. Clipping it
+           here stops that overhang from extending the document's scroll
+           height, which is what would happen if it spilled out. */
+        overflow: clip;
+      }
+      .backdrop::before,
+      .backdrop::after,
+      .drift {
+        content: '';
+        position: absolute;
+      }
+      /* Each field is a cluster of overlapping ellipses of the same hue rather
+         than one gradient. A single radial-gradient always reads as a sphere,
+         because its falloff is perfectly concentric; three of them at
+         different sizes and offsets union into an edge that never resolves
+         into a circle.
+
+         The two clusters also sit on separate layers drifting at different
+         speeds and directions, so their overlap keeps changing and the shapes
+         appear to slowly deform. Two transforms, still no repaint. */
+      .backdrop::before {
+        /* Oversized so the drift never pulls an edge into view. */
+        inset: -14% -30%;
+        background:
+          radial-gradient(72% 56% at 10% 16%, var(--glow-a), transparent 64%),
+          radial-gradient(48% 64% at 40% 2%, var(--glow-a2), transparent 66%),
+          radial-gradient(54% 42% at -4% 46%, var(--glow-a), transparent 70%);
+        animation: drift-a 64s ease-in-out infinite alternate;
+      }
+      .drift {
+        inset: -14% -30%;
+        background:
+          radial-gradient(70% 54% at 90% 74%, var(--glow-b), transparent 64%),
+          radial-gradient(46% 62% at 60% 96%, var(--glow-b2), transparent 68%),
+          radial-gradient(52% 44% at 104% 48%, var(--glow-b), transparent 70%);
+        animation: drift-b 83s ease-in-out infinite alternate;
+      }
+      /* Two noise tiles at different scales: fine film grain over a coarser
+         mottle. The second one is what stops it reading as a regular screen
+         pattern and starts reading as paper. Static, so both are rendered
+         once at load and then cost nothing per frame. */
+      .backdrop::after {
+        inset: 0;
+        opacity: var(--grain);
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)'/%3E%3C/svg%3E"),
+          url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='320' height='320'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.3' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='320' height='320' filter='url(%23n)'/%3E%3C/svg%3E");
+        background-size:
+          160px 160px,
+          320px 320px;
+      }
+      /* macOS rubber-band overscroll reveals the canvas, which is painted
+         with html's flat --bg. Because .backdrop is anchored to the document
+         it scrolls away with the content, so without this the bounce exposes
+         a hard seam between the tinted page and the untinted canvas. Fading
+         the backdrop back to --bg at both document edges means the edge pixel
+         row already matches what the bounce paints, so there is no seam to
+         see however hard you pull. Reads as a soft vignette otherwise. */
+      body::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        z-index: -1;
+        pointer-events: none;
+        /* Long, and eased by the half-strength midpoints: a plain two-stop
+           fade over this distance reads as a visible band, because the eye
+           picks up the constant rate of change. */
+        background: linear-gradient(
+          to bottom,
+          var(--bg) 0,
+          color-mix(in srgb, var(--bg) 45%, transparent) 7%,
+          transparent 19%,
+          transparent 81%,
+          color-mix(in srgb, var(--bg) 45%, transparent) 93%,
+          var(--bg) 100%
+        );
+      }
+      @keyframes drift-a {
+        from {
+          transform: translate3d(-3%, -2%, 0) rotate(-5deg) scale(1.05);
+        }
+        to {
+          transform: translate3d(3%, 2%, 0) rotate(4deg) scale(1.15);
+        }
+      }
+      /* Opposed direction and a deliberately unrelated duration, so the two
+         clusters never fall back into sync. */
+      @keyframes drift-b {
+        from {
+          transform: translate3d(3%, 2%, 0) rotate(5deg) scale(1.13);
+        }
+        to {
+          transform: translate3d(-2%, -2%, 0) rotate(-4deg) scale(1.04);
+        }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        .backdrop::before,
+        .drift {
+          animation: none;
+        }
+      }
+      /* The measure the home page holds its prose to. */
+      main {
+        max-width: 32rem;
+        margin: 0 auto;
+      }
+      .title {
+        position: relative;
+        margin: 0 0 1.5rem;
+      }
+      /* Scales like the home page's headline, from a smaller ceiling: this is
+         a document, not a pitch. */
+      h1 {
+        font-size: clamp(1.9rem, 6vw, 2.6rem);
+        font-weight: normal;
+        letter-spacing: -0.02em;
+        margin: 0;
+      }
+      /* Home, as a round arrow hanging in the margin beside the headline,
+         centred on the h1's first line. Dressed like the theme toggle:
+         muted and quiet until pointed at. Same treatment as the platform
+         pages' template. */
+      .back {
+        position: absolute;
+        /* Centred on the ink of the headline's first line, which sits lower
+           than the line-box centre: these titles are mostly lowercase, so
+           the eye centres on the x-height band and the descenders below it.
+           The h1 clamp is already at its ceiling everywhere the arrow is
+           absolute (the collapse at 44rem comes after the clamp caps), so
+           one static offset holds. */
+        top: 0.75rem;
+        left: -3.25rem;
+        display: grid;
+        place-items: center;
+        width: 2.25rem;
+        height: 2.25rem;
+        color: var(--muted);
+        border: 1px solid color-mix(in srgb, currentColor, transparent 80%);
+        border-radius: 999px;
+        text-decoration: none;
+        transition:
+          color 0.12s ease,
+          background-color 0.12s ease;
+      }
+      .back:hover {
+        color: var(--fg);
+        background: color-mix(in srgb, currentColor, transparent 92%);
+      }
+      /* Below this the column takes the whole viewport and there is no
+         margin to hang in, so the arrow sits above the headline instead. */
+      @media (max-width: 44rem) {
+        .back {
+          position: static;
+          display: inline-grid;
+          margin-bottom: 1rem;
+        }
+      }
+      /* The three sizes from the home page: the opening line at tagline size,
+         the body at detail size, the closing note quieter than both. */
+      p.lead {
+        font-size: 1.15rem;
+        line-height: 1.6;
+        margin: 0 0 2.2rem;
+      }
+      h2 {
+        font-size: 1rem;
+        font-weight: normal;
+        margin: 1.8rem 0 0.35rem;
+      }
+      /* A rule already carries its own space above the heading. */
+      .rule + h2 {
+        margin-top: 0;
+      }
+      /* The homepage FAQ's dressing: questions at full strength, the prose
+         below them a step quieter. The contrast is what lets a normal-weight
+         serif heading read as a heading at all. */
+      h2 + p {
+        font-size: 0.95rem;
+        line-height: 1.7;
+        color: var(--muted);
+      }
+      p {
+        font-size: 1rem;
+        line-height: 1.75;
+        margin: 0 0 1.4rem;
+      }
+      p:last-child {
+        margin-bottom: 0;
+      }
+      .muted {
+        color: var(--muted);
+        font-size: 0.95rem;
+      }
+      /* The lead already carries 2.2rem below it; a full rule margin on top
+         of that opens a hole between the opening line and the first section. */
+      .lead + .rule {
+        margin-top: 0.3rem;
+      }
+      .rule {
+        width: 2rem;
+        height: 1px;
+        background: currentColor;
+        opacity: 0.18;
+        border: 0;
+        margin: 2.5rem 0;
+      }
+      a {
+        color: inherit;
+        /* The underline fades out on hover rather than vanishing: colour
+           can transition where the decoration itself cannot, and 0.12s is
+           the page's standard hover speed. */
+        transition: text-decoration-color 0.12s ease;
+      }
+      a:hover {
+        text-decoration-color: transparent;
+      }
+      a:focus-visible,
+      .theme-toggle:focus-visible {
+        outline: 2px solid currentColor;
+        outline-offset: 3px;
+        border-radius: 3px;
+      }
+      footer {
+        margin-top: 3rem;
+        font-size: 0.85rem;
+        color: var(--muted);
+      }
+      footer a {
+        color: inherit;
+      }
+      footer .sep {
+        margin: 0 0.6em;
+        opacity: 0.5;
+      }
+      /* Opens the row but stays a touch quieter than the links: it is a
+         notice, not something anyone came here to click. Kept unbroken so a
+         wrap never splits the year off from the name. */
+      footer .copyright {
+        white-space: nowrap;
+        opacity: 0.75;
+      }
+
+      /* ---- Pointer to the toolbar ---------------------------------------
+         Same job as the homepage's arrow: the page cannot show the browser's
+         own chrome, so it points at it, up and to the right toward the
+         extensions area. The curve and the horizontal inset are copied from
+         the homepage, where they are tuned so the arrowhead lands on the
+         puzzle-piece icon. Decorative: the "Pin the extension" section
+         carries the same information in text. */
+      .pointer {
+        position: absolute;
+        top: 0.5rem;
+        right: 8.5rem;
+        color: var(--muted);
+        pointer-events: none;
+      }
+      .pointer > svg {
+        display: block;
+        margin-left: auto;
+        opacity: 0.55;
+      }
+      .pointer > span {
+        display: block;
+        /* Two short lines centred under the arrow; unconstrained, the
+           shrink-to-fit width would stretch the whole sentence into one
+           long line reaching back over the text column. */
+        width: 15rem;
+        margin-top: 0.3rem;
+        margin-left: auto;
+        text-align: center;
+        /* A pixel over the round figure: Iowan runs small at caption sizes. */
+        font-size: calc(0.9rem + 1px);
+        font-style: italic;
+        line-height: 1.5;
+      }
+      /* The second sentence as one object: the Extensions button on the
+         left, the words ranged left beside it, the chip centred on the
+         two-line block, and the pair centred as a unit under the arrow.
+         Splicing the chip into centred text instead leaves the two lines
+         centring on different axes, which reads as clutter. */
+      .pointer .ext-row {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.55em;
+        margin-top: 0.9em;
+        text-align: left;
+      }
+      /* Chrome's puzzle piece in the round chip it actually wears in the
+         toolbar. Full foreground for the glyph, like the toolbar itself,
+         where the icon sits brighter than the text around it; the chip
+         fill picks that colour up at the toolbar's own quiet strength. */
+      .pointer .ext-button {
+        display: grid;
+        place-items: center;
+        flex-shrink: 0;
+        position: relative;
+        left: -3px;
+        width: 2.1em;
+        height: 2.1em;
+        border-radius: 50%;
+        color: var(--fg);
+        background: color-mix(in srgb, currentColor 14%, transparent);
+      }
+      /* Narrow windows have no toolbar corner to point at (and on phones,
+         no extensions button at all), so the arrow goes entirely. Same
+         collapse point as the homepage. */
+      @media (max-width: 62rem) {
+        .pointer {
+          display: none;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="backdrop"><div class="drift"></div></div>
+    <button class="theme-toggle" type="button" aria-label="Switch theme">
+      <svg
+        class="sun"
+        width="16"
+        height="16"
+        viewBox="0 0 16 16"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="1.4"
+        stroke-linecap="round"
+        aria-hidden="true"
+      >
+        <circle cx="8" cy="8" r="3.1" />
+        <path
+          d="M8 1.2v1.5M8 13.3v1.5M1.2 8h1.5M13.3 8h1.5M3.2 3.2l1.1 1.1M11.7 11.7l1.1 1.1M12.8 3.2l-1.1 1.1M4.3 11.7l-1.1 1.1"
+        />
+      </svg>
+      <svg
+        class="moon"
+        width="16"
+        height="16"
+        viewBox="0 0 16 16"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="1.4"
+        stroke-linejoin="round"
+        aria-hidden="true"
+      >
+        <path d="M13.6 9.8A5.9 5.9 0 0 1 6.2 2.4a5.9 5.9 0 1 0 7.4 7.4Z" />
+      </svg>
+    </button>
+    <!-- Points up and right, at the extensions area of the browser's own
+         toolbar. Same drawing as the homepage's arrow: the toolbar button
+         sits far above the page, so the curve leaves almost vertically. -->
+    <div class="pointer" aria-hidden="true">
+      <svg
+        width="200"
+        height="112"
+        viewBox="0 0 200 112"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="1.6"
+        stroke-linecap="round"
+      >
+        <path d="M10 104C72 100 152 94 170 14" />
+        <path d="M170 14l-10.8 11.8M170 14l4.8 15.3" />
+      </svg>
+      <span
+        >&ldquo;Not for You&rdquo; lives up here.
+        <span class="ext-row"
+          ><span class="ext-button"
+          ><!-- Chrome's own toolbar glyph, converted verbatim from
+               components/vector_icons/chrome_extension.icon in the
+               Chromium tree: a filled outline whose inner subpath cuts
+               the hole, hence fill and no stroke. -->
+          <svg width="19" height="19" viewBox="0 0 20 20" fill="currentColor">
+            <path
+              d="M4.5 17c-.41 0-.77-.15-1.06-.44A1.44 1.44 0 0 1 3 15.5v-2.89c0-.18.06-.34.17-.48a.65.65 0 0 1 .44-.25 2.28 2.28 0 0 0 1-.73C4.87 10.81 5 10.43 5 10c0-.43-.13-.81-.39-1.14a2.28 2.28 0 0 0-1-.73.64.64 0 0 1-.44-.25A.78.78 0 0 1 3 7.38V4.5c0-.41.15-.77.44-1.06A1.44 1.44 0 0 1 4.5 3H8c0-.56.19-1.03.58-1.42A1.93 1.93 0 0 1 10 1c.56 0 1.03.19 1.42.58.39.39.58.86.58 1.42h3.5c.41 0 .77.15 1.06.44.29.29.44.65.44 1.06V8a1.94 1.94 0 0 1 1.42.58c.39.39.58.86.58 1.42 0 .56-.19 1.03-.58 1.42A1.94 1.94 0 0 1 17 12v3.5c0 .41-.15.77-.44 1.06A1.44 1.44 0 0 1 15.5 17Zm0-1.5h11v-11h-11v2.33a3.23 3.23 0 0 1 1.47 1.28C6.32 8.69 6.5 9.32 6.5 10c0 .7-.18 1.33-.53 1.91A3.12 3.12 0 0 1 4.5 13.17Z"
+            /></svg
+          ></span>
+          <span
+            >Click this Extensions button in your toolbar to adjust
+            settings.</span
+          ></span
+        ></span
+      >
+    </div>
+    <main>
+      <div class="title">
+        <a class="back" href="/" aria-label="Back to Not for You">
+          <svg
+            width="16"
+            height="16"
+            viewBox="0 0 16 16"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.4"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            aria-hidden="true"
+          >
+            <path d="M13 8H3M6.5 4.5 3 8l3.5 3.5" />
+          </svg>
+        </a>
+        <h1>You're all set</h1>
+      </div>
+      <p class="lead">
+        The extension has been installed and enabled.
+      </p>
+
+      <hr class="rule" />
+
+      <p>
+        The next time you open YouTube, Instagram,
+        TikTok, X, LinkedIn, Threads or Facebook, you will land on the
+        accounts you chose to follow, in the order they posted. No suggested
+        posts, no recommended accounts, no more For You feed.
+      </p>
+
+      <hr class="rule" />
+
+      <h2>Pin the extension</h2>
+      <p>
+        If you want easy access to the extension, you can pin it to your
+        toolbar. Click the puzzle-piece icon in the toolbar and then the pin.
+      </p>
+
+      <h2>Turn it off when you need to</h2>
+      <p>
+        Everything the extension does is a checkbox in its popup, so any
+        single change can be switched off per platform. The button at the
+        bottom of the popup pauses the whole thing for a few minutes.
+      </p>
+
+      <h2>If something looks off</h2>
+      <p>
+        If the extension is not working as expected, or something
+        disappears that shouldn't,
+        <a
+          href="https://github.com/preziotte/not-for-you/issues/new"
+          target="_blank"
+          rel="noreferrer"
+          >open an issue</a
+        >
+        or
+        <a href="mailto:mat.preziotte@gmail.com?subject=Not%20for%20You">send an email</a>.
+
+      </p>
+
+      <hr class="rule" />
+
+      <p >
+        Close this tab and enjoy algorithm-free social media.
+      </p>
+
+      <footer>
+        <span class="copyright">&copy; 2026 Not for You</span>
+        <span class="sep">&middot;</span>
+        <a
+          href="https://github.com/preziotte/not-for-you"
+          target="_blank"
+          rel="noreferrer"
+          >Source on GitHub</a
+        >
+        <span class="sep">&middot;</span>
+        <a href="/">Home</a>
+        <span class="sep">&middot;</span>
+        <a href="mailto:mat.preziotte@gmail.com?subject=Not%20for%20You"
+          >Contact</a
+        >
+        <span class="sep">&middot;</span>
+        <a href="https://preziotte.com/" target="_blank" rel="noreferrer"
+          >Made with &hearts;</a
+        >
+      </footer>
+    </main>
+    <script>
+      (function () {
+        var root = document.documentElement;
+        var button = document.querySelector('.theme-toggle');
+        var dark = matchMedia('(prefers-color-scheme: dark)');
+        // No stored choice means the theme is whatever the system says.
+        function active() {
+          return root.dataset.theme || (dark.matches ? 'dark' : 'light');
+        }
+        function label() {
+          button.setAttribute(
+            'aria-label',
+            active() === 'dark' ? 'Switch to light theme' : 'Switch to dark theme',
+          );
+        }
+        button.addEventListener('click', function () {
+          var next = active() === 'dark' ? 'light' : 'dark';
+          root.dataset.theme = next;
+          try {
+            localStorage.setItem('theme', next);
+          } catch (e) {}
+          label();
+        });
+        // Only fires while the visitor is still on the system default.
+        dark.addEventListener('change', label);
+        label();
+      })();
+    </script>
+  </body>
+</html>
