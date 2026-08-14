@@ -22,9 +22,20 @@ async function syncRedirectRules() {
 }
 
 export default defineBackground(() => {
-  browser.runtime.onInstalled.addListener(() => void syncRedirectRules());
+  browser.runtime.onInstalled.addListener((details) => {
+    void syncRedirectRules();
+    // Fresh installs only: updates and browser upgrades stay silent. The
+    // page is the one confirmation the user gets that anything happened,
+    // since the extension's whole effect is things quietly not appearing.
+    if (details.reason === 'install') {
+      void browser.tabs.create({ url: 'https://notforyou.app/welcome' });
+    }
+  });
   browser.runtime.onStartup.addListener(() => void syncRedirectRules());
   watchSettings(() => void syncRedirectRules());
+
+  // Asks why on the way out; the browser opens this after an uninstall.
+  void browser.runtime.setUninstallURL('https://notforyou.app/goodbye');
 
   // The popup schedules this alarm when a global disable starts; ending it
   // is just clearing the timestamp, and the storage watch above re-syncs
