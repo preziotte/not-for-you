@@ -28,11 +28,17 @@
       });
       gtag('js', new Date());
       gtag('config', 'G-E4ERXX28BV');
+      // Production guard: only the real host loads the GA library, so
+      // localhost and any preview build send nothing to the property.
+      // (www redirects to the apex before any page loads, so the exact
+      // hostname is the only one these pages ever serve from.)
+      if (location.hostname === 'notforyou.app') {
+        var ga = document.createElement('script');
+        ga.async = true;
+        ga.src = 'https://www.googletagmanager.com/gtag/js?id=G-E4ERXX28BV';
+        document.head.appendChild(ga);
+      }
     </script>
-    <script
-      async
-      src="https://www.googletagmanager.com/gtag/js?id=G-E4ERXX28BV"
-    ></script>
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <link rel="icon" href="/favicon-32.png" sizes="32x32" />
     <link rel="icon" href="/favicon-16.png" sizes="16x16" />

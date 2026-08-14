@@ -27,11 +27,17 @@
       });
       gtag('js', new Date());
       gtag('config', 'G-E4ERXX28BV');
+      // Production guard: only the real host loads the GA library, so
+      // localhost and any preview build send nothing to the property.
+      // (www redirects to the apex before any page loads, so the exact
+      // hostname is the only one these pages ever serve from.)
+      if (location.hostname === 'notforyou.app') {
+        var ga = document.createElement('script');
+        ga.async = true;
+        ga.src = 'https://www.googletagmanager.com/gtag/js?id=G-E4ERXX28BV';
+        document.head.appendChild(ga);
+      }
     </script>
-    <script
-      async
-      src="https://www.googletagmanager.com/gtag/js?id=G-E4ERXX28BV"
-    ></script>
     <!-- The SVG is the one that gets used, and it carries both themes itself
          through a media query, so there is no light and dark pair to keep in
          sync here. The PNGs are the fallback for anything that will not take
