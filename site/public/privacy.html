@@ -325,7 +325,13 @@
          pages' template. */
       .back {
         position: absolute;
-        top: 0.45rem;
+        /* Centred on the ink of the headline's first line, which sits lower
+           than the line-box centre: these titles are mostly lowercase, so
+           the eye centres on the x-height band and the descenders below it.
+           The h1 clamp is already at its ceiling everywhere the arrow is
+           absolute (the collapse at 44rem comes after the clamp caps), so
+           one static offset holds. */
+        top: 0.75rem;
         left: -3.25rem;
         display: grid;
         place-items: center;
