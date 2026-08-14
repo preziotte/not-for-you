@@ -3,7 +3,7 @@
   "description": "Removes algorithmic and suggested content from social media sites.",
   "private": true,
   "license": "MIT",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/preziotte/not-for-you.git"

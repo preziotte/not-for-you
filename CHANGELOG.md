@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.0.1 (2026-08-14)
+
+- Opens [notforyou.app/welcome](https://notforyou.app/welcome) once on a
+  fresh install, so there is some confirmation the extension is working
+- Asks why on the way out: uninstalling opens
+  [notforyou.app/goodbye](https://notforyou.app/goodbye)
+
 ## 1.0.0 (2026-08-07)
 
 Initial release. Live on the
