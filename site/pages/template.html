@@ -13,8 +13,7 @@
     <title>{{TITLE}}</title>
     <meta name="description" content="{{DESCRIPTION}}" />
     <link rel="canonical" href="https://notforyou.app/{{SLUG}}" />
-    <!-- Same cookieless Google Analytics setup as index.html; the consent
-         default is never updated, so no cookie is ever set. -->
+    <!-- Same Google Analytics setup as index.html, which has the reasoning. -->
     <script>
       window.dataLayer = window.dataLayer || [];
       function gtag() {
@@ -24,7 +23,7 @@
         ad_storage: 'denied',
         ad_user_data: 'denied',
         ad_personalization: 'denied',
-        analytics_storage: 'denied',
+        analytics_storage: 'granted',
       });
       gtag('js', new Date());
       gtag('config', 'G-E4ERXX28BV');
