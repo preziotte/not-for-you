@@ -1,0 +1,48 @@
+name: Release
+
+# Tagging v1.2.3 builds both store packages from that exact commit and
+# attaches them to a GitHub release, so what you upload to the Chrome Web
+# Store and AMO is provably the tagged source rather than whatever happened
+# to be in .output on a laptop.
+on:
+  push:
+    tags: ['v*']
+
+permissions:
+  contents: write
+
+jobs:
+  package:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci
+
+      # The tag is the source of truth for the version; package.json has to
+      # agree or the zips would be named after a different release.
+      - name: Tag matches package.json
+        run: |
+          tagged="${GITHUB_REF_NAME#v}"
+          packaged="$(node -p "require('./package.json').version")"
+          if [ "$tagged" != "$packaged" ]; then
+            echo "::error::tag $GITHUB_REF_NAME does not match package.json version $packaged"
+            exit 1
+          fi
+
+      - run: npm run compile
+      - run: npm run zip
+      - run: npm run zip:firefox
+
+      - name: Draft the release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "$GITHUB_REF_NAME" \
+            --draft \
+            --title "$GITHUB_REF_NAME" \
+            --notes "See [CHANGELOG.md](https://github.com/${GITHUB_REPOSITORY}/blob/main/CHANGELOG.md)." \
+            .output/*.zip

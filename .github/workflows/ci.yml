@@ -1,6 +1,12 @@
 name: CI
 
-on: pull_request
+# Pull requests and direct pushes to main both run this. Most work on this
+# repo lands straight on main, so a pull-request-only trigger would leave
+# nearly every commit unchecked.
+on:
+  pull_request:
+  push:
+    branches: [main]
 
 jobs:
   build:
@@ -15,3 +21,17 @@ jobs:
       - run: npm run compile
       - run: npm run build
       - run: npm run build:firefox
+
+      # The per-platform pages under site/public are generated from
+      # site/pages, so editing one of them directly is silently undone by the
+      # next build. Regenerating and diffing turns that into a failure here
+      # instead of a surprise weeks later.
+      - name: Generated pages match their source
+        run: |
+          npm run build:pages
+          if ! git diff --exit-code --stat -- site/public; then
+            echo "::error::site/public is out of date. Edit site/pages and run 'npm run build:pages', do not edit the generated pages."
+            exit 1
+          fi
+
+      - run: npm run build:site
