@@ -16,16 +16,16 @@ accounts you chose to follow, in the order they posted.
 Every option below is a checkbox in the popup, on by default (except where
 noted), and can be turned off per platform.
 
-| Platform  | Feed                                    | Extra options                                                     |
-| --------- | --------------------------------------- | ----------------------------------------------------------------- |
-| YouTube   | Subscriptions instead of the Home feed  | turn off autoplay, hide the Shorts row, hide "what to watch next" |
-| Instagram | Following instead of the Home feed      | hide the suggestions sidebar                                      |
-| TikTok    | Following instead of the "For You" feed | hide the header bar                                               |
-| X/Twitter | Following instead of the "For You" feed | hide trends and suggestions                                       |
+| Platform  | Feed                                    | Extra options                                                                      |
+| --------- | --------------------------------------- | ---------------------------------------------------------------------------------- |
+| YouTube   | Subscriptions instead of the Home feed  | turn off autoplay, hide the Shorts row, hide "what to watch next"                  |
+| Instagram | Following instead of the Home feed      | hide the suggestions sidebar                                                       |
+| TikTok    | Following instead of the "For You" feed | hide the header bar                                                                |
+| X/Twitter | Following instead of the "For You" feed | hide trends and suggestions                                                        |
 | Reddit    | left alone, it is already followed-only | hide promoted posts and ads, hide recommendations, use old Reddit (off by default) |
-| LinkedIn  | Recent instead of the Top sort          | hide promoted and suggested posts, hide the news sidebar          |
-| Threads   | Following instead of the "For You" feed |                                                                   |
-| Facebook  | The Feeds view instead of Home          | hide the Reels tab                                                |
+| LinkedIn  | Recent instead of the Top sort          | hide promoted and suggested posts, hide the news sidebar                           |
+| Threads   | Following instead of the "For You" feed |                                                                                    |
+| Facebook  | The Feeds view instead of Home          | hide the Reels tab                                                                 |
 
 Nothing else changes. Search, profiles, messages and posting all work exactly as
 before, and a button in the popup turns the whole thing off for a few minutes
@@ -72,21 +72,22 @@ Redirects that a single-page app performs internally never hit the network, so
 
 Platforms worth supporting, roughly in the order they make sense to build.
 
-| Platform  | Why                                                                                 |
-| --------- | ----------------------------------------------------------------------------------- |
-| Twitch    | Home is pure recommendations, and `/directory/following/live` is a clean redirect.   |
-| Bluesky   | The closest fit to the premise, but Following is client state, so DOM work like X.   |
-| Substack  | The Notes home feed is algorithmic; `/inbox` is just what you subscribed to.         |
-| Pinterest | The most algorithmic feed of the lot. Its Following view keeps coming and going.     |
-| Medium    | `/following` is chronological, the home feed is not.                                 |
-| Tumblr    | The dashboard grew a "For you" tab. Unclear whether Following is URL-addressable.    |
-| GitHub    | The dashboard feed has For you and Following tabs. Small audience, tiny fix.         |
+| Platform  | Why                                                                                |
+| --------- | ---------------------------------------------------------------------------------- |
+| Twitch    | Home is pure recommendations, and `/directory/following/live` is a clean redirect. |
+| Bluesky   | The closest fit to the premise, but Following is client state, so DOM work like X. |
+| Substack  | The Notes home feed is algorithmic; `/inbox` is just what you subscribed to.       |
+| Pinterest | The most algorithmic feed of the lot. Its Following view keeps coming and going.   |
+| Medium    | `/following` is chronological, the home feed is not.                               |
+| Tumblr    | The dashboard grew a "For you" tab. Unclear whether Following is URL-addressable.  |
+| GitHub    | The dashboard feed has For you and Following tabs. Small audience, tiny fix.       |
 
 ## Privacy
 
 No accounts, no servers, no analytics, and the extension makes no network
 requests of its own. The only thing stored is which platforms are enabled and
-their options, in the browser's own extension storage. Full policy:
+their options, in the browser's own extension storage. The website is separate
+and does use Google Analytics to count visits. Full policy:
 [notforyou.app/privacy](https://notforyou.app/privacy).
 
 ## Development

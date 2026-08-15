@@ -119,13 +119,28 @@ function master(name, svg) {
   const src = join(TMP, `${name}.svg`);
   const out = join(TMP, `${name}.png`);
   writeFileSync(src, svg);
-  execFileSync('magick', ['-background', 'none', src, '-resize', '1024x1024', `png32:${out}`]);
+  execFileSync('magick', [
+    '-background',
+    'none',
+    src,
+    '-resize',
+    '1024x1024',
+    `png32:${out}`,
+  ]);
   return out;
 }
 
 function png(from, size, to) {
   mkdirSync(dirname(to), { recursive: true });
-  execFileSync('magick', [from, '-filter', 'Lanczos', '-resize', `${size}x${size}`, '-strip', `png32:${to}`]);
+  execFileSync('magick', [
+    from,
+    '-filter',
+    'Lanczos',
+    '-resize',
+    `${size}x${size}`,
+    '-strip',
+    `png32:${to}`,
+  ]);
   console.log(`  ${to.replace(ROOT + '/', '')}`);
 }
 
@@ -166,9 +181,19 @@ png(touch, 180, join(SITE, 'apple-touch-icon.png'));
 const storeOut = join(ROOT, 'assets/store-icon-128.png');
 mkdirSync(dirname(storeOut), { recursive: true });
 execFileSync('magick', [
-  main, '-filter', 'Lanczos', '-resize', '96x96',
-  '-background', 'none', '-gravity', 'center', '-extent', '128x128',
-  '-strip', `png32:${storeOut}`,
+  main,
+  '-filter',
+  'Lanczos',
+  '-resize',
+  '96x96',
+  '-background',
+  'none',
+  '-gravity',
+  'center',
+  '-extent',
+  '128x128',
+  '-strip',
+  `png32:${storeOut}`,
 ]);
 console.log(`  ${storeOut.replace(ROOT + '/', '')}`);
 

@@ -57,7 +57,7 @@ for (const path of await htmlFilesIn(output)) {
   const now = gzipSync(Buffer.from(minified), { level: 9 }).length;
   const saved = Math.round(((was - now) / was) * 100);
   console.log(
-    `${name}: ${(was / 1024).toFixed(1)} KB -> ${(now / 1024).toFixed(1)} KB gzipped (-${saved}%)`
+    `${name}: ${(was / 1024).toFixed(1)} KB -> ${(now / 1024).toFixed(1)} KB gzipped (-${saved}%)`,
   );
 }
 

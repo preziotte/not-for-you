@@ -22,6 +22,8 @@
     "zip": "wxt zip",
     "zip:firefox": "wxt zip -b firefox",
     "compile": "tsc --noEmit",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
     "icons": "node scripts/icons.mjs",
     "build:site": "node scripts/build-site.mjs",
     "build:pages": "node scripts/build-pages.mjs",
@@ -30,7 +32,8 @@
   },
   "devDependencies": {
     "html-minifier-terser": "^7.2.0",
+    "prettier": "^3.9.6",
     "typescript": "^5.6.0",
-    "wxt": "^0.20.0"
+    "wxt": "^0.21.4"
   }
 }

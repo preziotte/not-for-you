@@ -1,0 +1,11 @@
+node_modules/
+.output/
+.wxt/
+site/.build/
+package-lock.json
+
+# The site's HTML is hand-tuned and partly generated from site/pages, and CI
+# diffs site/public against a fresh build:pages run. Reformatting either side
+# would make that check fail on formatting rather than on real drift, so the
+# whole site is left to its own conventions.
+site/

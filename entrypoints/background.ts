@@ -1,6 +1,11 @@
 import { browser, defineBackground } from '#imports';
 import { PLATFORMS, rulesFor } from '../lib/platforms';
-import { getSettings, isGloballyDisabled, DISABLE_ALARM, disabledUntil } from '../lib/settings';
+import {
+  getSettings,
+  isGloballyDisabled,
+  DISABLE_ALARM,
+  disabledUntil,
+} from '../lib/settings';
 import { watchSettings } from '../lib/settings';
 
 /**

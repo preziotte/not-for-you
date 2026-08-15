@@ -8,9 +8,7 @@ export default defineContentScript({
   runAt: 'document_start',
   main() {
     watchSpaNavigation('tiktok', (url) =>
-      url.pathname === '/' || url.pathname === '/foryou'
-        ? '/following'
-        : null,
+      url.pathname === '/' || url.pathname === '/foryou' ? '/following' : null,
     );
 
     // Header action bar: Get Coins / Get App / PC App upsells plus the

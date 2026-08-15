@@ -1,3 +1,18 @@
 {
-  "extends": "./.wxt/tsconfig.json"
+  "extends": "./.wxt/tsconfig.json",
+  "compilerOptions": {
+    /*
+     * WXT 0.21 turned this on in the tsconfig it generates. It fights two
+     * deliberate patterns here rather than finding bugs: PlatformSettings is
+     * `Record<string, boolean>` because the option keys come from
+     * lib/platforms.ts and cannot be spelled as a type, and getSettings()
+     * fills in every one of them, so a flag read is never actually
+     * undefined. The rest are array indexes already guarded by a length
+     * check on the line above, which TypeScript does not narrow through.
+     *
+     * Worth revisiting as its own change: keying PlatformSettings off the
+     * options in lib/platforms.ts would satisfy this honestly.
+     */
+    "noUncheckedIndexedAccess": false
+  }
 }

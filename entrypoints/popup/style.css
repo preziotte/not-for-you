@@ -37,8 +37,9 @@ header h1 {
   margin: 0;
   /* The same local-serif stack as the site, so the popup and the page share
      one identity. */
-  font-family: 'Iowan Old Style', Charter, 'Bitstream Charter', 'Sitka Text',
-    Cambria, Georgia, 'Times New Roman', serif;
+  font-family:
+    'Iowan Old Style', Charter, 'Bitstream Charter', 'Sitka Text', Cambria,
+    Georgia, 'Times New Roman', serif;
   /* Georgia's normal line box, so the swap does not change the popup's
      height. */
   line-height: 1.12;

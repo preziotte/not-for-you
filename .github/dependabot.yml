@@ -1,0 +1,21 @@
+version: 2
+
+# Everything here is dev tooling: package.json has no runtime dependencies, so
+# nothing Dependabot bumps ever reaches the shipped extension. Grouped into one
+# weekly PR because a one-person project does not need eight of them.
+updates:
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: weekly
+    groups:
+      dev-dependencies:
+        patterns: ['*']
+
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+    groups:
+      actions:
+        patterns: ['*']

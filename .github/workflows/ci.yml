@@ -18,6 +18,13 @@ jobs:
           node-version-file: .nvmrc
           cache: npm
       - run: npm ci
+
+      # Formatting before the slower checks: it is the cheapest failure and
+      # the one most likely to appear in an outside pull request. site/ is
+      # excluded in .prettierignore, so this never collides with the
+      # generated-page check below.
+      - run: npm run format:check
+
       - run: npm run compile
       - run: npm run build
       - run: npm run build:firefox

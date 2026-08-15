@@ -65,8 +65,10 @@ async function render() {
 
     for (const opt of platform.options) {
       item.append(
-        option(opt.label, current[platform.id][opt.key], (checked) =>
-          void updatePlatform(platform.id, { [opt.key]: checked }),
+        option(
+          opt.label,
+          current[platform.id][opt.key],
+          (checked) => void updatePlatform(platform.id, { [opt.key]: checked }),
         ),
       );
     }
