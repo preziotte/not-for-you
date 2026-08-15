@@ -87,7 +87,7 @@ Platforms worth supporting, roughly in the order they make sense to build.
 No accounts, no servers, no analytics, and the extension makes no network
 requests of its own. The only thing stored is which platforms are enabled and
 their options, in the browser's own extension storage. Full policy:
-[notforyou.app/privacy.html](https://notforyou.app/privacy.html).
+[notforyou.app/privacy](https://notforyou.app/privacy).
 
 ## Development
 
@@ -107,6 +107,7 @@ npm run zip:firefox # package for Firefox Add-ons
 | `entrypoints/`     | The background script, one content script per platform, the popup.  |
 | `lib/settings.ts`  | Stored settings and the temporary-disable timer.                    |
 | `site/public/`     | The landing page and privacy policy, deployed to notforyou.app.     |
+| `site/pages/`      | Template and copy the per-platform pages are generated from.        |
 | `site/main.tf`     | Terraform for the site's S3 and CloudFront setup.                   |
 
 `lib/platforms.ts` is the single source of truth: content scripts take their
@@ -117,11 +118,41 @@ The social card at `site/public/og.png` is generated from `site/og-image.html`.
 Regenerating it after an edit is a headless screenshot; the command is in a
 comment at the top of that file.
 
+## The site
+
+```sh
+npm run dev:site    # preview site/public at http://127.0.0.1:8080
+npm run build:pages # regenerate the per-platform pages into site/public
+npm run build:site  # minified copy of site/public into site/.build
+```
+
+`site/public` is the source of truth and what you edit, with two exceptions.
+The per-platform pages (`twitter.html`, `youtube.html` and the rest) are
+generated: their copy lives in `site/pages/platforms.mjs`, their shell in
+`site/pages/template.html`, and the shared theme, hero and install regions are
+lifted out of `index.html` itself, so edit those and re-run `build:pages`
+rather than the output. `site/.build` is likewise generated, by `build:site`,
+which strips comments and minifies the inline CSS and JS for deployment.
+
+Use `npm run dev:site` rather than any other static server. Every internal link
+is extensionless (`/youtube`, not `/youtube.html`), which works in production
+only because the CloudFront function in `site/url-rewrite.js` appends `.html`
+at the edge; `scripts/serve-site.mjs` applies the same rule locally, so a plain
+`python -m http.server` will 404 on every page but the homepage. Pass a port
+and a directory to preview something else, for example
+`node scripts/serve-site.mjs 8081 site/.build` to check the minified output.
+
 ## Contributing
 
 Platforms change their markup constantly, so the most useful thing you can file
 is a broken selector: which platform, which option, and what you see instead.
-[Open an issue](https://github.com/preziotte/not-for-you/issues).
+[Open an issue](https://github.com/preziotte/not-for-you/issues). Anything
+security-sensitive goes to email instead: see [SECURITY.md](SECURITY.md).
+
+Releases are cut by tag. Bump the version in `package.json`, write the
+`CHANGELOG.md` entry, then push a matching `v1.2.3` tag: the release workflow
+rebuilds both store packages from that commit, checks the tag against
+`package.json` and attaches the zips to a draft release for upload.
 
 ## License
 

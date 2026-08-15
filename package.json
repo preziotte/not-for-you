@@ -24,6 +24,8 @@
     "compile": "tsc --noEmit",
     "icons": "node scripts/icons.mjs",
     "build:site": "node scripts/build-site.mjs",
+    "build:pages": "node scripts/build-pages.mjs",
+    "dev:site": "node scripts/serve-site.mjs",
     "postinstall": "wxt prepare"
   },
   "devDependencies": {
