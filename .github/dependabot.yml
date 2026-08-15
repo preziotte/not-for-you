@@ -11,6 +11,14 @@ updates:
     groups:
       dev-dependencies:
         patterns: ['*']
+    # No major bumps. The only npm dependency that is not build tooling is
+    # the typechecker, and chasing its majors is churn: nothing here is in
+    # the shipped path, so a bump buys nothing and costs a review. The
+    # `version-update:` prefix scopes this to routine updates only, so a
+    # security advisory still opens a PR at any version jump it needs.
+    ignore:
+      - dependency-name: '*'
+        update-types: ['version-update:semver-major']
 
   - package-ecosystem: github-actions
     directory: /
