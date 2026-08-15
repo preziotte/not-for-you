@@ -1131,6 +1131,22 @@
       .browser-mark + .browser-mark {
         margin-left: -0.15em;
       }
+      /* The first mark is a link to its own store and the rest sit in a
+         grouped span, so the flat row of five is now three flex items. Both
+         wrappers are flex themselves and the group restates .also's gap, so
+         every mark keeps exactly the spacing it had as a direct sibling. */
+      .mark-link {
+        display: inline-flex;
+        color: inherit;
+      }
+      .mark-group {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5em;
+      }
+      .mark-link + .mark-group {
+        margin-left: -0.15em;
+      }
       /* Divides the two halves of the note without a rule or a bullet list.
          Held away from the text on both sides and dimmer than it, so it reads
          as a pause rather than as a character in either sentence. */
@@ -1762,76 +1778,96 @@
               >
                 <use href="#mark-github" width="15" height="15" /></svg
             ></a>
-            <!-- One image as far as assistive tech is concerned, labelled with
-                 the whole sentence: the lead-in is visible text but the marks
-                 are not words, and announcing five logos individually would
-                 be five announcements for one fact. The divider is inside the
-                 group for wrapping, and is not spoken either way.
+            <!-- Two versions of the clause, matching the two buttons:
+                 whichever store the pill points at, this line names the
+                 browsers it does not. Only one is ever shown.
 
-                 Two versions of the clause, matching the two buttons: whichever
-                 store the pill points at, this line names the browsers it does
-                 not. Only one is ever shown. -->
-            <span
-              class="also also-chromium"
-              role="img"
-              aria-label="also works in Firefox, Edge, Brave, Opera and Arc"
-            >
+                 The first mark in each is the one browser here with a listing
+                 of its own, so it links there: a visitor on Chrome pointing at
+                 the Firefox flame is asking about that store, and vice versa.
+                 The other four all install from the store the button already
+                 points at, so their marks stay plain, grouped as one image for
+                 assistive tech: the lead-in is visible text but the marks are
+                 not words, and announcing four logos individually would be
+                 four announcements for one fact. The divider is inside .also
+                 for wrapping, and is not spoken either way. -->
+            <span class="also also-chromium">
               <span class="note-sep">&middot;</span>
               also works in
               <!-- Named on hover with SVG's own <title>, which the browser
                    shows as a tooltip. On the instance rather than on the
                    symbol: a title inside a symbol does not reliably follow
                    the <use> that pulls it in. The names do not double up for
-                   assistive tech, which takes the label off the group above
-                   and ignores what is inside it. -->
-              <svg class="browser-mark" width="15" height="15">
-                <title>Firefox</title>
-                <use href="#mark-firefox" width="15" height="15" />
-              </svg>
-              <svg class="browser-mark" width="15" height="15">
-                <title>Microsoft Edge</title>
-                <use href="#mark-edge" width="15" height="15" />
-              </svg>
-              <svg class="browser-mark" width="15" height="15">
-                <title>Brave</title>
-                <use href="#mark-brave" width="15" height="15" />
-              </svg>
-              <svg class="browser-mark" width="15" height="15">
-                <title>Opera</title>
-                <use href="#mark-opera" width="15" height="15" />
-              </svg>
-              <svg class="browser-mark" width="15" height="15">
-                <title>Arc</title>
-                <use href="#mark-arc" width="15" height="15" />
-              </svg>
+                   assistive tech, which takes the label off the link or the
+                   group and ignores what is inside them. -->
+              <a
+                class="mark-link"
+                href="https://addons.mozilla.org/firefox/addon/notforyou/"
+                aria-label="Firefox, from Firefox Add-ons"
+              >
+                <svg class="browser-mark" width="15" height="15">
+                  <title>Firefox</title>
+                  <use href="#mark-firefox" width="15" height="15" />
+                </svg>
+              </a>
+              <span
+                class="mark-group"
+                role="img"
+                aria-label="Edge, Brave, Opera and Arc"
+              >
+                <svg class="browser-mark" width="15" height="15">
+                  <title>Microsoft Edge</title>
+                  <use href="#mark-edge" width="15" height="15" />
+                </svg>
+                <svg class="browser-mark" width="15" height="15">
+                  <title>Brave</title>
+                  <use href="#mark-brave" width="15" height="15" />
+                </svg>
+                <svg class="browser-mark" width="15" height="15">
+                  <title>Opera</title>
+                  <use href="#mark-opera" width="15" height="15" />
+                </svg>
+                <svg class="browser-mark" width="15" height="15">
+                  <title>Arc</title>
+                  <use href="#mark-arc" width="15" height="15" />
+                </svg>
+              </span>
             </span>
-            <span
-              class="also also-firefox"
-              role="img"
-              aria-label="also works in Chrome, Edge, Brave, Opera and Arc"
-            >
+            <span class="also also-firefox">
               <span class="note-sep">&middot;</span>
               also works in
-              <svg class="browser-mark" width="15" height="15">
-                <title>Chrome</title>
-                <use href="#mark-chrome" width="15" height="15" />
-              </svg>
-              <svg class="browser-mark" width="15" height="15">
-                <title>Microsoft Edge</title>
-                <use href="#mark-edge" width="15" height="15" />
-              </svg>
-              <svg class="browser-mark" width="15" height="15">
-                <title>Brave</title>
-                <use href="#mark-brave" width="15" height="15" />
-              </svg>
-              <svg class="browser-mark" width="15" height="15">
-                <title>Opera</title>
-                <use href="#mark-opera" width="15" height="15" />
-              </svg>
-              <svg class="browser-mark" width="15" height="15">
-                <title>Arc</title>
-                <use href="#mark-arc" width="15" height="15" />
-              </svg>
+              <a
+                class="mark-link"
+                href="https://chromewebstore.google.com/detail/not-for-you/pakdneaipkfgaahgbafblmdebfoadjca"
+                aria-label="Chrome, from the Chrome Web Store"
+              >
+                <svg class="browser-mark" width="15" height="15">
+                  <title>Chrome</title>
+                  <use href="#mark-chrome" width="15" height="15" />
+                </svg>
+              </a>
+              <span
+                class="mark-group"
+                role="img"
+                aria-label="Edge, Brave, Opera and Arc"
+              >
+                <svg class="browser-mark" width="15" height="15">
+                  <title>Microsoft Edge</title>
+                  <use href="#mark-edge" width="15" height="15" />
+                </svg>
+                <svg class="browser-mark" width="15" height="15">
+                  <title>Brave</title>
+                  <use href="#mark-brave" width="15" height="15" />
+                </svg>
+                <svg class="browser-mark" width="15" height="15">
+                  <title>Opera</title>
+                  <use href="#mark-opera" width="15" height="15" />
+                </svg>
+                <svg class="browser-mark" width="15" height="15">
+                  <title>Arc</title>
+                  <use href="#mark-arc" width="15" height="15" />
+                </svg>
+              </span>
             </span>
           </p>
         </div>
