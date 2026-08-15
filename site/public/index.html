@@ -9,11 +9,14 @@
       content="A Chrome extension that removes algorithmic feeds from YouTube, Instagram, X, TikTok, Reddit, LinkedIn and Threads. Only the people you follow, in order."
     />
     <link rel="canonical" href="https://notforyou.app/" />
-    <!-- Google Analytics, permanently in consent-denied mode: the consent
-         default below is never updated, so gtag runs cookieless. No cookie
-         is ever set and nothing is stored on the visitor's machine, which
-         is what lets the privacy policy stay honest and the page skip a
-         consent banner. Counts are modeled by GA rather than exact. -->
+    <!-- Google Analytics. Analytics storage is granted, so gtag sets its
+         usual _ga cookies and the property reports real numbers. Denying it
+         is the cookieless alternative, and it was what ran here first, but
+         GA holds those hits back for behavioural modelling that never
+         switches on below roughly a thousand consented users a day, so the
+         property reported nothing at all. Ad storage stays denied because
+         nothing here advertises. The privacy page describes these cookies:
+         keep the two in step. -->
     <script>
       window.dataLayer = window.dataLayer || [];
       function gtag() {
@@ -23,7 +26,7 @@
         ad_storage: 'denied',
         ad_user_data: 'denied',
         ad_personalization: 'denied',
-        analytics_storage: 'denied',
+        analytics_storage: 'granted',
       });
       gtag('js', new Date());
       gtag('config', 'G-E4ERXX28BV');
