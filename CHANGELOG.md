@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 1.1.0 (2026-08-28)
 
 - The temporary disable now offers 5m, 30m, 1h and 24h instead of a fixed
   five minutes, with a re-enable button while it runs
