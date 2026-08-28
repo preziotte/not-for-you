@@ -1,5 +1,14 @@
 # Changelog
 
+## Unreleased
+
+- The temporary disable now offers 5m, 30m, 1h and 24h instead of a fixed
+  five minutes, with a re-enable button while it runs
+- While paused, the popup fades and locks the platform list so the state is
+  obvious at a glance
+- Quieter popup footer: a soft segmented control instead of outlined buttons,
+  and plain text links
+
 ## 1.0.1 (2026-08-14)
 
 - Opens [notforyou.app/welcome](https://notforyou.app/welcome) once on a

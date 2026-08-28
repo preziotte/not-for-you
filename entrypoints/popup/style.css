@@ -93,6 +93,15 @@ footer {
   border-top: 1px solid color-mix(in srgb, currentColor 12%, transparent);
 }
 
+/* While paused the whole list fades and stops taking clicks. The settings
+   are still shown, so it is clear nothing was lost, but the popup reads at
+   a glance as "not active right now". */
+body.paused #platform-list {
+  opacity: 0.35;
+  pointer-events: none;
+  transition: opacity 0.2s ease;
+}
+
 #platform-list li + li {
   margin-top: 16px;
 }
@@ -196,67 +205,104 @@ footer {
   border-style: dashed;
 }
 
+/* Two states, swapped by main.ts via the hidden attribute: a segmented
+   control of preset durations while enabled, a countdown plus re-enable
+   while disabled. Soft fills only, no outlines: the footer should sit
+   quietly under the list rather than compete with it. */
+#disable [hidden] {
+  display: none !important;
+}
+
 #disable {
   display: flex;
   align-items: center;
-  justify-content: center;
-  gap: 9px;
-  width: 100%;
-  padding: 8px;
-  font: inherit;
+  justify-content: space-between;
+  gap: 12px;
   font-size: 11.5px;
-  color: inherit;
-  opacity: 0.75;
-  background: none;
-  border: 1px solid color-mix(in srgb, currentColor 16%, transparent);
-  border-radius: 7px;
-  cursor: pointer;
-  transition:
-    background-color 0.12s ease,
-    opacity 0.12s ease;
 }
 
-#disable:hover {
-  background: color-mix(in srgb, currentColor 8%, transparent);
+.disable-heading {
+  flex: none;
+  opacity: 0.55;
+}
+
+#disable-presets {
+  display: flex;
+  flex: none;
+  padding: 2px;
+  background: color-mix(in srgb, currentColor 7%, transparent);
+  border-radius: 7px;
+}
+
+#disable-active {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+/* The one fact that matters while paused, so it gets the heading weight
+   the caption did not. */
+#disable-label {
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+}
+
+#disable button {
+  padding: 2px 10px;
+  font: inherit;
+  font-size: 11.5px;
+  font-weight: 500;
+  color: inherit;
+  background: none;
+  border: 0;
+  border-radius: 5px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background-color 0.12s ease;
+}
+
+#disable-presets button {
+  opacity: 0.8;
+}
+
+#disable-presets button:hover {
+  background: color-mix(in srgb, currentColor 10%, transparent);
   opacity: 1;
 }
 
-#disable.active {
-  border-style: dashed;
-  opacity: 0.85;
+/* id + element, to outrank the #disable button reset above. */
+#disable #enable {
+  /* 2px taller than a preset, matching the pill around them, so the row
+     is the same height in both states and nothing below it shifts. */
+  padding: 4px 10px;
+  background: color-mix(in srgb, currentColor 7%, transparent);
+  border-radius: 7px;
 }
 
-/* Two equal halves rather than auto widths, so the pair reads as one row of
-   the footer instead of two labels of different sizes. Lighter than #disable
-   on purpose: that button is what the popup is for, these are errands. */
+#disable #enable:hover {
+  background: color-mix(in srgb, currentColor 12%, transparent);
+}
+
+/* Errands, not actions: plain text, one row, no chrome. */
 #links {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 8px;
-  margin-top: 8px;
+  display: flex;
+  justify-content: center;
+  gap: 18px;
+  margin-top: 10px;
 }
 
 #links a {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  padding: 7px;
   font-size: 11px;
-  text-align: center;
   text-decoration: none;
   color: inherit;
-  opacity: 0.55;
-  border: 1px solid color-mix(in srgb, currentColor 12%, transparent);
-  border-radius: 7px;
-  transition:
-    background-color 0.12s ease,
-    opacity 0.12s ease;
+  opacity: 0.45;
+  transition: opacity 0.12s ease;
 }
 
 #links a:hover {
-  background: color-mix(in srgb, currentColor 8%, transparent);
-  opacity: 0.9;
+  opacity: 0.85;
 }
 
 /* One rule for all three marks: line drawings in the text colour, so they

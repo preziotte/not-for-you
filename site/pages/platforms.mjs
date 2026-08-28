@@ -264,7 +264,7 @@ export const pages = [
       {
         q: "Will TikTok still work normally otherwise?",
         a: [
-          "Yes. Search, profiles, messages and posting are untouched, and if you want the For You feed back there is a &ldquo;Disable for 5 minutes&rdquo; button in the popup, or a checkbox to turn the redirect off entirely.",
+          "Yes. Search, profiles, messages and posting are untouched, and if you want the For You feed back the popup can disable everything for five minutes up to a day, or a checkbox to turn the redirect off entirely.",
         ],
       },
       {

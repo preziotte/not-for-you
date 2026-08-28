@@ -1370,33 +1370,6 @@
       }
       /* Real anchors, pointed where the extension's own footer points:
          the mock behaves like the thing it is a picture of. */
-      .popup .links {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 8px;
-        margin-top: 8px;
-      }
-      .popup .links a {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 8px;
-        padding: 7px;
-        font-size: 11px;
-        text-align: center;
-        text-decoration: none;
-        color: inherit;
-        opacity: 0.55;
-        border: 1px solid color-mix(in srgb, currentColor 12%, transparent);
-        border-radius: 7px;
-        transition:
-          background-color 0.12s ease,
-          opacity 0.12s ease;
-      }
-      .popup .links a:hover {
-        background: color-mix(in srgb, currentColor 8%, transparent);
-        opacity: 0.9;
-      }
       /* One rule for all three marks, matching the extension's own footer. */
       .popup footer svg {
         flex: none;
@@ -1486,31 +1459,100 @@
         cursor: default;
         border-style: dashed;
       }
+      .popup .disable [hidden] {
+        display: none !important;
+      }
+
       .popup .disable {
         display: flex;
         align-items: center;
-        justify-content: center;
-        gap: 9px;
-        width: 100%;
-        padding: 8px;
+        justify-content: space-between;
+        gap: 12px;
+        font-size: 11.5px;
+      }
+
+      .popup .disable-heading {
+        flex: none;
+        opacity: 0.55;
+      }
+
+      .popup .disable-presets {
+        display: flex;
+        flex: none;
+        padding: 2px;
+        background: color-mix(in srgb, currentColor 7%, transparent);
+        border-radius: 7px;
+      }
+
+      .popup .disable-active {
+        display: flex;
+        flex: 1;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+      }
+
+      .popup .disable-label {
+        font-weight: 500;
+        font-variant-numeric: tabular-nums;
+      }
+      .popup.paused ul {
+        opacity: 0.35;
+        pointer-events: none;
+        transition: opacity 0.2s ease;
+      }
+
+      .popup .disable button {
+        padding: 2px 10px;
         font: inherit;
         font-size: 11.5px;
+        font-weight: 500;
         color: inherit;
-        opacity: 0.75;
         background: none;
-        border: 1px solid color-mix(in srgb, currentColor 16%, transparent);
-        border-radius: 7px;
+        border: 0;
+        border-radius: 5px;
         cursor: pointer;
-        transition:
-          background-color 0.12s ease,
-          opacity 0.12s ease;
+        white-space: nowrap;
+        transition: background-color 0.12s ease;
       }
-      .popup .disable:hover {
-        background: color-mix(in srgb, currentColor 8%, transparent);
+
+      .popup .disable-presets button {
+        opacity: 0.8;
+      }
+
+      .popup .disable-presets button:hover {
+        background: color-mix(in srgb, currentColor 10%, transparent);
         opacity: 1;
       }
-      .popup .disable.active {
-        border-style: dashed;
+
+      .popup .disable .enable {
+        /* 2px taller than a preset, matching the pill around them, so the row
+           is the same height in both states and nothing below it shifts. */
+        padding: 4px 10px;
+        background: color-mix(in srgb, currentColor 7%, transparent);
+        border-radius: 7px;
+      }
+
+      .popup .disable .enable:hover {
+        background: color-mix(in srgb, currentColor 12%, transparent);
+      }
+
+      .popup .links {
+        display: flex;
+        justify-content: center;
+        gap: 18px;
+        margin-top: 10px;
+      }
+
+      .popup .links a {
+        font-size: 11px;
+        text-decoration: none;
+        color: inherit;
+        opacity: 0.45;
+        transition: opacity 0.12s ease;
+      }
+
+      .popup .links a:hover {
         opacity: 0.85;
       }
     </style>
@@ -2057,30 +2099,30 @@
             </li>
           </ul>
           <footer>
-            <!-- The label gets its own span, as in the real popup: the
-                 countdown script rewrites the label only, so the clock
-                 icon survives. -->
-            <button class="disable" type="button">
-              <svg viewBox="0 0 16 16" aria-hidden="true">
-                <circle cx="8" cy="8" r="5.9" />
-                <path d="M8 4.5V8l2.5 1.7" />
-              </svg>
-              <span class="disable-label">Disable for 5 minutes</span>
-            </button>
+            <!-- Same two states as the real popup, swapped by the script
+                 below: preset durations while enabled, a countdown with a
+                 re-enable button while disabled. -->
+            <div class="disable" role="group" aria-label="Disable temporarily">
+              <div class="disable-heading">
+                Disable for
+              </div>
+              <div class="disable-presets">
+                <button type="button" data-minutes="5">5m</button>
+                <button type="button" data-minutes="30">30m</button>
+                <button type="button" data-minutes="60">1h</button>
+                <button type="button" data-minutes="1440">24h</button>
+              </div>
+              <div class="disable-active" hidden>
+                <span class="disable-label"></span>
+                <button class="enable" type="button">Re-enable</button>
+              </div>
+            </div>
             <div class="links">
               <a
                 href="https://github.com/preziotte/not-for-you/issues/new"
                 target="_blank"
                 rel="noreferrer"
               >
-                <svg viewBox="0 0 16 16" aria-hidden="true">
-                  <ellipse cx="8" cy="9.8" rx="3.4" ry="4.2" />
-                  <circle cx="8" cy="4.3" r="1.7" />
-                  <path d="M6.9 2.9 6.1 1.6M9.1 2.9 9.9 1.6" />
-                  <path
-                    d="M4.6 7.7 1.6 6.1M4.6 10H1.4M4.6 12.3 1.6 13.9M11.4 7.7l3-1.6M11.4 10h3.2M11.4 12.3l3 1.6"
-                  />
-                </svg>
                 Report a bug
               </a>
               <!-- The replica's own copy of the popup's rating link. The real
@@ -2092,11 +2134,6 @@
                 target="_blank"
                 rel="noreferrer"
               >
-                <svg viewBox="0 0 16 16" aria-hidden="true">
-                  <path
-                    d="M8 1.9 9.85 5.6l4.15.6-3 2.9.7 4.05L8 11.24 4.3 13.15 5 9.1l-3-2.9 4.15-.6z"
-                  />
-                </svg>
                 Leave a rating
               </a>
             </div>
@@ -2234,9 +2271,9 @@
           <h2>What if I want the algorithm back?</h2>
           <p>
             You only opt into the changes you want: every switch in the menu
-            works per site, instantly. There is also a &ldquo;Disable for 5
-            minutes&rdquo; button for the times you want to fall down the
-            rabbit hole on purpose.
+            works per site, instantly. There is also a disable button (five
+            minutes, half an hour, an hour, or a day) for the times
+            you want to fall down the rabbit hole on purpose.
           </p>
 
           <h2>Will it break anything?</h2>
@@ -2377,36 +2414,49 @@
           });
       })();
 
-      // The disable button runs the real popup's five-minute countdown:
-      // click to start it, click again to re-enable early. Same label
-      // strings and same tick as the extension; only the storage and the
-      // alarm are missing, since there is nothing here to disable.
+      // The disable row runs the real popup's countdown: pick a duration to
+      // start it, Re-enable to end it early. Same durations, label strings
+      // and tick as the extension; only the storage and the alarm are
+      // missing, since there is nothing here to disable.
       (function () {
-        var button = document.querySelector('.popup .disable');
-        var label = document.querySelector('.popup .disable-label');
-        if (!button || !label) return;
+        var root = document.querySelector('.popup .disable');
+        if (!root) return;
+        var heading = root.querySelector('.disable-heading');
+        var presets = root.querySelector('.disable-presets');
+        var active = root.querySelector('.disable-active');
+        var label = root.querySelector('.disable-label');
         var until = 0;
+
+        function pad(n) {
+          return String(n).padStart(2, '0');
+        }
 
         function tick() {
           var remaining = until - Date.now();
-          if (remaining > 0) {
-            var m = Math.floor(remaining / 60000);
-            var s = Math.floor((remaining % 60000) / 1000);
-            label.textContent =
-              'Disabled, ' +
-              m +
-              ':' +
-              String(s).padStart(2, '0') +
-              ' left. Tap to re-enable.';
-            button.classList.add('active');
-          } else {
-            label.textContent = 'Disable for 5 minutes';
-            button.classList.remove('active');
-          }
+          var on = remaining > 0;
+          heading.hidden = on;
+          presets.hidden = on;
+          active.hidden = !on;
+          root.closest('.popup').classList.toggle('paused', on);
+          if (!on) return;
+          var total = Math.ceil(remaining / 1000);
+          var h = Math.floor(total / 3600);
+          var m = Math.floor((total % 3600) / 60);
+          var s = total % 60;
+          label.textContent =
+            'Paused, ' +
+            (h > 0 ? h + ':' + pad(m) + ':' + pad(s) : m + ':' + pad(s)) +
+            ' left';
         }
 
-        button.addEventListener('click', function () {
-          until = until > Date.now() ? 0 : Date.now() + 5 * 60000;
+        presets.querySelectorAll('button').forEach(function (button) {
+          button.addEventListener('click', function () {
+            until = Date.now() + Number(button.dataset.minutes) * 60000;
+            tick();
+          });
+        });
+        root.querySelector('.enable').addEventListener('click', function () {
+          until = 0;
           tick();
         });
         setInterval(tick, 1000);

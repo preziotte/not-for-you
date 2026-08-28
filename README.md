@@ -28,8 +28,8 @@ noted), and can be turned off per platform.
 | Facebook  | The Feeds view instead of Home          | hide the Reels tab                                                                 |
 
 Nothing else changes. Search, profiles, messages and posting all work exactly as
-before, and a button in the popup turns the whole thing off for a few minutes
-when you want the algorithm back.
+before, and the popup can turn the whole thing off for a while (five minutes
+up to a day) when you want the algorithm back.
 
 ## Install
 

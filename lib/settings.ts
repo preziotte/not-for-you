@@ -67,8 +67,26 @@ export async function updatePlatform(
  * the stored timestamp. Local (not synced): disabling is a this-device,
  * this-moment decision. The background alarm resets it to 0 at expiry.
  */
-export const DISABLE_MINUTES = 5;
 export const DISABLE_ALARM = 'disable-end';
+
+/**
+ * Preset durations offered by the popup. Every option is time-boxed on
+ * purpose: the extension should never silently stay off.
+ */
+export interface DisablePreset {
+  label: string;
+  /** Epoch ms at which the disable ends, computed at click time. */
+  until: () => number;
+}
+
+const minutes = (n: number) => () => Date.now() + n * 60_000;
+
+export const DISABLE_PRESETS: DisablePreset[] = [
+  { label: '5m', until: minutes(5) },
+  { label: '30m', until: minutes(30) },
+  { label: '1h', until: minutes(60) },
+  { label: '24h', until: minutes(24 * 60) },
+];
 
 export const disabledUntil = storage.defineItem<number>('local:disabledUntil', {
   fallback: 0,
