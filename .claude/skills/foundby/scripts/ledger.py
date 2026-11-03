@@ -519,6 +519,7 @@ def print_report(rep):
     for r in rep["surging"]:
         print(f"  SURGE {r['kind']:<8} {r['key']:<40} {r['hits']:>5}  was ~{r['was_per_day']}/day")
     print("\n  sources: " + " · ".join(f"{k} {v}" for k, v in rep["health"].items()))
-    lookups = [r["key"] for r in rep["new"] if r["kind"] in PEOPLE_KINDS]
+    lookups = sorted((r for r in rep["new"] if r["kind"] in PEOPLE_KINDS),
+                     key=lambda r: (r["key"].startswith("github:"), -r["hits"], r["key"]))
     if lookups:
-        print(f"\n  to look up ({len(lookups)}): " + ", ".join(lookups[:20]))
+        print(f"\n  to look up ({len(lookups)}): " + ", ".join(r["key"] for r in lookups[:20]))

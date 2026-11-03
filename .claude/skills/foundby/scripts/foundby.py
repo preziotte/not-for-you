@@ -181,7 +181,8 @@ def cmd_doctor(a):
     e = cfg.get("edge")
     if not e:
         _no("edge", "no edge block. CDN logs see referrers without JS, link unfurlers (private shares) and AI live-fetch agents")
-        recs.append("add CloudFront standard logging to an S3 bucket and an \"edge\" block (docs/sources.md#edge-logs); nothing else sees Slack/Discord/iMessage shares")
+        if not any("edge block" in r for r in recs):
+            recs.append("add CloudFront standard logging to an S3 bucket and an \"edge\" block (docs/sources.md#edge-logs); nothing else sees Slack/Discord/iMessage shares")
     elif not shutil.which("aws"):
         _no("edge", "aws CLI not installed")
     else:
@@ -212,6 +213,14 @@ def cmd_doctor(a):
 
     led = Ledger(cfg)
     n = len(led.state["rows"])
+    try:
+        ig = subprocess.run(["git", "check-ignore", "-q", os.path.abspath(led.md)], capture_output=True,
+                            cwd=os.path.dirname(os.path.abspath(led.md)) if os.path.isdir(os.path.dirname(os.path.abspath(led.md))) else None)
+        ignored = ig.returncode == 0
+    except OSError:
+        ignored = False
+    if ignored:
+        _todo("ledger", f"{led.md} is gitignored, so the ledger would never be committed; point \"ledger\" in foundby.json at a tracked path")
     print(f"\n  ledger     {led.md} ({n} rows, last run {led.state.get('last_run') or 'never'})")
     if recs:
         print("\n  recommended, in order:")
@@ -225,6 +234,9 @@ def cmd_doctor(a):
 def cmd_run(a):
     cfg = cfgmod.load()
     led = Ledger(cfg)
+    if not a.full and not led.state.get("last_run") and (cfg.get("ga") or cfg.get("edge")):
+        sys.exit("ledger is empty: run once with --full to seed it quietly from the configured history "
+                 "(every host ever seen would otherwise print as NEW), then run again without it")
     w = led.window(a.full)
     out = a.outdir
     os.makedirs(out, exist_ok=True)
