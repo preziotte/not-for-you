@@ -1,0 +1,37 @@
+{
+  "site": "notforyou.app",
+  "aliases": [],
+  "own": [
+    "preziotte.com",
+    "foundby.dev",
+    "agenttraffic.io"
+  ],
+  "ledger": "docs/foundby.md",
+  "cap_days": 60,
+  "mentions": {
+    "queries": [
+      "notforyou.app",
+      "notforyou app",
+      "\"not for you\" chrome extension"
+    ],
+    "youtube": false,
+    "skip_github_owners": [
+      "preziotte"
+    ]
+  },
+  "ga": {
+    "property": "549097368",
+    "key_file": "~/.config/gcloud/ga-mcp-key.json",
+    "start": "2025-07-20"
+  },
+  "edge": {
+    "kind": "cloudfront",
+    "bucket": "logs.notforyou.app",
+    "prefix": "AWSLogs/642340180402/CloudFront/cloudfront/apex/",
+    "start": "2026-09-22"
+  },
+  "bing": {
+    "key_file": "~/.config/bing-webmaster-key.txt",
+    "site_url": "https://notforyou.app/"
+  }
+}

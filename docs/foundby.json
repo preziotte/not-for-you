@@ -1,0 +1,985 @@
+{
+ "last_run": "2026-11-02T12:00:00Z",
+ "last_window": {
+  "since": "2026-09-22",
+  "until": "2026-11-02"
+ },
+ "rows": {
+  "addons.mozilla.org": {
+   "first_seen": "2026-09-22",
+   "history": [
+    {
+     "hits": 5,
+     "since": "2026-09-22",
+     "until": "2026-11-02",
+     "via": "edge"
+    }
+   ],
+   "hits": 5,
+   "kind": "directory",
+   "label": "addons.mozilla.org",
+   "last_seen": "2026-11-02",
+   "note": "Firefox Add-ons listing, about 13 weekly downloads",
+   "pages": [],
+   "via": [
+    "edge"
+   ]
+  },
+  "agent:ChatGPT-User": {
+   "first_seen": "2026-09-22",
+   "history": [
+    {
+     "hits": 255,
+     "since": "2026-09-22",
+     "until": "2026-11-02",
+     "via": "edge"
+    }
+   ],
+   "hits": 255,
+   "kind": "agent",
+   "label": "ChatGPT-User (OpenAI)",
+   "last_seen": "2026-11-02",
+   "note": "",
+   "pages": [],
+   "via": [
+    "edge"
+   ]
+  },
+  "agent:Claude-User": {
+   "first_seen": "2026-09-22",
+   "history": [
+    {
+     "hits": 17,
+     "since": "2026-09-22",
+     "until": "2026-11-02",
+     "via": "edge"
+    }
+   ],
+   "hits": 17,
+   "kind": "agent",
+   "label": "Claude-User (Anthropic)",
+   "last_seen": "2026-11-02",
+   "note": "",
+   "pages": [],
+   "via": [
+    "edge"
+   ]
+  },
+  "agent:DuckAssistBot": {
+   "first_seen": "2026-09-22",
+   "history": [
+    {
+     "hits": 82,
+     "since": "2026-09-22",
+     "until": "2026-11-02",
+     "via": "edge"
+    }
+   ],
+   "hits": 82,
+   "kind": "agent",
+   "label": "DuckAssistBot (DuckDuckGo)",
+   "last_seen": "2026-11-02",
+   "note": "",
+   "pages": [],
+   "via": [
+    "edge"
+   ]
+  },
+  "agent:Google-CloudVertexBot": {
+   "first_seen": "2026-09-22",
+   "history": [
+    {
+     "hits": 10,
+     "since": "2026-09-22",
+     "until": "2026-11-02",
+     "via": "edge"
+    }
+   ],
+   "hits": 10,
+   "kind": "agent",
+   "label": "Google-CloudVertexBot (Google)",
+   "last_seen": "2026-11-02",
+   "note": "",
+   "pages": [],
+   "via": [
+    "edge"
+   ]
+  },
+  "agent:MistralAI-User": {
+   "first_seen": "2026-09-22",
+   "history": [
+    {
+     "hits": 4,
+     "since": "2026-09-22",
+     "until": "2026-11-02",
+     "via": "edge"
+    }
+   ],
+   "hits": 4,
+   "kind": "agent",
+   "label": "MistralAI-User (Mistral)",
+   "last_seen": "2026-11-02",
+   "note": "",
+   "pages": [],
+   "via": [
+    "edge"
+   ]
+  },
+  "agent:Perplexity-User": {
+   "first_seen": "2026-09-22",
+   "history": [
+    {
+     "hits": 8,
+     "since": "2026-09-22",
+     "until": "2026-11-02",
+     "via": "edge"
+    }
+   ],
+   "hits": 8,
+   "kind": "agent",
+   "label": "Perplexity-User (Perplexity)",
+   "last_seen": "2026-11-02",
+   "note": "",
+   "pages": [],
+   "via": [
+    "edge"
+   ]
+  },
+  "aicrawler.store": {
+   "first_seen": "2026-09-22",
+   "history": [
+    {
+     "hits": 1,
+     "since": "2026-09-22",
+     "until": "2026-11-02",
+     "via": "edge"
+    }
+   ],
+   "hits": 1,
+   "kind": "junk",
+   "label": "aicrawler.store",
+   "last_seen": "2026-11-02",
+   "note": "",
+   "pages": [],
+   "via": [
+    "edge"
+   ]
+  },
+  "alternativeto.net": {
+   "first_seen": "2026-09-22",
+   "history": [
+    {
+     "hits": 4,
+     "since": "2026-09-22",
+     "until": "2026-11-02",
+     "via": "edge"
+    },
+    {
+     "hits": 0,
+     "since": "2026-09-22",
+     "until": "2026-11-02",
+     "via": "ga"
+    }
+   ],
+   "hits": 4,
+   "kind": "directory",
+   "label": "alternativeto.net (Referral)",
+   "last_seen": "2026-11-02",
+   "note": "Listed on AlternativeTo",
+   "pages": [],
+   "via": [
+    "edge",
+    "ga"
+   ]
+  },
+  "bing.com": {
+   "first_seen": "2026-09-22",
+   "history": [
+    {
+     "hits": 17,
+     "since": "2026-09-22",
+     "until": "2026-11-02",
+     "via": "edge"
+    },
+    {
+     "hits": 0,
+     "since": "2026-09-22",
+     "until": "2026-11-02",
+     "via": "ga"
+    }
+   ],
+   "hits": 17,
+   "kind": "search",
+   "label": "bing (Organic Search)",
+   "last_seen": "2026-11-02",
+   "note": "",
+   "pages": [],
+   "via": [
+    "edge",
+    "ga"
+   ]
+  },
+  "chatgpt.com": {
+   "first_seen": "2026-09-22",
+   "history": [
+    {
+     "hits": 87,
+     "since": "2026-09-22",
+     "until": "2026-11-02",
+     "via": "edge"
+    },
+    {
+     "hits": 0,
+     "since": "2026-09-22",
+     "until": "2026-11-02",
+     "via": "ga"
+    }
+   ],
+   "hits": 87,
+   "kind": "ai",
+   "label": "chatgpt.com (AI Assistant)",
+   "last_seen": "2026-11-02",
+   "note": "",
+   "pages": [],
+   "via": [
+    "edge",
+    "ga"
+   ]
+  },
+  "chromewebstore.google.com": {
+   "first_seen": "2026-09-22",
+   "history": [
+    {
+     "hits": 19,
+     "since": "2026-09-22",
+     "until": "2026-11-02",
+     "via": "edge"
+    },
+    {
+     "hits": 0,
+     "since": "2026-09-22",
+     "until": "2026-11-02",
+     "via": "ga"
+    }
+   ],
+   "hits": 19,
+   "kind": "directory",
+   "label": "chromewebstore.google.com (Referral)",
+   "last_seen": "2026-11-02",
+   "note": "Chrome Web Store listing",
+   "pages": [],
+   "via": [
+    "edge",
+    "ga"
+   ]
+  },
+  "draze.com": {
+   "first_seen": "2026-09-22",
+   "history": [
+    {
+     "hits": 2,
+     "since": "2026-09-22",
+     "until": "2026-11-02",
+     "via": "edge"
+    },
+    {
+     "hits": 0,
+     "since": "2026-09-22",
+     "until": "2026-11-02",
+     "via": "ga"
+    }
+   ],
+   "hits": 2,
+   "kind": "search",
+   "label": "draze.com (Referral)",
+   "last_seen": "2026-11-02",
+   "note": "Family-friendly metasearch engine",
+   "pages": [],
+   "via": [
+    "edge",
+    "ga"
+   ]
+  },
+  "duckduckgo.com": {
+   "first_seen": "2026-09-22",
+   "history": [
+    {
+     "hits": 68,
+     "since": "2026-09-22",
+     "until": "2026-11-02",
+     "via": "edge"
+    },
+    {
+     "hits": 0,
+     "since": "2026-09-22",
+     "until": "2026-11-02",
+     "via": "ga"
+    }
+   ],
+   "hits": 68,
+   "kind": "search",
+   "label": "duckduckgo (Organic Search)",
+   "last_seen": "2026-11-02",
+   "note": "",
+   "pages": [],
+   "via": [
+    "edge",
+    "ga"
+   ]
+  },
+  "ecosia.org": {
+   "first_seen": "2026-09-22",
+   "history": [
+    {
+     "hits": 9,
+     "since": "2026-09-22",
+     "until": "2026-11-02",
+     "via": "edge"
+    },
+    {
+     "hits": 0,
+     "since": "2026-09-22",
+     "until": "2026-11-02",
+     "via": "ga"
+    }
+   ],
+   "hits": 9,
+   "kind": "search",
+   "label": "ecosia.org (Organic Search)",
+   "last_seen": "2026-11-02",
+   "note": "",
+   "pages": [],
+   "via": [
+    "edge",
+    "ga"
+   ]
+  },
+  "everyclick.com": {
+   "first_seen": "2026-09-22",
+   "history": [
+    {
+     "hits": 1,
+     "since": "2026-09-22",
+     "until": "2026-11-02",
+     "via": "ga"
+    }
+   ],
+   "hits": 1,
+   "kind": "search",
+   "label": "everyclick.com (Referral)",
+   "last_seen": "2026-11-02",
+   "note": "Give as you Live charity shopping portal with a search box",
+   "pages": [],
+   "via": [
+    "ga"
+   ]
+  },
+  "facebook.com": {
+   "first_seen": "2026-09-22",
+   "history": [
+    {
+     "hits": 2,
+     "since": "2026-09-22",
+     "until": "2026-11-02",
+     "via": "edge"
+    },
+    {
+     "hits": 0,
+     "since": "2026-09-22",
+     "until": "2026-11-02",
+     "via": "ga"
+    }
+   ],
+   "hits": 2,
+   "kind": "social",
+   "label": "facebook.com (Organic Social)",
+   "last_seen": "2026-11-02",
+   "note": "",
+   "pages": [],
+   "via": [
+    "edge",
+    "ga"
+   ]
+  },
+  "github.com": {
+   "first_seen": "2026-09-22",
+   "history": [
+    {
+     "hits": 14,
+     "since": "2026-09-22",
+     "until": "2026-11-02",
+     "via": "edge"
+    },
+    {
+     "hits": 0,
+     "since": "2026-09-22",
+     "until": "2026-11-02",
+     "via": "ga"
+    }
+   ],
+   "hits": 14,
+   "kind": "directory",
+   "label": "github.com (Referral)",
+   "last_seen": "2026-11-02",
+   "note": "The repo itself, preziotte/not-for-you",
+   "pages": [],
+   "via": [
+    "edge",
+    "ga"
+   ]
+  },
+  "github:world-class/REPL": {
+   "first_seen": "2026-11-02",
+   "history": [],
+   "hits": 0,
+   "kind": "directory",
+   "label": "world-class/REPL: software/README.md",
+   "last_seen": "2026-11-02",
+   "note": "Free software list for students (world-class/REPL), under Web browsers > Extensions > Cross-browser",
+   "pages": [
+    "https://github.com/world-class/REPL/blob/655d01ca7051060fea624b45095494e5e7f442d8/software/README.md"
+   ],
+   "via": [
+    "web"
+   ]
+  },
+  "github:xyNNN/awesome-chrome": {
+   "first_seen": "2026-11-02",
+   "history": [],
+   "hits": 0,
+   "kind": "directory",
+   "label": "xyNNN/awesome-chrome",
+   "last_seen": "2026-11-02",
+   "note": "awesome-chrome, 127 stars, listed under Productivity",
+   "pages": [
+    "https://github.com/xyNNN/awesome-chrome"
+   ],
+   "via": [
+    "web"
+   ]
+  },
+  "google.com": {
+   "first_seen": "2026-09-22",
+   "history": [
+    {
+     "hits": 300,
+     "since": "2026-09-22",
+     "until": "2026-11-02",
+     "via": "edge"
+    },
+    {
+     "hits": 0,
+     "since": "2026-09-22",
+     "until": "2026-11-02",
+     "via": "ga"
+    }
+   ],
+   "hits": 300,
+   "kind": "search",
+   "label": "google (Organic Search)",
+   "last_seen": "2026-11-02",
+   "note": "",
+   "pages": [],
+   "via": [
+    "edge",
+    "ga"
+   ]
+  },
+  "hacker-news.firebaseio.com": {
+   "first_seen": "2026-09-22",
+   "history": [
+    {
+     "hits": 1,
+     "since": "2026-09-22",
+     "until": "2026-11-02",
+     "via": "ga"
+    }
+   ],
+   "hits": 1,
+   "kind": "forum",
+   "label": "hacker-news.firebaseio.com (Referral)",
+   "last_seen": "2026-11-02",
+   "note": "HN API host: a Hacker News reader app opening the Show HN link",
+   "pages": [],
+   "via": [
+    "ga"
+   ]
+  },
+  "kagi.com": {
+   "first_seen": "2026-09-22",
+   "history": [
+    {
+     "hits": 1,
+     "since": "2026-09-22",
+     "until": "2026-11-02",
+     "via": "edge"
+    }
+   ],
+   "hits": 1,
+   "kind": "search",
+   "label": "kagi.com",
+   "last_seen": "2026-11-02",
+   "note": "",
+   "pages": [],
+   "via": [
+    "edge"
+   ]
+  },
+  "linkedin.com": {
+   "first_seen": "2026-09-22",
+   "history": [
+    {
+     "hits": 81,
+     "since": "2026-09-22",
+     "until": "2026-11-02",
+     "via": "edge"
+    },
+    {
+     "hits": 0,
+     "since": "2026-09-22",
+     "until": "2026-11-02",
+     "via": "ga"
+    }
+   ],
+   "hits": 81,
+   "kind": "social",
+   "label": "linkedin.com (Organic Social)",
+   "last_seen": "2026-11-02",
+   "note": "",
+   "pages": [],
+   "via": [
+    "edge",
+    "ga"
+   ]
+  },
+  "news.ycombinator.com": {
+   "first_seen": "2026-09-22",
+   "history": [
+    {
+     "hits": 7,
+     "since": "2026-09-22",
+     "until": "2026-11-02",
+     "via": "ga"
+    }
+   ],
+   "hits": 7,
+   "kind": "forum",
+   "label": "news.ycombinator.com (Organic Social)",
+   "last_seen": "2026-11-02",
+   "note": "Show HN post 49462668 (1 point, 0 comments); sessions keep trickling in",
+   "pages": [],
+   "via": [
+    "ga"
+   ]
+  },
+  "perplexity.ai": {
+   "first_seen": "2026-09-22",
+   "history": [
+    {
+     "hits": 1,
+     "since": "2026-09-22",
+     "until": "2026-11-02",
+     "via": "edge"
+    }
+   ],
+   "hits": 1,
+   "kind": "ai",
+   "label": "perplexity.ai",
+   "last_seen": "2026-11-02",
+   "note": "",
+   "pages": [],
+   "via": [
+    "edge"
+   ]
+  },
+  "preziotte.com": {
+   "first_seen": "2026-09-22",
+   "history": [
+    {
+     "hits": 123,
+     "since": "2026-09-22",
+     "until": "2026-11-02",
+     "via": "edge"
+    },
+    {
+     "hits": 0,
+     "since": "2026-09-22",
+     "until": "2026-11-02",
+     "via": "ga"
+    }
+   ],
+   "hits": 123,
+   "kind": "own",
+   "label": "preziotte.com (Referral)",
+   "last_seen": "2026-11-02",
+   "note": "",
+   "pages": [],
+   "via": [
+    "edge",
+    "ga"
+   ]
+  },
+  "prod.outgoing.prod.webservices.mozgcp.net": {
+   "first_seen": "2026-09-22",
+   "history": [
+    {
+     "hits": 9,
+     "since": "2026-09-22",
+     "until": "2026-11-02",
+     "via": "edge"
+    },
+    {
+     "hits": 0,
+     "since": "2026-09-22",
+     "until": "2026-11-02",
+     "via": "ga"
+    }
+   ],
+   "hits": 9,
+   "kind": "directory",
+   "label": "prod.outgoing.prod.webservices.mozgcp.net (Referral)",
+   "last_seen": "2026-11-02",
+   "note": "Firefox Add-ons outgoing-link redirect: clicks on the homepage link in the AMO listing",
+   "pages": [],
+   "via": [
+    "edge",
+    "ga"
+   ]
+  },
+  "qwant.com": {
+   "first_seen": "2026-09-22",
+   "history": [
+    {
+     "hits": 2,
+     "since": "2026-09-22",
+     "until": "2026-11-02",
+     "via": "edge"
+    }
+   ],
+   "hits": 2,
+   "kind": "search",
+   "label": "qwant.com",
+   "last_seen": "2026-11-02",
+   "note": "",
+   "pages": [],
+   "via": [
+    "edge"
+   ]
+  },
+  "reddit.com": {
+   "first_seen": "2026-09-22",
+   "history": [
+    {
+     "hits": 13,
+     "since": "2026-09-22",
+     "until": "2026-11-02",
+     "via": "edge"
+    },
+    {
+     "hits": 0,
+     "since": "2026-09-22",
+     "until": "2026-11-02",
+     "via": "ga"
+    }
+   ],
+   "hits": 13,
+   "kind": "forum",
+   "label": "reddit.com (Organic Social)",
+   "last_seen": "2026-11-02",
+   "note": "Steady Reddit traffic; thread not found by web search, needs the reddit_json manual step",
+   "pages": [],
+   "via": [
+    "edge",
+    "ga"
+   ]
+  },
+  "search.brave.com": {
+   "first_seen": "2026-09-22",
+   "history": [
+    {
+     "hits": 12,
+     "since": "2026-09-22",
+     "until": "2026-11-02",
+     "via": "edge"
+    }
+   ],
+   "hits": 12,
+   "kind": "search",
+   "label": "search.brave.com",
+   "last_seen": "2026-11-02",
+   "note": "",
+   "pages": [],
+   "via": [
+    "edge"
+   ]
+  },
+  "search.infospace.com": {
+   "first_seen": "2026-09-22",
+   "history": [
+    {
+     "hits": 1,
+     "since": "2026-09-22",
+     "until": "2026-11-02",
+     "via": "ga"
+    }
+   ],
+   "hits": 1,
+   "kind": "search",
+   "label": "search.infospace.com (Referral)",
+   "last_seen": "2026-11-02",
+   "note": "InfoSpace metasearch",
+   "pages": [],
+   "via": [
+    "ga"
+   ]
+  },
+  "search.yahoo.com": {
+   "first_seen": "2026-09-22",
+   "history": [
+    {
+     "hits": 1,
+     "since": "2026-09-22",
+     "until": "2026-11-02",
+     "via": "ga"
+    }
+   ],
+   "hits": 1,
+   "kind": "search",
+   "label": "yahoo (Organic Search)",
+   "last_seen": "2026-11-02",
+   "note": "",
+   "pages": [],
+   "via": [
+    "ga"
+   ]
+  },
+  "sitelike.org": {
+   "first_seen": "2026-09-22",
+   "history": [
+    {
+     "hits": 1,
+     "since": "2026-09-22",
+     "until": "2026-11-02",
+     "via": "ga"
+    }
+   ],
+   "hits": 1,
+   "kind": "directory",
+   "label": "sitelike.org (Referral)",
+   "last_seen": "2026-11-02",
+   "note": "Similar-sites directory, one click",
+   "pages": [],
+   "via": [
+    "ga"
+   ]
+  },
+  "sperse.com": {
+   "first_seen": "2026-09-22",
+   "history": [
+    {
+     "hits": 1,
+     "since": "2026-09-22",
+     "until": "2026-11-02",
+     "via": "ga"
+    }
+   ],
+   "hits": 1,
+   "kind": "unknown",
+   "label": "sperse.com (Referral)",
+   "last_seen": "2026-11-02",
+   "note": "Growth-platform SaaS; one click, probably a link shared inside their app",
+   "pages": [],
+   "via": [
+    "ga"
+   ]
+  },
+  "unfurl:Discord": {
+   "first_seen": "2026-09-22",
+   "history": [
+    {
+     "hits": 3,
+     "since": "2026-09-22",
+     "until": "2026-11-02",
+     "via": "edge"
+    }
+   ],
+   "hits": 3,
+   "kind": "unfurler",
+   "label": "Discord",
+   "last_seen": "2026-11-02",
+   "note": "",
+   "pages": [],
+   "via": [
+    "edge"
+   ]
+  },
+  "unfurl:Facebook / iMessage": {
+   "first_seen": "2026-09-22",
+   "history": [
+    {
+     "hits": 316,
+     "since": "2026-09-22",
+     "until": "2026-11-02",
+     "via": "edge"
+    }
+   ],
+   "hits": 316,
+   "kind": "unfurler",
+   "label": "Facebook / iMessage",
+   "last_seen": "2026-11-02",
+   "note": "",
+   "pages": [],
+   "via": [
+    "edge"
+   ]
+  },
+  "unfurl:Mastodon": {
+   "first_seen": "2026-09-22",
+   "history": [
+    {
+     "hits": 4,
+     "since": "2026-09-22",
+     "until": "2026-11-02",
+     "via": "edge"
+    }
+   ],
+   "hits": 4,
+   "kind": "unfurler",
+   "label": "Mastodon",
+   "last_seen": "2026-11-02",
+   "note": "",
+   "pages": [],
+   "via": [
+    "edge"
+   ]
+  },
+  "unfurl:Skype": {
+   "first_seen": "2026-09-22",
+   "history": [
+    {
+     "hits": 3,
+     "since": "2026-09-22",
+     "until": "2026-11-02",
+     "via": "edge"
+    }
+   ],
+   "hits": 3,
+   "kind": "unfurler",
+   "label": "Skype",
+   "last_seen": "2026-11-02",
+   "note": "",
+   "pages": [],
+   "via": [
+    "edge"
+   ]
+  },
+  "unfurl:Telegram": {
+   "first_seen": "2026-09-22",
+   "history": [
+    {
+     "hits": 1,
+     "since": "2026-09-22",
+     "until": "2026-11-02",
+     "via": "edge"
+    }
+   ],
+   "hits": 1,
+   "kind": "unfurler",
+   "label": "Telegram",
+   "last_seen": "2026-11-02",
+   "note": "",
+   "pages": [],
+   "via": [
+    "edge"
+   ]
+  },
+  "unfurl:WhatsApp": {
+   "first_seen": "2026-09-22",
+   "history": [
+    {
+     "hits": 12,
+     "since": "2026-09-22",
+     "until": "2026-11-02",
+     "via": "edge"
+    }
+   ],
+   "hits": 12,
+   "kind": "unfurler",
+   "label": "WhatsApp",
+   "last_seen": "2026-11-02",
+   "note": "",
+   "pages": [],
+   "via": [
+    "edge"
+   ]
+  },
+  "unfurl:X / iMessage": {
+   "first_seen": "2026-09-22",
+   "history": [
+    {
+     "hits": 34,
+     "since": "2026-09-22",
+     "until": "2026-11-02",
+     "via": "edge"
+    }
+   ],
+   "hits": 34,
+   "kind": "unfurler",
+   "label": "X / iMessage",
+   "last_seen": "2026-11-02",
+   "note": "",
+   "pages": [],
+   "via": [
+    "edge"
+   ]
+  },
+  "yahoo.com": {
+   "first_seen": "2026-09-22",
+   "history": [
+    {
+     "hits": 2,
+     "since": "2026-09-22",
+     "until": "2026-11-02",
+     "via": "edge"
+    }
+   ],
+   "hits": 2,
+   "kind": "search",
+   "label": "yahoo.com",
+   "last_seen": "2026-11-02",
+   "note": "",
+   "pages": [],
+   "via": [
+    "edge"
+   ]
+  },
+  "yandex.com": {
+   "first_seen": "2026-09-22",
+   "history": [
+    {
+     "hits": 3,
+     "since": "2026-09-22",
+     "until": "2026-11-02",
+     "via": "edge"
+    },
+    {
+     "hits": 0,
+     "since": "2026-09-22",
+     "until": "2026-11-02",
+     "via": "ga"
+    }
+   ],
+   "hits": 3,
+   "kind": "search",
+   "label": "yandex (Organic Search)",
+   "last_seen": "2026-11-02",
+   "note": "",
+   "pages": [],
+   "via": [
+    "edge",
+    "ga"
+   ]
+  }
+ },
+ "schema": 1
+}

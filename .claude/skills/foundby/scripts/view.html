@@ -1,0 +1,253 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>How people find __SITE__</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSI+PHJlY3Qgd2lkdGg9IjI0IiBoZWlnaHQ9IjI0IiByeD0iNSIgZmlsbD0ib2tsY2goMC4xNTUgMC4wMDYgNzApIi8+PHBhdGggZD0iTTQuNSA5VjYuNUEyIDIgMCAwIDEgNi41IDQuNUg5TTE1IDQuNWgyLjVhMiAyIDAgMCAxIDIgMlY5TTE5LjUgMTV2Mi41YTIgMiAwIDAgMS0yIDJIMTVNOSAxOS41SDYuNWEyIDIgMCAwIDEtMi0yVjE1IiBzdHJva2U9Im9rbGNoKDAuODIgMC4xNSA3NSkiIHN0cm9rZS13aWR0aD0iMS44IiBzdHJva2UtbGluZWNhcD0icm91bmQiIGZpbGw9Im5vbmUiIG9wYWNpdHk9Ii43NSIvPjxjaXJjbGUgY3g9IjEyIiBjeT0iMTIiIHI9IjIuNiIgZmlsbD0ib2tsY2goMC44MiAwLjE1IDc1KSIvPjwvc3ZnPgo=">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap">
+<style>
+  :root {
+    color-scheme: dark;
+    --bg: oklch(0.155 0.006 70);
+    --card: oklch(0.19 0.006 70);
+    --card-2: oklch(0.215 0.006 70);
+    --fg: oklch(0.93 0.006 80);
+    --muted: oklch(0.66 0.01 75);
+    --dim: oklch(0.5 0.01 75);
+    --border: oklch(1 0 0 / 9%);
+    --border-2: oklch(1 0 0 / 16%);
+    --primary: oklch(0.82 0.15 75);
+    --primary-dim: oklch(0.82 0.15 75 / 14%);
+    --link: oklch(0.8 0.08 230);
+    --sans: "Geist", ui-sans-serif, system-ui, -apple-system, sans-serif;
+    --mono: "Geist Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+  }
+  * { box-sizing: border-box }
+  html { font-family: var(--sans) }
+  body { margin: 0; background: var(--bg); color: var(--fg); font-size: 14px; line-height: 1.5; font-variant-numeric: tabular-nums; -webkit-font-smoothing: antialiased }
+  a { color: var(--link); text-decoration: none } a:hover { text-decoration: underline }
+  ::selection { background: oklch(0.82 0.15 75 / 35%) }
+  .page-grid { position: fixed; inset: 0; pointer-events: none; z-index: 0;
+    background-image: linear-gradient(oklch(1 0 0 / 3%) 1px, transparent 1px), linear-gradient(90deg, oklch(1 0 0 / 3%) 1px, transparent 1px);
+    background-size: 48px 48px; mask-image: radial-gradient(ellipse 70% 50% at 50% 0%, #000 20%, transparent 70%) }
+  .wrap { position: relative; z-index: 1; max-width: 1200px; margin: 0 auto; padding: 48px 20px 80px }
+  .eyebrow { display: flex; align-items: center; gap: 7px; font-family: var(--mono); font-size: 0.7rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--primary); margin: 0 0 10px }
+  .eyebrow svg { width: 15px; height: 15px }
+  h1 { font-size: 2rem; font-weight: 600; letter-spacing: -0.02em; margin: 0 0 6px; text-wrap: balance }
+  h1 a { color: var(--muted); font-weight: 500; text-decoration: none; border-bottom: 1px solid var(--border-2); transition: color .12s, border-color .12s }
+  h1 .ico { display: inline-flex; align-items: center; justify-content: center; width: 1.05em; height: 1.05em; margin: 0 0.3em 0 0.1em; vertical-align: -0.16em; border-radius: 7px; background: var(--card-2); border: 1px solid var(--border); overflow: hidden }
+  h1 .ico img { width: 100%; height: 100%; object-fit: cover; display: block }
+  h1 .ico span { font-family: var(--mono); font-size: 0.5em; font-weight: 600; color: var(--primary); text-transform: uppercase }
+  h1 a:hover { color: var(--fg); border-color: var(--primary); text-decoration: none }
+  .lede { color: var(--muted); max-width: 680px; margin: 0 0 36px }
+  .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 10px; margin-bottom: 48px }
+  .stat { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 14px 16px 13px; display: flex; flex-direction: column; gap: 2px }
+  .stat .l { font-family: var(--mono); font-size: 0.66rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted) }
+  .stat .v { font-size: 1.75rem; font-weight: 600; letter-spacing: -0.03em; line-height: 1.15; margin-top: 6px }
+  .stat .v.t { font-size: 1.2rem; letter-spacing: -0.01em; margin-top: 9px; padding-bottom: 3px }
+  .stat .s { font-size: 12.5px; color: var(--muted); line-height: 1.4; margin-top: 3px }
+  .stat.hot .v { color: var(--primary) }
+  .stat.zero .v { color: var(--muted) }
+  .stat.act { cursor: pointer; transition: border-color .12s, background .12s }
+  .stat.act:hover { border-color: var(--border-2); background: var(--card-2) }
+  .stat.act .s::after { content: " ↗"; color: var(--dim) }
+  .stat .v small { font-size: 0.95rem; font-weight: 400; color: var(--muted); margin-left: 5px; letter-spacing: 0 }
+  .section-head { display: flex; align-items: center; gap: 0.75rem; font-family: var(--mono); font-size: 0.7rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--primary); white-space: nowrap; margin: 0 0 16px }
+  .section-head::before { content: ''; width: 1.25rem; height: 2px; background: var(--primary); opacity: 0.8 }
+  .section-head::after { content: ''; flex: 1; height: 1px; background: repeating-linear-gradient(90deg, oklch(1 0 0 / 18%) 0 2px, transparent 2px 7px) }
+  .section-head .hint { color: var(--dim); letter-spacing: 0; text-transform: none; font-size: 0.7rem }
+  .toolbar { display: flex; align-items: center; gap: 12px; padding: 6px 16px 6px 18px; border-bottom: 1px solid var(--border); position: sticky; left: 0; transition: border-color .15s }
+  .toolbar:focus-within { border-bottom-color: oklch(0.82 0.15 75 / 45%) }
+  .toolbar svg { width: 15px; height: 15px; flex: none; color: var(--dim); transition: color .15s }
+  .toolbar:focus-within svg { color: var(--primary) }
+  .toolbar input { flex: 1; min-width: 0; background: transparent; color: var(--fg); border: 0; padding: 10px 0; font: inherit; font-size: 14px; outline: none }
+  .toolbar input::placeholder { color: var(--dim) }
+  .clear { flex: none; background: transparent; border: 0; color: var(--dim); font: inherit; font-size: 16px; line-height: 1; padding: 4px 6px; cursor: pointer; border-radius: 6px }
+  .clear:hover { color: var(--fg); background: var(--card-2) }
+  .clear[hidden] { display: none }
+  .count { flex: none; color: var(--muted); font-size: 12px; font-family: var(--mono); letter-spacing: 0.02em; white-space: nowrap }
+  .count b { font-weight: 500; color: var(--fg) }
+  .chips { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 32px }
+  .chip { font-family: var(--mono); font-size: 11.5px; background: transparent; border: 1px solid var(--border); border-radius: 999px; padding: 3px 10px; cursor: pointer; color: var(--muted); user-select: none; line-height: 1.6; transition: border-color .12s, color .12s, background .12s }
+  .chip:hover { border-color: var(--border-2); color: var(--fg) }
+  .chip.on { color: var(--fg); background: var(--card-2); border-color: var(--border-2) }
+  .chip b { font-weight: 500; color: var(--dim); margin-left: 5px } .chip.on b { color: var(--primary) }
+  .card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; overflow-x: auto }
+  table { border-collapse: collapse; width: 100% }
+  th, td { text-align: left; padding: 8px 12px; border-bottom: 1px solid var(--border); vertical-align: top }
+  tr:last-child td { border-bottom: 0 }
+  th { font-family: var(--mono); font-size: 0.66rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); font-weight: 500; cursor: pointer; white-space: nowrap; position: sticky; top: 0; background: var(--card); z-index: 1 }
+  th[data-s]:hover { color: var(--fg) } th.sorted { color: var(--primary) }
+  th.sorted::after { content: " ↓" } th.sorted.asc::after { content: " ↑" }
+  td.k { font-family: var(--mono); font-size: 13px; white-space: nowrap; position: relative }
+  td.k.new::before { content: ''; position: absolute; left: 0; top: 12px; width: 3px; height: 14px; border-radius: 2px; background: var(--primary) }
+  td.n { text-align: right; white-space: nowrap; font-family: var(--mono); font-size: 13px }
+  td.d, td.via { white-space: nowrap; color: var(--muted); font-family: var(--mono); font-size: 12.5px }
+  .pill { display: inline-block; font-family: var(--mono); font-size: 11px; padding: 1px 7px; border-radius: 999px; border: 1px solid var(--border-2); color: var(--muted); line-height: 1.6 }
+  .pill.people { border-color: oklch(0.82 0.15 75 / 40%); color: var(--primary) }
+  .pill { cursor: pointer; transition: border-color .12s, color .12s } .pill:hover { border-color: var(--fg); color: var(--fg) }
+  td.note { color: var(--fg); max-width: 520px; min-width: 260px }
+  td.note .txt { color: oklch(0.8 0.008 80) }
+  td.note a { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 520px; font-size: 12.5px }
+  tbody tr:hover td { background: oklch(1 0 0 / 2.5%) }
+  .empty { padding: 32px; text-align: center; color: var(--muted) }
+  footer { margin-top: 64px; padding-top: 32px; border-top: 1px solid var(--border); display: grid; gap: 24px; grid-template-columns: 1fr auto; color: var(--muted); font-size: 12.5px; line-height: 1.6 }
+  footer .mark { display: flex; align-items: center; gap: 7px; font-family: var(--mono); font-size: 0.7rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--primary); margin-bottom: 10px }
+  footer .mark svg { width: 15px; height: 15px }
+  footer p { margin: 0 0 8px; max-width: 520px } footer p:last-child { margin-bottom: 0 }
+  footer p b { font-weight: 500; color: var(--fg) }
+  footer code { font-family: var(--mono); font-size: 11.5px; color: var(--fg); background: var(--card-2); border: 1px solid var(--border); border-radius: 4px; padding: 0 5px }
+  footer nav { display: flex; flex-direction: column; align-items: flex-end; gap: 6px; text-align: right }
+  footer nav a { color: var(--muted) } footer nav a:hover { color: var(--fg); text-decoration: none }
+  footer nav .meta { font-family: var(--mono); font-size: 11.5px; color: var(--dim); margin-top: 8px }
+  @media (max-width: 640px) { footer { grid-template-columns: 1fr } footer nav { align-items: flex-start; text-align: left } }
+  @media (max-width: 760px) {
+    .wrap { padding: 28px 16px 56px }
+    h1 { font-size: 1.5rem }
+    th:nth-child(4), td:nth-child(4), th:nth-child(6), td:nth-child(6) { display: none }
+    td.note, td.note a { max-width: 240px }
+  }
+</style>
+</head>
+<body>
+<div class="page-grid" aria-hidden="true"></div>
+<div class="wrap">
+  <header>
+    <p class="eyebrow"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4.5 9V6.5A2 2 0 0 1 6.5 4.5H9M15 4.5h2.5a2 2 0 0 1 2 2V9M19.5 15v2.5a2 2 0 0 1-2 2H15M9 19.5H6.5a2 2 0 0 1-2-2V15" stroke="oklch(0.82 0.15 75)" stroke-width="1.8" stroke-linecap="round" fill="none" opacity=".75"/><circle cx="12" cy="12" r="2.6" fill="oklch(0.82 0.15 75)"/></svg>foundby · referrer and mention ledger</p>
+    <h1>How people find <span class="ico" id="ico"></span><a id="site" target="_blank" rel="noopener"></a></h1>
+    <p class="lede">Each row in the table below is a way someone found this site, whether a page that linked here, an AI assistant that cited it, or an app that unfurled it. The date is when it first showed up. Anything from the last two weeks is marked in gold.</p>
+  </header>
+  <div class="stats" id="stats"></div>
+
+  <div class="section-head">Ways in <span class="hint">· click a kind to toggle, shift-click to solo</span></div>
+  <div class="chips" id="chips"></div>
+  <div class="card">
+    <div class="toolbar">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+      <input id="q" placeholder="Filter hosts, notes, pages" autofocus spellcheck="false" autocomplete="off">
+      <button class="clear" id="clear" type="button" aria-label="Clear filter" hidden>&times;</button>
+      <span class="count" id="count"></span>
+    </div>
+    <table>
+      <thead><tr>
+        <th data-s="key">key</th><th data-s="kind">kind</th><th data-s="first_seen">first seen</th>
+        <th data-s="last_seen">last seen</th><th data-s="hits">hits</th><th data-s="via">via</th><th>note</th>
+      </tr></thead>
+      <tbody id="rows"></tbody>
+    </table>
+    <div class="empty" id="empty" hidden>Nothing matches.</div>
+  </div>
+  <footer>
+    <div>
+      <div class="mark"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4.5 9V6.5A2 2 0 0 1 6.5 4.5H9M15 4.5h2.5a2 2 0 0 1 2 2V9M19.5 15v2.5a2 2 0 0 1-2 2H15M9 19.5H6.5a2 2 0 0 1-2-2V15" stroke="oklch(0.82 0.15 75)" stroke-width="1.8" stroke-linecap="round" fill="none" opacity=".75"/><circle cx="12" cy="12" r="2.6" fill="oklch(0.82 0.15 75)"/></svg>foundby</div>
+      <p>Rendered from <code id="ledger-path"></code>. Refresh it with <code>/foundby</code> in Claude Code; the kind and note columns can be edited by hand in the markdown and are kept.</p>
+      <p><b>Hits</b> are edge hits plus GA sessions and overlap: read them as a magnitude, not a count. <b>Via</b> says where a row was seen: edge is the CDN log, ga is Google Analytics, web is a page found by search, bing is a Bing backlink.</p>
+    </div>
+    <nav>
+      <a href="https://foundby.dev" target="_blank" rel="noopener">foundby.dev</a>
+      <a href="https://github.com/preziotte/foundby" target="_blank" rel="noopener">Source</a>
+      <a href="https://agenttraffic.io" target="_blank" rel="noopener">agenttraffic, for the agent side</a>
+      <span class="meta" id="meta"></span>
+    </nav>
+  </footer>
+</div>
+<script id="data" type="application/json">__DATA__</script>
+<script>
+  const state = JSON.parse(document.getElementById('data').textContent);
+  const ORDER = ["blog","newsletter","forum","video","award","directory","docs","social","unknown","search","ai","agent","app","unfurler","tool","own","monitor","junk"];
+  const PEOPLE = new Set(["blog","newsletter","forum","video","award","directory","docs"]);
+  const rows = Object.entries(state.rows).map(([key, r]) => ({ key, ...r }));
+  const site = state.site || '';
+  document.getElementById('ledger-path').textContent = state.ledger || 'docs/foundby.md';
+  const lastRunExact = state.last_run ? state.last_run.replace('T', ' ').replace(/:\d\dZ$/, ' UTC') : '';
+  document.getElementById('meta').textContent = `${rows.length} rows · ${lastRunExact || 'never run'}`;
+  const siteEl = document.getElementById('site'); siteEl.textContent = site; siteEl.href = 'https://' + site;
+  const ico = document.getElementById('ico');
+  if (state.icon) { const im = new Image(); im.src = state.icon; im.alt = ''; ico.appendChild(im); }
+  else { const sp = document.createElement('span'); sp.textContent = site[0]; ico.appendChild(sp); }
+  document.title = `How people find ${site}`;
+  const recent = d => (Date.now() - new Date(d)) / 864e5 < 14;
+  const ago = iso => { if (!iso) return 'never'; const h = (Date.now() - new Date(iso)) / 36e5;
+    return h < 1 ? 'just now' : h < 48 ? `${Math.round(h)}h ago` : `${Math.round(h / 24)}d ago`; };
+  const sinceDate = new Date(Date.now() - 14 * 864e5).toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+  const peopleKinds = ORDER.filter(k => PEOPLE.has(k) && rows.some(r => r.kind === k));
+  const newCount = rows.filter(r => recent(r.first_seen)).length;
+  const pageCount = rows.reduce((n, r) => n + (r.pages || []).length, 0);
+  const peopleCount = rows.filter(r => PEOPLE.has(r.kind)).length;
+  document.getElementById('stats').innerHTML = [
+    { l: 'ways in', v: rows.length, s: 'distinct paths someone has taken to the site' },
+    { l: 'new entries', v: `${newCount}<small>of ${rows.length}</small>`, s: `first seen since ${sinceDate}`, cls: newCount ? 'hot' : 'zero' },
+    { l: 'coverage', v: `${peopleCount}<small>of ${rows.length}</small>`, s: peopleKinds.join(', '), cls: 'act', id: 'people', title: 'Show only these kinds' },
+    { l: 'linking pages', v: pageCount, s: 'specific posts, threads and videos that link to the site' },
+    { l: 'last updated', v: ago(state.last_run), s: lastRunExact, t: true },
+  ].map(x => `<div class="stat ${x.cls || ''}"${x.id ? ` id="stat-${x.id}"` : ''}${x.title ? ` title="${x.title}"` : ''}>
+      <div class="l">${x.l}</div><div class="v${x.t ? ' t' : ''}">${typeof x.v === 'number' ? x.v.toLocaleString() : x.v}</div><div class="s">${x.s}</div></div>`).join('');
+
+  const DEFAULT = ORDER.filter(k => k !== 'junk' && k !== 'search');
+  const active = new Set(DEFAULT);
+  const chips = document.getElementById('chips');
+  const counts = Object.fromEntries(ORDER.map(k => [k, rows.filter(r => r.kind === k).length]));
+  for (const k of ORDER) {
+    if (!counts[k]) continue;
+    const c = document.createElement('span');
+    c.className = 'chip' + (active.has(k) ? ' on' : ''); c.dataset.k = k; c.innerHTML = `${k}<b>${counts[k]}</b>`;
+    c.onclick = e => pick(k, e.shiftKey);
+    chips.appendChild(c);
+  }
+  function setActive(kinds) {
+    active.clear(); kinds.forEach(k => active.add(k));
+    [...chips.children].forEach(ch => ch.classList.toggle('on', active.has(ch.dataset.k))); draw();
+  }
+  // solo=true shows only this kind, or restores the default set if it is already alone.
+  function pick(k, solo) {
+    if (solo) setActive(active.size === 1 && active.has(k) ? DEFAULT : [k]);
+    else setActive([...active].filter(x => x !== k).concat(active.has(k) ? [] : [k]));
+  }
+
+  let sort = { by: 'first_seen', dir: -1 };
+  document.querySelectorAll('th[data-s]').forEach(th => th.onclick = () => {
+    const by = th.dataset.s; sort = { by, dir: sort.by === by ? -sort.dir : (by === 'hits' || by.endsWith('seen') ? -1 : 1) }; draw();
+  });
+  const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+  function draw() {
+    document.querySelectorAll('th[data-s]').forEach(th => {
+      th.classList.toggle('sorted', th.dataset.s === sort.by);
+      th.classList.toggle('asc', th.dataset.s === sort.by && sort.dir === 1);
+    });
+    const q = document.getElementById('q').value.trim().toLowerCase();
+    let list = rows.filter(r => active.has(r.kind) && (!q || (r.key + ' ' + r.note + ' ' + (r.pages||[]).join(' ') + ' ' + r.kind).toLowerCase().includes(q)));
+    list.sort((a, b) => {
+      let x = a[sort.by], y = b[sort.by];
+      if (sort.by === 'kind') { x = ORDER.indexOf(x); y = ORDER.indexOf(y); if (x === y) return b.hits - a.hits; }
+      if (Array.isArray(x)) { x = x.join(); y = y.join(); }
+      if (x === y) return b.hits - a.hits;
+      return (x > y ? 1 : x < y ? -1 : 0) * sort.dir;
+    });
+    document.getElementById('rows').innerHTML = list.map(r => `<tr>
+      <td class="k ${recent(r.first_seen) ? 'new' : ''}">${esc(r.key)}</td>
+      <td><span class="pill ${PEOPLE.has(r.kind) ? 'people' : ''}" data-k="${esc(r.kind)}" title="Show only ${esc(r.kind)}">${esc(r.kind)}</span></td>
+      <td class="d">${esc(r.first_seen.slice(0,10))}</td><td class="d">${esc(r.last_seen.slice(0,10))}</td>
+      <td class="n">${r.hits.toLocaleString()}</td><td class="via">${esc(r.via.join(','))}</td>
+      <td class="note">${r.note ? `<div class="txt">${esc(r.note)}</div>` : ''}${(r.pages||[]).map(p => `<a href="${esc(p)}" target="_blank" rel="noopener" title="${esc(p)}">${esc(p.replace(/^https?:\/\/(www\.)?/,''))}</a>`).join('')}</td>
+    </tr>`).join('');
+    document.getElementById('empty').hidden = list.length > 0;
+    document.getElementById('count').innerHTML = `<b>${list.length}</b> of ${rows.length}`;
+    document.getElementById('clear').hidden = !q;
+  }
+  document.getElementById('rows').onclick = e => {
+    const pill = e.target.closest('.pill[data-k]'); if (pill) pick(pill.dataset.k, !e.shiftKey);
+  };
+  document.getElementById('stat-people').onclick = () => {
+    const already = active.size === peopleKinds.length && peopleKinds.every(k => active.has(k));
+    setActive(already ? DEFAULT : peopleKinds);
+  };
+  const qEl = document.getElementById('q');
+  qEl.oninput = draw;
+  qEl.onkeydown = e => { if (e.key === 'Escape') { qEl.value = ''; draw(); } };
+  document.getElementById('clear').onclick = () => { qEl.value = ''; draw(); qEl.focus(); };
+  draw();
+</script>
+</body>
+</html>
