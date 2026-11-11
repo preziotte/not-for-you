@@ -279,12 +279,13 @@ export const pages = [
     slug: "reddit",
     name: "Reddit",
     title:
-      "Hide Reddit&rsquo;s Promoted Posts and Recommendations | Not for You",
+      "Turn Off Reddit&rsquo;s Discover Feed, Keep Following | Not for You",
     description:
-      "How to browse Reddit without promoted posts, ads or subreddit recommendations, and optionally default to old Reddit, with Not for You, a free extension.",
-    h1: "Reddit without the clutter",
-    lead: "Reddit&rsquo;s feed is already the communities you joined, so the extension leaves it alone. It removes what gets inserted into it: <b>promoted posts, ads and recommendations</b>.",
+      "How to keep Reddit on the Following feed instead of Discover, without promoted posts, ads or subreddit recommendations, with Not for You, a free extension.",
+    h1: "Reddit without the Discover feed",
+    lead: "Reddit&rsquo;s home now opens on <b>Discover</b>, which mixes in communities you never joined. The extension keeps it on <b>Following</b>, the communities you chose, and removes what still gets inserted: <b>promoted posts, ads and recommendations</b>.",
     changes: [
+      "Opens the <strong>Following</strong> feed instead of Discover, and keeps it there.",
       "Hides <strong>promoted posts and ads</strong> in the feed.",
       "Hides Reddit&rsquo;s recommendations: suggested communities and &ldquo;similar to&rdquo; units.",
       "Optionally opens <strong>old Reddit</strong> by default (off unless you turn it on).",
@@ -296,7 +297,7 @@ export const pages = [
         height: 869,
         alt: "The Reddit Home feed before Not for You, with the promoted post, the Advertise button and the Games on Reddit section highlighted; the extension removes each of them.",
         caption:
-          "Reddit without the extension. Everything marked in red gets removed; the feed itself is already the communities you joined, so it stays.",
+          "Reddit without the extension. Everything marked in red gets removed; posts from the communities you joined stay.",
         notes: [
           {
             kind: "kept",
@@ -329,7 +330,7 @@ export const pages = [
       {
         q: "Does Reddit even have an algorithmic feed?",
         a: [
-          "Less than the others: your Home feed is built from the subreddits you joined, which is why the extension leaves the feed itself alone. What Reddit does insert is promoted posts, ads and recommendation units for communities you never asked about, and those are what get hidden.",
+          "It does now. Since late October 2026 the Home page has two tabs: Discover, which mixes posts from communities you joined with ones Reddit picks for you, and Following, which is only the communities you joined. The extension switches you to Following and Reddit remembers it. Ranking inside Following (Best, Hot, New) is community votes, not a model of you, so it stays as you set it.",
         ],
       },
       {

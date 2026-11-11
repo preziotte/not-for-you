@@ -11,8 +11,8 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Hide Reddit&rsquo;s Promoted Posts and Recommendations | Not for You</title>
-    <meta name="description" content="How to browse Reddit without promoted posts, ads or subreddit recommendations, and optionally default to old Reddit, with Not for You, a free extension." />
+    <title>Turn Off Reddit&rsquo;s Discover Feed, Keep Following | Not for You</title>
+    <meta name="description" content="How to keep Reddit on the Following feed instead of Discover, without promoted posts, ads or subreddit recommendations, with Not for You, a free extension." />
     <link rel="canonical" href="https://notforyou.app/reddit" />
     <!-- Same Google Analytics setup as index.html, which has the reasoning. -->
     <script>
@@ -56,8 +56,8 @@
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://notforyou.app/reddit" />
     <meta property="og:site_name" content="Not for You" />
-    <meta property="og:title" content="Reddit without the clutter" />
-    <meta property="og:description" content="How to browse Reddit without promoted posts, ads or subreddit recommendations, and optionally default to old Reddit, with Not for You, a free extension." />
+    <meta property="og:title" content="Reddit without the Discover feed" />
+    <meta property="og:description" content="How to keep Reddit on the Following feed instead of Discover, without promoted posts, ads or subreddit recommendations, with Not for You, a free extension." />
     <meta property="og:image" content="https://notforyou.app/og.png" />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
@@ -66,8 +66,8 @@
       content="The Not for You extension popup, listing every supported social platform with its algorithmic feed switched off."
     />
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="Reddit without the clutter" />
-    <meta name="twitter:description" content="How to browse Reddit without promoted posts, ads or subreddit recommendations, and optionally default to old Reddit, with Not for You, a free extension." />
+    <meta name="twitter:title" content="Reddit without the Discover feed" />
+    <meta name="twitter:description" content="How to keep Reddit on the Following feed instead of Discover, without promoted posts, ads or subreddit recommendations, with Not for You, a free extension." />
     <meta name="twitter:image" content="https://notforyou.app/og.png" />
     <script type="application/ld+json">
       {
@@ -93,7 +93,7 @@
       "name": "Does Reddit even have an algorithmic feed?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "Less than the others: your Home feed is built from the subreddits you joined, which is why the extension leaves the feed itself alone. What Reddit does insert is promoted posts, ads and recommendation units for communities you never asked about, and those are what get hidden."
+        "text": "It does now. Since late October 2026 the Home page has two tabs: Discover, which mixes posts from communities you joined with ones Reddit picks for you, and Following, which is only the communities you joined. The extension switches you to Following and Reddit remembers it. Ranking inside Following (Best, Hot, New) is community votes, not a model of you, so it stays as you set it."
       }
     },
     {
@@ -1442,8 +1442,8 @@
             <use class="tile" href="#nfy-tile" style="--d:5.3s" transform="translate(0.1125 26.7125) scale(0.775)" />
           </svg>
         </div>
-        <h1>Reddit without the clutter</h1>
-        <p class="tagline">Reddit&rsquo;s feed is already the communities you joined, so the extension leaves it alone. It removes what gets inserted into it: <b>promoted posts, ads and recommendations</b>.</p>
+        <h1>Reddit without the Discover feed</h1>
+        <p class="tagline">Reddit&rsquo;s home now opens on <b>Discover</b>, which mixes in communities you never joined. The extension keeps it on <b>Following</b>, the communities you chose, and removes what still gets inserted: <b>promoted posts, ads and recommendations</b>.</p>
                 <div class="cta-block">
           <a
             class="cta cta-chrome"
@@ -1585,7 +1585,8 @@
       <div class="rest">
         <h2>What it changes on Reddit</h2>
         <ul>
-          <li>Hides <strong>promoted posts and ads</strong> in the feed.</li>
+          <li>Opens the <strong>Following</strong> feed instead of Discover, and keeps it there.</li>
+        <li>Hides <strong>promoted posts and ads</strong> in the feed.</li>
         <li>Hides Reddit&rsquo;s recommendations: suggested communities and &ldquo;similar to&rdquo; units.</li>
         <li>Optionally opens <strong>old Reddit</strong> by default (off unless you turn it on).</li>
         </ul>
@@ -1605,13 +1606,13 @@
             <div class="note removed" style="left:1.2%;top:34.2%;width:15.5%;height:33.8%"><span class="note-label inside">&ldquo;Games on Reddit&rdquo;: hidden</span></div>
             <div class="note removed" style="left:81.3%;top:0.9%;width:2.7%;height:4.8%"><span class="note-label bottom-right">Advertise button: hidden</span></div>
           </div>
-          <figcaption class="muted">Reddit without the extension. Everything marked in red gets removed; the feed itself is already the communities you joined, so it stays.</figcaption>
+          <figcaption class="muted">Reddit without the extension. Everything marked in red gets removed; posts from the communities you joined stay.</figcaption>
         </figure>
 
         <hr class="rule" />
 
         <div class="faq"><h2>Does Reddit even have an algorithmic feed?</h2>
-<p>Less than the others: your Home feed is built from the subreddits you joined, which is why the extension leaves the feed itself alone. What Reddit does insert is promoted posts, ads and recommendation units for communities you never asked about, and those are what get hidden.</p>
+<p>It does now. Since late October 2026 the Home page has two tabs: Discover, which mixes posts from communities you joined with ones Reddit picks for you, and Following, which is only the communities you joined. The extension switches you to Following and Reddit remembers it. Ranking inside Following (Best, Hot, New) is community votes, not a model of you, so it stays as you set it.</p>
 <h2>How do I hide promoted posts on Reddit?</h2>
 <p>A checkbox in the popup hides them, along with the ad slots in the feed and sidebar.</p>
 <h2>How do I stop Reddit recommending subreddits?</h2>

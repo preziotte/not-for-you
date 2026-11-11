@@ -5,23 +5,29 @@ import { getEffective, watchSettings } from '../lib/settings';
 import { watchSpaNavigation } from '../lib/spa';
 
 /**
- * Reddit's home feed is already subscribed-only, so there is no feed to
- * redirect (see the note in lib/platforms.ts). What is left to remove is
- * everything Reddit adds that you did not subscribe to:
- *
- * - `enabled`: ads. Every surface is a custom element, which is as stable
- *   a handle as this codebase gets. Verified live 2026-08-05:
+ * - `enabled`: keep the home page on Following rather than Discover. The
+ *   tabs are a client-side tablist with no URL each, so this clicks the tab
+ *   (same approach as X). Handles verified live 2026-11-11, logged in:
+ *   button[data-feed-token="for-you" | "following"] inside
+ *   shreddit-feed-tabs, with the faceplate-tab-selected attribute on the
+ *   active one. The tokens are language-independent; the visible labels
+ *   ("Discover", "Following") are not. shreddit-feed-tabs also carries a
+ *   current-feed attribute, but it is only correct at page load and is not
+ *   updated on a tab switch, so it is not used. Reddit saves the chosen feed
+ *   on the account, so after one click later loads arrive on Following.
+ * - `hidePromoted`: ads. Every surface is a custom element, which is as
+ *   stable a handle as this codebase gets. Verified live 2026-08-05:
  *   shreddit-ad-post (in-feed promoted posts, four in a 35-post feed),
  *   shreddit-sidebar-ad, shreddit-dynamic-ad-link, and advertise-button
  *   (the "Advertise on Reddit" item in the header). Each is the whole
  *   unit, so hiding it leaves no gap or orphaned divider.
  * - `hideRecommendations`: the "Games on Reddit" sidebar section (which
  *   also holds its "Discover More" link) and the Trending block in the
- *   search dropdown, whose items are labelled "Based on your interests"
- *   and are the one genuinely personalized surface on the site.
+ *   search dropdown, whose items are labelled "Based on your interests".
  * - `oldReddit`: handled by a DNR redirect. old.reddit.com is served with
- *   no ads, no trending and no recommendations at all, so it needs no
- *   content script and this platform asks for no permission on that host.
+ *   no ads, no trending, no recommendations and no Discover feed at all, so
+ *   it needs no content script and this platform asks for no permission on
+ *   that host.
  */
 const AD_SELECTORS = [
   'shreddit-ad-post',
@@ -83,6 +89,28 @@ export default defineContentScript({
     (document.head ?? document.documentElement).append(hideStyle);
 
     let hideRecommendations = false;
+    let followingOnly = false;
+    let lastClick = 0;
+
+    // Only the home page has the feed tabs; Popular, News and custom feeds
+    // are destinations the user picked, so they are left alone.
+    const enforceFollowing = () => {
+      if (!followingOnly || location.pathname !== '/') return;
+      const discover = document.querySelector<HTMLElement>(
+        'shreddit-feed-tabs button[data-feed-token="for-you"]',
+      );
+      const following = document.querySelector<HTMLElement>(
+        'shreddit-feed-tabs button[data-feed-token="following"]',
+      );
+      if (!discover || !following) return;
+      if (!discover.hasAttribute('faceplate-tab-selected')) return;
+      // Guard against a click loop if Reddit ever stops moving the
+      // selected attribute.
+      if (Date.now() - lastClick > 500) {
+        lastClick = Date.now();
+        following.click();
+      }
+    };
 
     // Only reddit-search-large is verified live; the narrow-viewport
     // sibling is included because it costs nothing when it is absent.
@@ -103,14 +131,18 @@ export default defineContentScript({
       }
     };
 
-    const schedule = enforceOnMutations(applySearchStyle);
+    const schedule = enforceOnMutations(() => {
+      enforceFollowing();
+      applySearchStyle();
+    });
 
     const sync = async () => {
       const reddit = await getEffective('reddit');
       hideRecommendations = reddit.hideRecommendations;
+      followingOnly = reddit.enabled;
       document.documentElement.toggleAttribute(
         'data-nfy-rd-ads',
-        reddit.enabled,
+        reddit.hidePromoted,
       );
       document.documentElement.toggleAttribute(
         'data-nfy-rd-recs',

@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased
+
+- Reddit: keeps the home page on Following instead of the new Discover feed.
+  Hiding promoted posts and ads is now its own checkbox, still on by default
+  (if you had turned Reddit off to keep its ads, turn that checkbox off)
+
 ## 1.1.0 (2026-08-28)
 
 - The temporary disable now offers 5m, 30m, 1h and 24h instead of a fixed

@@ -176,28 +176,27 @@ export const PLATFORMS: Platform[] = [
     ],
   },
   /*
-   * Reddit is a cleanup platform, not a feed platform. Measured live
-   * 2026-08-05 against a 104-subreddit account: 400 posts of the home feed
-   * came entirely from subscribed subreddits, on both the Best default and
-   * the New sort, and post pages carry no related-posts or recommendation
-   * units at all. Reddit's home is already what this extension asks every
-   * other platform for, so there is no feed to take back.
+   * Reddit got a recommendation feed in its 2026-10-28 redesign: the home
+   * page now opens on "Discover" (communities you joined mixed with ones
+   * Reddit picks for you), with "Following" beside it. Before that, home
+   * was subscribed-only (measured 2026-08-05: 400 posts, all from joined
+   * subreddits), which is why this platform used to be cleanup only.
    *
-   * That also rules out the redirect we used to ship here (Best -> New).
-   * Ranking on Reddit decides order within communities you joined, and it
-   * is community votes doing the ranking, not a model of you. Swapping to
-   * New threw that curation away and called it de-algorithming.
+   * Following has no URL of its own (the page stays at "/"), so there is no
+   * redirect; the content script clicks the tab, like X. Reddit stores the
+   * choice on the account, so one click usually settles it for good.
    *
-   * What is actually foreign to a subscribed feed is ads and Reddit's own
-   * recommendation surfaces, so those are what the checkboxes hide.
+   * Ranking inside Following is still left alone: Best is community votes
+   * on posts from communities you joined, not a model of you.
    */
   {
     id: 'reddit',
-    enabledLabel: 'Hide promoted posts and ads',
+    enabledLabel: 'Show Following, not the “Discover” feed',
     label: 'Reddit',
     matches: ['*://www.reddit.com/*', '*://reddit.com/*'],
     dnrRules: [],
     options: [
+      { key: 'hidePromoted', label: 'Hide promoted posts and ads' },
       { key: 'hideRecommendations', label: 'Hide Reddit’s recommendations' },
       {
         key: 'oldReddit',

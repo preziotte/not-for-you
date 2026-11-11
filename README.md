@@ -16,16 +16,16 @@ accounts you chose to follow, in the order they posted.
 Every option below is a checkbox in the popup, on by default (except where
 noted), and can be turned off per platform.
 
-| Platform  | Feed                                    | Extra options                                                                      |
-| --------- | --------------------------------------- | ---------------------------------------------------------------------------------- |
-| YouTube   | Subscriptions instead of the Home feed  | turn off autoplay, hide the Shorts row, hide "what to watch next"                  |
-| Instagram | Following instead of the Home feed      | hide the suggestions sidebar                                                       |
-| TikTok    | Following instead of the "For You" feed | hide the header bar                                                                |
-| X/Twitter | Following instead of the "For You" feed | hide trends and suggestions                                                        |
-| Reddit    | left alone, it is already followed-only | hide promoted posts and ads, hide recommendations, use old Reddit (off by default) |
-| LinkedIn  | Recent instead of the Top sort          | hide promoted and suggested posts, hide the news sidebar                           |
-| Threads   | Following instead of the "For You" feed |                                                                                    |
-| Facebook  | The Feeds view instead of Home          | hide the Reels tab                                                                 |
+| Platform  | Feed                                     | Extra options                                                                      |
+| --------- | ---------------------------------------- | ---------------------------------------------------------------------------------- |
+| YouTube   | Subscriptions instead of the Home feed   | turn off autoplay, hide the Shorts row, hide "what to watch next"                  |
+| Instagram | Following instead of the Home feed       | hide the suggestions sidebar                                                       |
+| TikTok    | Following instead of the "For You" feed  | hide the header bar                                                                |
+| X/Twitter | Following instead of the "For You" feed  | hide trends and suggestions                                                        |
+| Reddit    | Following instead of the "Discover" feed | hide promoted posts and ads, hide recommendations, use old Reddit (off by default) |
+| LinkedIn  | Recent instead of the Top sort           | hide promoted and suggested posts, hide the news sidebar                           |
+| Threads   | Following instead of the "For You" feed  |                                                                                    |
+| Facebook  | The Feeds view instead of Home           | hide the Reels tab                                                                 |
 
 Nothing else changes. Search, profiles, messages and posting all work exactly as
 before, and the popup can turn the whole thing off for a while (five minutes
@@ -61,7 +61,7 @@ Two mechanisms, and the first is always preferred:
    to `/following`, Facebook to its `Feeds` view, and Reddit to `old.reddit.com`
    if you ask for it. Durable, and it degrades gracefully.
 2. **DOM work.** Only where no such route exists (X keeps snapping back to "For
-   You"; LinkedIn buries its Recent sort in a dropdown) or to hide the leftover
+   You" and Reddit's Following tab has no URL; LinkedIn buries its Recent sort in a dropdown) or to hide the leftover
    recommendation blocks that no URL avoids. This part is matched against the
    platforms' current markup and will break when they change it.
 

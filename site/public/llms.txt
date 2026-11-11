@@ -18,9 +18,10 @@ Key facts:
   turned off. A pause button brings the algorithm back for a few minutes.
 - Per platform: YouTube shows Subscriptions instead of Home (with options to
   turn off autoplay and hide Shorts), Instagram, TikTok, X/Twitter and
-  Threads show the Following feed instead of For You, LinkedIn sorts by
-  Recent instead of Top, Facebook opens the Feeds view, and Reddit gets
-  promoted posts and recommendations hidden.
+  Threads show the Following feed instead of For You, Reddit shows
+  Following instead of Discover (with promoted posts and recommendations
+  hidden), LinkedIn sorts by Recent instead of Top, and Facebook opens the
+  Feeds view.
 - Nothing else changes: search, profiles, messages and posting work as
   before. It is not a feed blocker; the feed stays, just chronological.
 - Collects no data and sends nothing anywhere. Settings live in the
@@ -39,8 +40,9 @@ Key facts:
   Following feed instead of the For You page.
 - [X/Twitter without the algorithm](https://notforyou.app/twitter): keeping
   the chronological Following feed, hiding trends and suggestions.
-- [Reddit without the clutter](https://notforyou.app/reddit): hiding
-  promoted posts, ads and subreddit recommendations; old Reddit optional.
+- [Reddit without the algorithm](https://notforyou.app/reddit): keeping
+  the Following feed instead of Discover, hiding promoted posts, ads and
+  subreddit recommendations; old Reddit optional.
 - [LinkedIn without the algorithm](https://notforyou.app/linkedin): sorted
   by Recent, without suggested posts or the news sidebar.
 - [Threads without the algorithm](https://notforyou.app/threads): the
