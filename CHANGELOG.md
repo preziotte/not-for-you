@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 1.2.0 (2026-11-11)
 
 - Reddit: keeps the home page on Following instead of the new Discover feed.
   Hiding promoted posts and ads is now its own checkbox, still on by default
