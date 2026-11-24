@@ -4,7 +4,7 @@ terraform {
   required_providers {
     aws = {
       source  = "hashicorp/aws"
-      version = "~> 4.0"
+      version = "~> 5.80"
     }
   }
 }
@@ -159,7 +159,6 @@ resource "aws_acm_certificate_validation" "cert" {
 # and redirects trailing slashes to the bare path. See url-rewrite.js.
 resource "aws_cloudfront_function" "url_rewrite" {
   name    = "${replace(var.domain_name, ".", "-")}-url-rewrite"
-  # The aws provider is pinned to ~> 4.0, which predates cloudfront-js-2.0.
   # The 1.0 runtime covers everything url-rewrite.js uses.
   runtime = "cloudfront-js-1.0"
   comment = "Clean URLs: map extensionless paths to .html"
@@ -279,6 +278,103 @@ resource "aws_cloudfront_distribution" "www" {
   price_class = "PriceClass_100"
 }
 
+# Access logs. These are the site's analytics: read with `agenttraffic fetch cloudfront`.
+# Log delivery prefixes the suffix path below with AWSLogs/<account-id>/CloudFront/, so the
+# files live under s3://logs.<domain>/AWSLogs/<account-id>/CloudFront/cloudfront/apex/.
+variable "log_retention_days" {
+  description = "Days to keep CloudFront access logs"
+  type        = number
+  default     = 400
+}
+
+resource "aws_s3_bucket" "logs" {
+  bucket = "logs.${var.domain_name}"
+  tags   = { Name = "logs.${var.domain_name}" }
+}
+
+resource "aws_s3_bucket_public_access_block" "logs" {
+  bucket                  = aws_s3_bucket.logs.id
+  block_public_acls       = true
+  block_public_policy     = true
+  ignore_public_acls      = true
+  restrict_public_buckets = true
+}
+
+resource "aws_s3_bucket_lifecycle_configuration" "logs" {
+  bucket = aws_s3_bucket.logs.id
+  rule {
+    id     = "expire-old-logs"
+    status = "Enabled"
+    filter {}
+    expiration {
+      days = var.log_retention_days
+    }
+  }
+}
+
+# Standard logging v2 delivers through the CloudWatch Logs delivery service, via a
+# bucket policy rather than the ACL grant legacy logging needs.
+data "aws_caller_identity" "current" {}
+
+resource "aws_s3_bucket_policy" "logs" {
+  bucket = aws_s3_bucket.logs.id
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [{
+      Sid       = "AWSLogDeliveryWrite"
+      Effect    = "Allow"
+      Principal = { Service = "delivery.logs.amazonaws.com" }
+      Action    = "s3:PutObject"
+      Resource  = "${aws_s3_bucket.logs.arn}/*"
+      Condition = {
+        StringEquals = {
+          "s3:x-amz-acl"      = "bucket-owner-full-control"
+          "aws:SourceAccount" = data.aws_caller_identity.current.account_id
+        }
+      }
+    }]
+  })
+}
+
+# Standard logging v2, apex only (www just 301s). Field list chosen to match
+# what agenttraffic needs: client IP for verification, referer, query, cache
+# result, host. Hourly partitions so `fetch cloudfront --days N` can pick files.
+locals {
+  delivery_name = replace(var.domain_name, ".", "-")
+}
+
+resource "aws_cloudwatch_log_delivery_source" "apex" {
+  provider     = aws.us-east-1
+  name         = "${local.delivery_name}-apex"
+  log_type     = "ACCESS_LOGS"
+  resource_arn = aws_cloudfront_distribution.main.arn
+}
+
+resource "aws_cloudwatch_log_delivery_destination" "logs" {
+  provider      = aws.us-east-1
+  name          = "${local.delivery_name}-logs"
+  output_format = "plain"
+  delivery_destination_configuration {
+    destination_resource_arn = aws_s3_bucket.logs.arn
+  }
+  depends_on = [aws_s3_bucket_policy.logs]
+}
+
+resource "aws_cloudwatch_log_delivery" "apex" {
+  provider                 = aws.us-east-1
+  delivery_source_name     = aws_cloudwatch_log_delivery_source.apex.name
+  delivery_destination_arn = aws_cloudwatch_log_delivery_destination.logs.arn
+  s3_delivery_configuration {
+    suffix_path                 = "cloudfront/apex/{yyyy}/{MM}/{dd}/{HH}"
+    enable_hive_compatible_path = false
+  }
+  record_fields = [
+    "timestamp", "c-ip", "cs-method", "cs(Host)", "cs-uri-stem", "sc-status", "cs(Referer)",
+    "cs(User-Agent)", "cs-uri-query", "x-edge-result-type", "x-edge-response-result-type",
+    "cs-protocol", "sc-bytes", "time-taken", "x-host-header",
+  ]
+}
+
 # Route 53 A record for apex domain
 resource "aws_route53_record" "apex" {
   zone_id = aws_route53_zone.zone.zone_id
@@ -337,6 +433,11 @@ output "cloudfront_distribution_main" {
 
 output "cloudfront_distribution_www" {
   value = aws_cloudfront_distribution.www.id
+}
+
+output "logs_prefix" {
+  description = "Pass to `agenttraffic fetch cloudfront`"
+  value       = "s3://${aws_s3_bucket.logs.bucket}/AWSLogs/${data.aws_caller_identity.current.account_id}/CloudFront/cloudfront/apex/"
 }
 
 output "name_servers" {
