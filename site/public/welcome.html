@@ -370,6 +370,16 @@
         font-weight: normal;
         margin: 1.8rem 0 0.35rem;
       }
+      /* A small line drawing ahead of each heading, in the same pen as the
+         theme toggle: something to find the section by when scanning. Muted,
+         so the heading is still the words. */
+      h2 .h-icon {
+        width: 1em;
+        height: 1em;
+        margin-right: 0.55em;
+        vertical-align: -0.12em;
+        color: var(--muted);
+      }
       /* A rule already carries its own space above the heading. */
       .rule + h2 {
         margin-top: 0;
@@ -628,13 +638,13 @@
 
       <hr class="rule" />
 
-      <h2>Pin the extension</h2>
+      <h2><svg class="h-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.6 1.9l4.5 4.5-1.3.5-2.1 2.1.3 3-1 1L6.4 9.6 3 6l1-1 3 .3L9.1 3.2z" /><path d="M6.4 9.6 2.4 13.6" /></svg>Pin the extension</h2>
       <p>
         If you want easy access to the extension, you can pin it to your
         toolbar. Click the puzzle-piece icon in the toolbar and then the pin.
       </p>
 
-      <h2>Turn it off when you need to</h2>
+      <h2><svg class="h-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="8" cy="8" r="6" /><path d="M6.5 5.8v4.4M9.5 5.8v4.4" /></svg>Turn it off when you need to</h2>
       <p>
         Everything the extension does is a checkbox in its popup, so any
         single change can be switched off per platform. The buttons at the
@@ -642,16 +652,14 @@
         a day.
       </p>
 
-      <h2>A small reminder</h2>
+      <h2><svg class="h-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 2.6a3.4 3.4 0 0 0-3.4 3.4v2.3L3.4 10.6h9.2L11.4 8.3V6A3.4 3.4 0 0 0 8 2.6Z" /><path d="M6.7 12.6a1.4 1.4 0 0 0 2.6 0" /></svg>A small reminder</h2>
       <p>
-        Once a day, the first time the extension changes a feed, a small
-        &ldquo;Not for You&rdquo; badge appears at the top right of the page
-        for a few seconds, so it is clear why the site looks different. The
-        last setting in the popup makes it weekly or monthly, or turns it
-        off.
+        By default, a small &ldquo;Not for You&rdquo; badge appears at the
+        top right once a day, so you know why a site looks different. You
+        can turn this off in the settings.
       </p>
 
-      <h2>If something looks off</h2>
+      <h2><svg class="h-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 14V2.5" /><path d="M3.5 3h8l-1.6 2.6L11.5 8.2h-8" /></svg>If something looks off</h2>
       <p>
         If the extension is not working as expected, or something
         disappears that shouldn't,
