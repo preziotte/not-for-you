@@ -9,6 +9,8 @@
   “For You” feed"
 - LinkedIn: hiding promoted and suggested posts works again, on both tabs
 - LinkedIn accounts still on the older single feed keep the Recent sort
+- The reminder setting at the bottom of the popup sits under "All sites"
+  with a globe, instead of "Everywhere" with the extension's own icon
 
 ## 1.3.0 (2026-11-24)
 

@@ -86,24 +86,20 @@ async function render() {
 
 /**
  * The one setting that is about the extension rather than a site: whether
- * and how often the reminder badge shows (lib/notice.ts). Last in the list, under the
- * extension's own icon where the platforms have theirs.
+ * and how often the reminder badge shows (lib/notice.ts). Last in the list, as "All sites".
  */
 async function renderGlobal(): Promise<HTMLLIElement> {
   const item = document.createElement('li');
 
   const title = document.createElement('div');
   title.className = 'site';
-  const icon = document.createElement('img');
-  icon.src = '/icon/32.png';
-  icon.alt = '';
-  icon.width = 16;
-  icon.height = 16;
+  // A globe where the platforms have their favicons: this row is not a
+  // site, and the extension's own icon made it look like a ninth one.
+  title.innerHTML =
+    '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9" /><path d="M3 12h18" /><ellipse cx="12" cy="12" rx="4" ry="9" /></svg>';
   const name = document.createElement('span');
-  // The list above is places; this is the last one. The header already
-  // carries the extension's name.
-  name.textContent = 'Everywhere';
-  title.append(icon, name);
+  name.textContent = 'All sites';
+  title.append(name);
 
   // A checkbox like every other row, with how often beside it. Unchecked
   // is "never"; the select keeps the frequency to go back to.
