@@ -22,6 +22,7 @@
     "build:local": "NFY_LOCAL=1 wxt build",
     "zip": "wxt zip",
     "zip:firefox": "wxt zip -b firefox",
+    "release:fetch": "gh release download v$npm_package_version --dir .output --clobber",
     "compile": "tsc --noEmit",
     "format": "prettier --write .",
     "format:check": "prettier --check .",

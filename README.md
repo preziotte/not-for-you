@@ -153,7 +153,10 @@ security-sensitive goes to email instead: see [SECURITY.md](SECURITY.md).
 Releases are cut by tag. Bump the version in `package.json`, write the
 `CHANGELOG.md` entry, then push a matching `v1.2.3` tag: the release workflow
 rebuilds both store packages from that commit, checks the tag against
-`package.json` and attaches the zips to a draft release for upload.
+`package.json` and attaches the zips to a draft release. The stores take
+uploads from a computer, so once the workflow has finished, `npm run
+release:fetch` downloads that version's zips into `.output/`, and those are
+the files to upload.
 
 ## License
 
