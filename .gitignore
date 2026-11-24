@@ -11,3 +11,6 @@ terraform.tfstate
 terraform.tfstate.backup
 *.tfplan
 tfplan
+
+# foundby config: a local symlink into ~/Sites/_brainstorming
+/foundby.json
