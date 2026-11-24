@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased
+
+- TikTok: language-specific home pages (tiktok.com/en/, /de-DE/ and the
+  rest) now go to Following too. They showed the For You feed before
+  ([#5](https://github.com/preziotte/not-for-you/issues/5))
+
 ## 1.2.0 (2026-11-11)
 
 - Reddit: keeps the home page on Following instead of the new Discover feed.

@@ -1,5 +1,5 @@
 import { defineContentScript } from '#imports';
-import { matchesFor } from '../lib/platforms';
+import { matchesFor, TIKTOK_HOME_PATH } from '../lib/platforms';
 import { getEffective, watchSettings } from '../lib/settings';
 import { watchSpaNavigation } from '../lib/spa';
 
@@ -7,8 +7,9 @@ export default defineContentScript({
   matches: matchesFor('tiktok'),
   runAt: 'document_start',
   main() {
+    const home = new RegExp(`^${TIKTOK_HOME_PATH}$`);
     watchSpaNavigation('tiktok', (url) =>
-      url.pathname === '/' || url.pathname === '/foryou' ? '/following' : null,
+      home.test(url.pathname) ? '/following' : null,
     );
 
     // Header action bar: Get Coins / Get App / PC App upsells plus the

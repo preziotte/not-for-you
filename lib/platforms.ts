@@ -61,6 +61,17 @@ export interface Platform {
 export const RULE_ID_BLOCK = 100;
 export const OPTION_ID_BLOCK = 10;
 
+/**
+ * TikTok paths that serve the For You feed: "/", the legacy /foryou alias,
+ * and the locale-prefixed home pages (/en/, /de-DE/, /zh-Hant-TW/, about 56
+ * of them, which is where search results and hreflang links land). Matched
+ * by shape rather than by list; a short path that is not a locale is a 404
+ * on TikTok anyway. Shared by the DNR rule and the content script, so it
+ * has to stay valid in both RE2 and JS.
+ */
+export const TIKTOK_HOME_PATH =
+  '/(foryou/?|[a-z]{2,3}(-[A-Za-z0-9]{2,4}){0,2}/?)?';
+
 export const PLATFORMS: Platform[] = [
   {
     id: 'youtube',
@@ -141,8 +152,7 @@ export const PLATFORMS: Platform[] = [
           },
         },
         condition: {
-          // Home ("/", the For You feed) and its legacy /foryou alias.
-          regexFilter: '^https?://(www\\.)?tiktok\\.com/(foryou/?)?(\\?.*)?$',
+          regexFilter: `^https?://(www\\.)?tiktok\\.com${TIKTOK_HOME_PATH}(\\?.*)?$`,
           resourceTypes: ['main_frame'],
         },
       },
