@@ -20,7 +20,7 @@ Key facts:
   turn off autoplay and hide Shorts), Instagram, TikTok, X/Twitter and
   Threads show the Following feed instead of For You, Reddit shows
   Following instead of Discover (with promoted posts and recommendations
-  hidden), LinkedIn sorts by Recent instead of Top, and Facebook opens the
+  hidden), LinkedIn opens on the Network feed instead of For You, and Facebook opens the
   Feeds view.
 - Nothing else changes: search, profiles, messages and posting work as
   before. It is not a feed blocker; the feed stays, just chronological.
@@ -43,8 +43,9 @@ Key facts:
 - [Reddit without the algorithm](https://notforyou.app/reddit): keeping
   the Following feed instead of Discover, hiding promoted posts, ads and
   subreddit recommendations; old Reddit optional.
-- [LinkedIn without the algorithm](https://notforyou.app/linkedin): sorted
-  by Recent, without suggested posts or the news sidebar.
+- [LinkedIn without the algorithm](https://notforyou.app/linkedin): the
+  Network feed instead of For You, without suggested posts or the news
+  sidebar.
 - [Threads without the algorithm](https://notforyou.app/threads): the
   Following feed, newest first, every visit.
 - [Facebook without the algorithm](https://notforyou.app/facebook): the

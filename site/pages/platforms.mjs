@@ -362,21 +362,21 @@ export const pages = [
   {
     slug: "linkedin",
     name: "LinkedIn",
-    title: "Sort LinkedIn by Recent and Hide Suggested Posts | Not for You",
+    title: "Hide the LinkedIn For You Feed and Suggested Posts | Not for You",
     description:
-      "How to keep the LinkedIn feed sorted by recent instead of top, and hide promoted posts, suggested posts and the news sidebar, with Not for You, a free extension.",
+      "How to hide the For You feed on LinkedIn and open on Network instead, and hide promoted posts, suggested posts and the news sidebar, with Not for You, a free extension.",
     h1: "LinkedIn without the algorithm",
-    lead: "A free browser extension that keeps LinkedIn sorted by <b>Recent</b>: posts from your network, in the order they posted. <b>No suggested posts, no promoted posts, no news box</b>.",
+    lead: "A free browser extension that keeps LinkedIn on the <b>Network</b> feed: posts from your connections and the people you follow. <b>No suggested posts, no promoted posts, no news box</b>.",
     changes: [
-      "Sorts the feed by <strong>Recent</strong> instead of Top, and keeps it there.",
+      "Opens the <strong>Network</strong> feed instead of For You, and keeps it there.",
       "Hides promoted and suggested posts in the feed.",
       "Hides the news sidebar.",
     ],
     faqs: [
       {
-        q: "How do I sort my LinkedIn feed by recent?",
+        q: "How do I turn off the For You feed on LinkedIn?",
         a: [
-          "LinkedIn has a sort toggle above the feed, but it slides back to Top on the next visit. The extension applies Recent for you every time, so the feed is your network in the order they posted.",
+          "LinkedIn now splits the home page into two tabs, For You and Network, and opens on For You every time. Network is only your connections and the people you follow. The extension switches to it for you on every visit, so that is the feed you see.",
         ],
       },
       {

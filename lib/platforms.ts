@@ -244,10 +244,31 @@ export const PLATFORMS: Platform[] = [
   },
   {
     id: 'linkedin',
-    enabledLabel: 'Show Recent, not the Top sort',
+    enabledLabel: 'Show Network, not the “For You” feed',
     label: 'LinkedIn',
     matches: ['*://www.linkedin.com/*', '*://linkedin.com/*'],
-    dnrRules: [],
+    dnrRules: [
+      {
+        id: 0,
+        priority: 1,
+        action: {
+          type: 'redirect',
+          redirect: {
+            regexSubstitution: `https://www.linkedin.com/feed/network/${NOTICE_MARK}`,
+          },
+        },
+        condition: {
+          // Only the For you tab's own URL. Bare /feed/ is left alone: on
+          // accounts still on the older single-feed layout it is the feed,
+          // and /feed/network/ may not exist there. On the new layout it
+          // is rewritten to /feed/foryou/ in-app, where the content script
+          // clicks the Network tab.
+          regexFilter:
+            '^https?://(www\\.)?linkedin\\.com/feed/foryou/?(\\?.*)?$',
+          resourceTypes: ['main_frame'],
+        },
+      },
+    ],
     options: [
       { key: 'hidePromoted', label: 'Hide promoted & suggested posts' },
       { key: 'hideRails', label: 'Hide news sidebar' },

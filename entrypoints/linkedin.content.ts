@@ -1,21 +1,36 @@
 import { defineContentScript } from '#imports';
 import { matchesFor } from '../lib/platforms';
-import { notify } from '../lib/notice';
+import { consumeMark, notify } from '../lib/notice';
 import { enforceOnMutations } from '../lib/observe';
 import { getEffective, watchSettings } from '../lib/settings';
 
 /**
- * Nuanced LinkedIn mode. There is no chronological URL, so on /feed there
- * are two independent behaviors, one per checkbox:
- * - `enabled`: force the sort to Recent via the sort dropdown (a real
- *   chronological feed of your connections exists behind it)
+ * LinkedIn's home feed has two tabs, each with its own URL (new layout,
+ * verified live 2026-11-24): /feed/foryou/ ("For you", ranked, with
+ * Promoted units and posts from strangers) and /feed/network/ ("Network",
+ * posts from your connections and follows only). Bare /feed/ is served as
+ * is and then rewritten to /feed/foryou/ in the client.
+ *
+ * Three independent behaviors, one per checkbox:
+ * - `enabled`: keep the home feed on Network. A direct load of
+ *   /feed/foryou/ is redirected by the DNR rule in lib/platforms.ts; the
+ *   usual arrival (bare /feed/, rewritten in-app) never makes a request
+ *   for that URL, so here the Network tab is clicked instead, which
+ *   switches without a reload. On the older single-feed layout, which has
+ *   no tabs, the sort is forced to Recent via its dropdown as before.
  * - `hidePromoted`: hide algorithmic units, meaning Promoted posts,
  *   "Recommended for you", and LinkedIn's own ad boxes
+ * - `hideRails`: hide the news/puzzles rail
  *
- * Current markup (verified live 2026-08-03): the feed is
- * [data-testid="mainFeed"]; children are composer, spacer, sort row,
- * new-posts button, then one div per post. The sort dropdown is the only
- * visible two-item [role=menuitem] menu: [Top, Recent].
+ * Markup: the For you feed is [data-testid="mainFeed"] (children are
+ * composer, spacer, sort row, new-posts button, then one div per post);
+ * the Network feed is [data-testid="NetworkFeedListCollection"] (a notice,
+ * a spacer, then one div per post). The tab bar has no role=tablist and no
+ * selected-state attribute: it is two [role="button"] divs in the element
+ * just ahead of the feed's branch, [For you, Network], so position is the
+ * only language-independent handle and the URL says which one is active.
+ * The sort dropdown is the only visible two-item [role=menuitem] menu:
+ * [Top, Recent].
  *
  * Text markers are English-first. Non-English UIs: the filter misses and
  * the already-on-Recent check falls through to one click per page load.
@@ -53,6 +68,10 @@ export default defineContentScript({
     let hidePromoted = false;
     let sorting = false;
     let sortAttemptAt = 0;
+    let tabClickAt = 0;
+
+    // A load that arrives carrying the mark was redirected by the DNR rule.
+    if (consumeMark()) void notify();
 
     // News/puzzles rail: anchored on its /news/story links, with the
     // (English) aria-label as backup. Verified live 2026-08-03.
@@ -62,9 +81,39 @@ export default defineContentScript({
     (document.head ?? document.documentElement).append(railStyle);
 
     const feedEl = () =>
-      document.querySelector<HTMLElement>('main [data-testid="mainFeed"]');
-    const onFeed = () =>
-      location.pathname === '/feed' || location.pathname === '/feed/';
+      document.querySelector<HTMLElement>(
+        'main [data-testid="mainFeed"], main [data-testid="NetworkFeedListCollection"]',
+      );
+    const path = () => location.pathname.replace(/\/$/, '');
+    const FEED_PATHS = ['/feed', '/feed/foryou', '/feed/network'];
+
+    /**
+     * The [For you, Network] tabs: the buttons in the element just ahead of
+     * the feed's branch. Empty on the older layout, which has no tab bar.
+     */
+    const feedTabs = (feed: HTMLElement): HTMLElement[] => {
+      const main = feed.closest('main');
+      let branch: HTMLElement | null = feed;
+      while (branch && branch !== main && !branch.previousElementSibling) {
+        branch = branch.parentElement;
+      }
+      if (!branch || branch === main) return [];
+      return [
+        ...branch.previousElementSibling!.querySelectorAll<HTMLElement>(
+          '[role="button"]',
+        ),
+      ];
+    };
+
+    const showNetwork = (feed: HTMLElement) => {
+      const tabs = feedTabs(feed);
+      if (tabs.length !== 2) return;
+      // Guard against a click loop if the click ever stops changing the URL.
+      if (Date.now() - tabClickAt < 2000) return;
+      tabClickAt = Date.now();
+      tabs[1].click();
+      void notify();
+    };
 
     /*
      * A post's classification never changes once it has rendered, and this
@@ -123,7 +172,8 @@ export default defineContentScript({
 
     const enforce = () => {
       const feed = feedEl();
-      if (!onFeed()) {
+      const here = path();
+      if (!FEED_PATHS.includes(here)) {
         restore(feed);
         return;
       }
@@ -132,7 +182,12 @@ export default defineContentScript({
       // hidden posts back without a reload.
       if (hidePromoted) filterPosts(feed);
       else restore(feed);
-      if (enabled) void forceRecentSort(feed);
+      if (!enabled) return;
+      if (here === '/feed/foryou') showNetwork(feed);
+      // Bare /feed with a tab bar is the new layout a moment before it
+      // rewrites its own URL; only the older layout gets the sort.
+      else if (here === '/feed' && feedTabs(feed).length !== 2)
+        void forceRecentSort(feed);
     };
 
     const schedule = enforceOnMutations(enforce);

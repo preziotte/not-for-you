@@ -1,5 +1,15 @@
 # Changelog
 
+## 1.4.0 (2026-11-24)
+
+- LinkedIn: opens on the Network feed instead of the new For You tab.
+  LinkedIn split its home page into For You and Network, which left the
+  extension doing nothing there. Network is only your connections and the
+  people you follow. The checkbox now reads "Show Network, not the
+  “For You” feed"
+- LinkedIn: hiding promoted and suggested posts works again, on both tabs
+- LinkedIn accounts still on the older single feed keep the Recent sort
+
 ## 1.3.0 (2026-11-24)
 
 - A small "Not for You" reminder appears at the top right once a day, the

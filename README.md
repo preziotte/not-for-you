@@ -23,7 +23,7 @@ noted), and can be turned off per platform.
 | TikTok    | Following instead of the "For You" feed  | hide the header bar                                                                |
 | X/Twitter | Following instead of the "For You" feed  | hide trends and suggestions                                                        |
 | Reddit    | Following instead of the "Discover" feed | hide promoted posts and ads, hide recommendations, use old Reddit (off by default) |
-| LinkedIn  | Recent instead of the Top sort           | hide promoted and suggested posts, hide the news sidebar                           |
+| LinkedIn  | Network instead of For You               | hide promoted and suggested posts, hide the news sidebar                           |
 | Threads   | Following instead of the "For You" feed  |                                                                                    |
 | Facebook  | The Feeds view instead of Home           | hide the Reels tab                                                                 |
 
@@ -61,7 +61,7 @@ Two mechanisms, and the first is always preferred:
    to `/following`, Facebook to its `Feeds` view, and Reddit to `old.reddit.com`
    if you ask for it. Durable, and it degrades gracefully.
 2. **DOM work.** Only where no such route exists (X keeps snapping back to "For
-   You" and Reddit's Following tab has no URL; LinkedIn buries its Recent sort in a dropdown) or to hide the leftover
+   You" and Reddit's Following tab has no URL; LinkedIn rewrites its home URL to For You in-app) or to hide the leftover
    recommendation blocks that no URL avoids. This part is matched against the
    platforms' current markup and will break when they change it.
 
