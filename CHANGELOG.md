@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 1.3.0 (2026-11-24)
 
 - A small "Not for You" reminder appears at the top right once a day, the
   first time the extension switches a feed, so it is clear why a site looks
