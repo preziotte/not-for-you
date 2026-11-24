@@ -505,6 +505,16 @@
         color: var(--fg);
         background: color-mix(in srgb, currentColor 14%, transparent);
       }
+      /* Where the extension can hear the page (Chrome, see the script at
+         the bottom), the row is a real control that opens the popup. The
+         rest of the pointer stays click-through. */
+      .pointer .ext-row.can-open {
+        pointer-events: auto;
+        cursor: pointer;
+      }
+      .pointer .ext-row.can-open:hover .ext-button {
+        background: color-mix(in srgb, currentColor 24%, transparent);
+      }
       /* Narrow windows have no toolbar corner to point at (and on phones,
          no extensions button at all), so the arrow goes entirely. Same
          collapse point as the homepage. */
@@ -700,6 +710,29 @@
         // Only fires while the visitor is still on the system default.
         dark.addEventListener('change', label);
         label();
+      })();
+    </script>
+    <script>
+      // The Extensions chip opens the real popup where it can. Chrome only
+      // exposes chrome.runtime to this page because the extension names
+      // notforyou.app as externally connectable; elsewhere (Firefox, or a
+      // browser without the extension) the chip stays a picture. The id is
+      // the Chrome Web Store one; ?ext=<id> points at an unpacked build.
+      (function () {
+        var runtime = window.chrome && chrome.runtime;
+        if (!runtime || !runtime.sendMessage) return;
+        var id =
+          new URLSearchParams(location.search).get('ext') ||
+          'pakdneaipkfgaahgbafblmdebfoadjca';
+        var row = document.querySelector('.pointer .ext-row');
+        row.classList.add('can-open');
+        row.addEventListener('click', function () {
+          // The callback reads lastError so a missing or older extension
+          // fails quietly instead of logging an unchecked error.
+          runtime.sendMessage(id, 'nfy:open-popup', function () {
+            void chrome.runtime.lastError;
+          });
+        });
       })();
     </script>
   </body>

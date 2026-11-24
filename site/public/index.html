@@ -921,6 +921,55 @@
       .pointer .standalone {
         display: none;
       }
+      /* For a visitor who already has the extension (see the script at the
+         bottom), the caption opens the real popup. The arrow around it
+         stays click-through. */
+      [data-installed] .pointer .at-toolbar {
+        pointer-events: auto;
+        cursor: pointer;
+      }
+      [data-installed] .pointer .at-toolbar:hover {
+        color: var(--fg);
+      }
+      /* Beside the install button once it has become "Open settings": the
+         way back to the listing the button used to lead to, and the way out
+         if the popup cannot be opened from here. Added by the same script,
+         in the note's quiet type so it reads as an aside to the button. */
+      .store-link {
+        margin-left: 1.1rem;
+        font-family: system-ui, sans-serif;
+        font-size: 0.8rem;
+        color: var(--muted);
+        text-decoration: none;
+        white-space: nowrap;
+      }
+      .store-link svg {
+        width: 0.85em;
+        height: 0.85em;
+        margin-left: 0.4em;
+        vertical-align: -0.06em;
+      }
+      .store-link:hover {
+        color: var(--fg);
+        text-decoration: underline;
+        text-underline-offset: 3px;
+        text-decoration-thickness: 1px;
+      }
+      /* The label is short enough to stay beside the button down to 500px,
+         the narrowest a Chrome window goes, which covers everyone who can
+         have the extension. Below that it would wrap under the button at
+         the indent it had beside it, tight against the pill, so it takes
+         its own line instead, flush with the note. */
+      @media (max-width: 30rem) {
+        .store-link {
+          display: block;
+          width: fit-content;
+          /* A full step from the button and another to the note: the note
+             wraps to two lines of its own down here, and anything tighter
+             turns the three into one cramped block. */
+          margin: 1.6rem 0 0.45rem;
+        }
+      }
       /* Collapsed: the arrow goes, because the mock is no longer anywhere
          near the toolbar and it would be pointing at nothing, but the caption
          stays. Without it the popup arrives with no introduction and reads as
@@ -2582,6 +2631,57 @@
         addEventListener('load', refresh);
         collapsed.addEventListener('change', refresh);
         refresh();
+      })();
+    </script>
+    <script>
+      // For a visitor who already has the extension: the install button
+      // says so and opens the real popup, and so does the arrow's caption.
+      // Chrome only exposes chrome.runtime here because the extension names
+      // notforyou.app as externally connectable, so this is Chromium only,
+      // and everywhere else the page stays as written. The answer is used
+      // on this page and goes nowhere else. The id is the Chrome Web Store
+      // one; ?ext=<id> points at an unpacked build.
+      (function () {
+        var runtime = window.chrome && chrome.runtime;
+        if (!runtime || !runtime.sendMessage) return;
+        var id =
+          new URLSearchParams(location.search).get('ext') ||
+          'pakdneaipkfgaahgbafblmdebfoadjca';
+        function open() {
+          // The callback reads lastError so a failure stays quiet.
+          runtime.sendMessage(id, 'nfy:open-popup', function () {
+            void chrome.runtime.lastError;
+          });
+        }
+        runtime.sendMessage(id, 'nfy:ping', function (reply) {
+          if (chrome.runtime.lastError || !reply) return;
+          document.documentElement.dataset.installed = '';
+          document.querySelectorAll('.cta-chrome').forEach(function (cta) {
+            // The label is the trailing text node, after the store mark.
+            cta.lastChild.textContent = ' Installed \u00b7 Open settings';
+            cta.addEventListener('click', function (event) {
+              event.preventDefault();
+              open();
+            });
+            var store = document.createElement('a');
+            store.className = 'store-link';
+            store.href = cta.href;
+            store.target = '_blank';
+            store.rel = 'noopener';
+            // The box-and-arrow says "opens elsewhere", which the button
+            // beside it no longer does.
+            store.innerHTML =
+              'Chrome Web Store<svg viewBox="0 0 12 12" fill="none" ' +
+              'stroke="currentColor" stroke-width="1.3" ' +
+              'stroke-linecap="round" stroke-linejoin="round" ' +
+              'aria-hidden="true"><path d="M5 2.5H2.5v7h7V7M7 2h3v3M10 2 ' +
+              '5.5 6.5"/></svg>';
+            cta.after(store);
+          });
+          document
+            .querySelector('.pointer .at-toolbar')
+            .addEventListener('click', open);
+        });
       })();
     </script>
   </body>
