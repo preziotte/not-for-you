@@ -8,23 +8,48 @@ import { NOTICE_MARK } from './platforms';
  * on by default: nobody who forgot will go and opt in.
  *
  * It only ever follows a feed switch (a redirect or a tab click), never a
- * page the extension left alone, and shows once a day across all sites:
- * often enough to stay remembered, and one pill a day whether you use one
- * of these sites or all eight.
+ * page the extension left alone, and by default shows once a day across
+ * all sites: often enough to stay remembered, and one pill a day whether
+ * you use one of these sites or all eight. How often is the one global
+ * setting in the popup.
  */
 const VISIBLE_MS = 3500;
 const SETTLE_MS = 400;
 const LOAD_WAIT_MS = 2500;
 
-/** Synced: turning reminders off is a decision about the extension. */
-export const reminders = storage.defineItem<boolean>('sync:reminders', {
-  fallback: true,
+export type RemindEvery = 'day' | 'week' | 'month' | 'never';
+
+/** The popup's choices, in order. `days` is the least gap between pills. */
+export const REMIND_OPTIONS: {
+  value: Exclude<RemindEvery, 'never'>;
+  label: string;
+  days: number;
+}[] = [
+  { value: 'day', label: 'Daily', days: 1 },
+  { value: 'week', label: 'Weekly', days: 7 },
+  { value: 'month', label: 'Monthly', days: 30 },
+];
+
+/** Synced: how often to be reminded is a decision about the extension. */
+export const remindEvery = storage.defineItem<RemindEvery>('sync:remindEvery', {
+  fallback: 'day',
 });
 
-/** Local: the calendar day (this device's clock) the pill last showed. */
-const lastDay = storage.defineItem<string>('local:noticeDay', {
-  fallback: '',
+/**
+ * Local: the day the pill last showed, as a count of calendar days on this
+ * device's clock, so "daily" turns over at local midnight and the longer
+ * gaps are whole days.
+ */
+const lastShown = storage.defineItem<number>('local:noticeLastDay', {
+  fallback: 0,
 });
+
+function dayNumber(): number {
+  const now = new Date();
+  return Math.floor(
+    (now.getTime() - now.getTimezoneOffset() * 60_000) / 86_400_000,
+  );
+}
 
 /**
  * Redirects cross a page load, so the reason for the load has to travel
@@ -52,22 +77,24 @@ export const OPEN_POPUP = 'nfy:open-popup';
 /** Sent by notforyou.app to ask whether the extension is installed. */
 export const PING = 'nfy:ping';
 
-/** Set by `npm run build:local`: skip the once-a-day limit. */
+/** Set by `npm run build:local`: skip the wait between pills. */
 declare const __NFY_LOCAL__: boolean;
 
-let asked = '';
+let asked = 0;
 
-/** Show the pill, if today's has not been shown yet. */
+/** Show the pill, if one is due. */
 export async function notify() {
   // The tab-click platforms call this on every enforcement; one storage
   // read per page per day is plenty. Keyed by day, not a plain flag, so a
   // tab left open overnight still gets tomorrow's.
-  const today = new Date().toDateString();
+  const today = dayNumber();
   if (asked === today && !__NFY_LOCAL__) return;
   asked = today;
-  if (!(await reminders.getValue())) return;
-  if ((await lastDay.getValue()) === today && !__NFY_LOCAL__) return;
-  await lastDay.setValue(today);
+  const every = await remindEvery.getValue();
+  if (every === 'never') return;
+  const gap = REMIND_OPTIONS.find((o) => o.value === every)!.days;
+  if (today - (await lastShown.getValue()) < gap && !__NFY_LOCAL__) return;
+  await lastShown.setValue(today);
 
   // Wait for the page to settle: a beat after load is when a small thing
   // gets noticed, and not while the site is still drawing itself.
@@ -427,7 +454,7 @@ function render() {
   off.className = 'off';
   // An icon rather than words, so the pill stays the size of its message;
   // the tooltip carries the words.
-  off.title = 'Stop showing this reminder';
+  off.title = 'Never show this badge';
   off.setAttribute('aria-label', off.title);
   off.append(bellOff());
 
@@ -456,7 +483,7 @@ function render() {
     leave();
   });
   off.addEventListener('click', () => {
-    void reminders.setValue(false);
+    void remindEvery.setValue('never');
     clearTimeout(timer);
     leave();
   });

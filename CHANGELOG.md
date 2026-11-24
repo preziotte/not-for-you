@@ -4,7 +4,9 @@
 
 - A small "Not for You" reminder appears at the top right once a day, the
   first time the extension switches a feed, so it is clear why a site looks
-  different. Clicking it opens the popup; the bell on it turns reminders off
+  different. Clicking it opens the popup. A new setting at the bottom of the
+  popup makes it weekly or monthly, or turns it off, and so does the bell on
+  the reminder itself
 - On notforyou.app in Chrome, the install button reads "Installed" and opens
   the popup when the extension is already there, and so does the Extensions
   button on the welcome page

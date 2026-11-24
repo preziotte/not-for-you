@@ -1520,6 +1520,67 @@
         font-size: 11.5px;
       }
 
+      .popup .with-select {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .popup .with-select .option {
+        flex: 1;
+      }
+
+      /* A small native select in the popup's soft fill. The wrapper draws the
+         chevron, since a select cannot carry a pseudo-element of its own. */
+      .popup .select {
+        position: relative;
+        flex: none;
+      }
+
+      .popup .select::after {
+        content: '';
+        position: absolute;
+        right: 8px;
+        top: 50%;
+        width: 4px;
+        height: 4px;
+        border: solid currentColor;
+        border-width: 0 1.4px 1.4px 0;
+        transform: translateY(-75%) rotate(45deg);
+        opacity: 0.6;
+        pointer-events: none;
+      }
+
+      .popup .select select {
+        appearance: none;
+        padding: 3px 20px 3px 8px;
+        font: inherit;
+        font-size: 11.5px;
+        font-weight: 500;
+        color: inherit;
+        background: color-mix(in srgb, currentColor 7%, transparent);
+        border: 0;
+        border-radius: 6px;
+        cursor: pointer;
+        transition: background-color 0.12s ease;
+      }
+
+      .popup .select select:hover:not(:disabled) {
+        background: color-mix(in srgb, currentColor 12%, transparent);
+      }
+
+      .popup .select select:focus-visible {
+        outline: 2px solid color-mix(in srgb, currentColor 50%, transparent);
+        outline-offset: 1px;
+      }
+
+      .popup .select:has(select:disabled) {
+        opacity: 0.4;
+      }
+
+      .popup .select select:disabled {
+        cursor: default;
+      }
       .popup .disable-heading {
         flex: none;
         opacity: 0.55;
@@ -2151,6 +2212,29 @@
                 ></label
               >
             </li>
+            <!-- The extension's one global setting: whether and how often its
+                 reminder badge shows. Same controls as the real popup; the
+                 script below greys the select while the box is unchecked. -->
+            <li>
+              <div class="site">
+                <img src="/favicon-32.png" alt="" width="16" height="16" />
+                <span>Everywhere</span>
+              </div>
+              <div class="with-select">
+                <label class="option"
+                  ><input type="checkbox" checked /><span
+                    >Show a reminder badge</span
+                  ></label
+                >
+                <span class="select"
+                  ><select aria-label="How often">
+                    <option>Daily</option>
+                    <option>Weekly</option>
+                    <option>Monthly</option>
+                  </select></span
+                >
+              </div>
+            </li>
           </ul>
           <footer>
             <!-- Same two states as the real popup, swapped by the script
@@ -2462,10 +2546,24 @@
         // Removing them keeps the mouse toggling, which is the only reason
         // they are real controls in the first place.
         document
-          .querySelectorAll('.popup input, .popup button, .popup a')
+          .querySelectorAll(
+            '.popup input, .popup select, .popup button, .popup a',
+          )
           .forEach(function (el) {
             el.tabIndex = -1;
           });
+      })();
+
+      // The reminder setting behaves like the real one: unchecking the box
+      // greys the frequency beside it. There is no badge here to schedule.
+      (function () {
+        var row = document.querySelector('.popup .with-select');
+        if (!row) return;
+        var box = row.querySelector('input');
+        var select = row.querySelector('select');
+        box.addEventListener('change', function () {
+          select.disabled = !box.checked;
+        });
       })();
 
       // The disable row runs the real popup's countdown: pick a duration to

@@ -1,4 +1,9 @@
 import { browser } from '#imports';
+import {
+  REMIND_OPTIONS,
+  remindEvery,
+  type RemindEvery,
+} from '../../lib/notice';
 import { PLATFORMS } from '../../lib/platforms';
 import {
   getSettings,
@@ -75,6 +80,63 @@ async function render() {
 
     list.append(item);
   }
+
+  list.append(await renderGlobal());
+}
+
+/**
+ * The one setting that is about the extension rather than a site: whether
+ * and how often the reminder badge shows (lib/notice.ts). Last in the list, under the
+ * extension's own icon where the platforms have theirs.
+ */
+async function renderGlobal(): Promise<HTMLLIElement> {
+  const item = document.createElement('li');
+
+  const title = document.createElement('div');
+  title.className = 'site';
+  const icon = document.createElement('img');
+  icon.src = '/icon/32.png';
+  icon.alt = '';
+  icon.width = 16;
+  icon.height = 16;
+  const name = document.createElement('span');
+  // The list above is places; this is the last one. The header already
+  // carries the extension's name.
+  name.textContent = 'Everywhere';
+  title.append(icon, name);
+
+  // A checkbox like every other row, with how often beside it. Unchecked
+  // is "never"; the select keeps the frequency to go back to.
+  const select = document.createElement('select');
+  select.setAttribute('aria-label', 'How often');
+  for (const option of REMIND_OPTIONS) {
+    select.append(new Option(option.label, option.value));
+  }
+  const save = () =>
+    void remindEvery.setValue(
+      input.checked ? (select.value as RemindEvery) : 'never',
+    );
+  const label = option('Show a reminder badge', true, save);
+  const input = label.querySelector('input')!;
+  select.addEventListener('change', save);
+
+  const show = (value: RemindEvery) => {
+    input.checked = value !== 'never';
+    if (input.checked) select.value = value;
+    select.disabled = !input.checked;
+  };
+  show(await remindEvery.getValue());
+  // Also how the badge's own off button shows up here.
+  remindEvery.watch(show);
+
+  const row = document.createElement('div');
+  row.className = 'with-select';
+  const wrap = document.createElement('span');
+  wrap.className = 'select';
+  wrap.append(select);
+  row.append(label, wrap);
+  item.append(title, row);
+  return item;
 }
 
 // A rating belongs on the listing the copy came from, and the markup carries
