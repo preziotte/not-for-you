@@ -12,7 +12,7 @@ import { NOTICE_MARK } from './platforms';
  * often enough to stay remembered, and one pill a day whether you use one
  * of these sites or all eight.
  */
-const VISIBLE_MS = 5000;
+const VISIBLE_MS = 3500;
 const SETTLE_MS = 400;
 const LOAD_WAIT_MS = 2500;
 
