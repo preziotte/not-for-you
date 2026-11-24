@@ -62,6 +62,14 @@ export const RULE_ID_BLOCK = 100;
 export const OPTION_ID_BLOCK = 10;
 
 /**
+ * Appended to every feed redirect so the content script on the far side
+ * knows the page load was ours and can show the reminder (lib/notice.ts).
+ * A fragment never reaches the server, and the script strips it at
+ * document_start, before the site's own code runs.
+ */
+export const NOTICE_MARK = '#nfy';
+
+/**
  * TikTok paths that serve the For You feed: "/", the legacy /foryou alias,
  * and the locale-prefixed home pages (/en/, /de-DE/, /zh-Hant-TW/, about 56
  * of them, which is where search results and hreflang links land). Matched
@@ -90,7 +98,7 @@ export const PLATFORMS: Platform[] = [
         action: {
           type: 'redirect',
           redirect: {
-            regexSubstitution: 'https://www.youtube.com/feed/subscriptions',
+            regexSubstitution: `https://www.youtube.com/feed/subscriptions${NOTICE_MARK}`,
           },
         },
         condition: {
@@ -114,7 +122,7 @@ export const PLATFORMS: Platform[] = [
         action: {
           type: 'redirect',
           redirect: {
-            regexSubstitution: 'https://www.instagram.com/?variant=following',
+            regexSubstitution: `https://www.instagram.com/?variant=following${NOTICE_MARK}`,
           },
         },
         condition: {
@@ -148,7 +156,7 @@ export const PLATFORMS: Platform[] = [
         action: {
           type: 'redirect',
           redirect: {
-            regexSubstitution: 'https://www.tiktok.com/following',
+            regexSubstitution: `https://www.tiktok.com/following${NOTICE_MARK}`,
           },
         },
         condition: {
@@ -171,7 +179,7 @@ export const PLATFORMS: Platform[] = [
         action: {
           type: 'redirect',
           redirect: {
-            regexSubstitution: 'https://www.facebook.com/?filter=all&sk=h_chr',
+            regexSubstitution: `https://www.facebook.com/?filter=all&sk=h_chr${NOTICE_MARK}`,
           },
         },
         condition: {
@@ -263,7 +271,7 @@ export const PLATFORMS: Platform[] = [
         action: {
           type: 'redirect',
           redirect: {
-            regexSubstitution: 'https://www.threads.com/following',
+            regexSubstitution: `https://www.threads.com/following${NOTICE_MARK}`,
           },
         },
         condition: {

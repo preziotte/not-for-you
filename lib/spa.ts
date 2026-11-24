@@ -1,3 +1,4 @@
+import { consumeMark, markRedirect, notify } from './notice';
 import type { PlatformId } from './platforms';
 import { getEffective, watchSettings } from './settings';
 
@@ -26,10 +27,14 @@ export function watchSpaNavigation(
 ) {
   let on = false;
 
+  // A load that arrives carrying the mark was redirected here, by the DNR
+  // rule or by check() below.
+  if (consumeMark()) void notify();
+
   const check = () => {
     if (!on) return;
     const dest = target(new URL(location.href));
-    if (dest !== null) location.replace(dest);
+    if (dest !== null) location.replace(markRedirect(dest));
   };
 
   const sync = async () => {

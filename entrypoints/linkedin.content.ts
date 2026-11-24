@@ -1,5 +1,6 @@
 import { defineContentScript } from '#imports';
 import { matchesFor } from '../lib/platforms';
+import { notify } from '../lib/notice';
 import { enforceOnMutations } from '../lib/observe';
 import { getEffective, watchSettings } from '../lib/settings';
 
@@ -110,6 +111,7 @@ export default defineContentScript({
         ].filter((item) => item.getBoundingClientRect().height > 0);
         if (items.length === 2) {
           items[1].click();
+          void notify();
         } else {
           // Unexpected surface; close what we opened and leave it alone.
           trigger.click();

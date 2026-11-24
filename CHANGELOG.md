@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+- A small "Not for You" reminder appears at the top right once a day, the
+  first time the extension switches a feed, so it is clear why a site looks
+  different. Clicking it opens the popup; the bell on it turns reminders off
+- On notforyou.app in Chrome, the install button reads "Installed" and opens
+  the popup when the extension is already there, and so does the Extensions
+  button on the welcome page
 - TikTok: language-specific home pages (tiktok.com/en/, /de-DE/ and the
   rest) now go to Following too. They showed the For You feed before
   ([#5](https://github.com/preziotte/not-for-you/issues/5))

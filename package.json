@@ -19,6 +19,7 @@
     "dev:firefox": "wxt -b firefox",
     "build": "wxt build",
     "build:firefox": "wxt build -b firefox",
+    "build:local": "NFY_LOCAL=1 wxt build",
     "zip": "wxt zip",
     "zip:firefox": "wxt zip -b firefox",
     "compile": "tsc --noEmit",
@@ -27,7 +28,7 @@
     "icons": "node scripts/icons.mjs",
     "build:site": "node scripts/build-site.mjs",
     "build:pages": "node scripts/build-pages.mjs",
-    "dev:site": "node scripts/serve-site.mjs",
+    "dev:site": "node scripts/serve-site.mjs 4390",
     "postinstall": "wxt prepare"
   },
   "devDependencies": {

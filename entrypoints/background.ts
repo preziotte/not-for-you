@@ -1,4 +1,5 @@
 import { browser, defineBackground } from '#imports';
+import { OPEN_POPUP, PING } from '../lib/notice';
 import { PLATFORMS, rulesFor } from '../lib/platforms';
 import {
   getSettings,
@@ -41,6 +42,31 @@ export default defineBackground(() => {
 
   // Asks why on the way out; the browser opens this after an uninstall.
   void browser.runtime.setUninstallURL('https://notforyou.app/goodbye');
+
+  // A click on the reminder pill. Opening the popup from here needs a
+  // recent browser (Chrome 127) and, in Firefox, a user gesture that does
+  // not survive the message hop, so the homepage is the fallback.
+  browser.runtime.onMessage.addListener((message, sender) => {
+    if (message !== OPEN_POPUP) return;
+    void browser.action
+      .openPopup({ windowId: sender.tab?.windowId })
+      .catch(() => browser.tabs.create({ url: 'https://notforyou.app' }));
+  });
+
+  // Messages from notforyou.app (see externally_connectable in
+  // wxt.config.ts). A ping lets the homepage say "installed" in place of
+  // "Add to Chrome"; the answer stays in that page. Opening the popup has
+  // no fallback here: the sender is already on the site, and its own text
+  // says where the button is.
+  browser.runtime.onMessageExternal?.addListener(
+    (message, sender, sendResponse) => {
+      if (message === PING) sendResponse(true);
+      if (message !== OPEN_POPUP) return;
+      void browser.action
+        .openPopup({ windowId: sender.tab?.windowId })
+        .catch(() => {});
+    },
+  );
 
   // The popup schedules this alarm when a global disable starts; ending it
   // is just clearing the timestamp, and the storage watch above re-syncs

@@ -1,5 +1,6 @@
 import { defineContentScript } from '#imports';
 import { matchesFor } from '../lib/platforms';
+import { notify } from '../lib/notice';
 import { enforceOnMutations } from '../lib/observe';
 import { getEffective, watchSettings } from '../lib/settings';
 import { watchSpaNavigation } from '../lib/spa';
@@ -109,6 +110,7 @@ export default defineContentScript({
       if (Date.now() - lastClick > 500) {
         lastClick = Date.now();
         following.click();
+        void notify();
       }
     };
 
